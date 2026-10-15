@@ -318,7 +318,7 @@
   $('#copyMsg').addEventListener('click', () => copyText(composed, $('#readyText')));
   $$('[data-cv]').forEach(b => b.addEventListener('click', () => {
     if (!fields.message.value.trim()) fields.message.value = 'Hi Razib, could you send me your latest CV? The role is: ';
-    $('#contact').scrollIntoView({ behavior: motion() ? 'smooth' : 'auto' });
+    goTo('contact');
     setTimeout(() => fields.name.focus({ preventScroll: true }), motion() ? 800 : 0);
   }));
 
@@ -383,7 +383,7 @@
     const el = document.getElementById(target);
     if (!el) return;
     if (matchMedia('(max-width: 600px)').matches) closeBot(false);
-    el.scrollIntoView({ behavior: motion() ? 'smooth' : 'auto', block: 'start' });
+    goTo(target);
   }
   function addMsg(who, text, actions) {
     const m = document.createElement('div');
@@ -471,14 +471,102 @@
 
   /* ---------- back to top + scroll-driven updates ---------- */
   const toTop = $('#toTop');
-  toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: motion() ? 'smooth' : 'auto' }));
+  toTop.addEventListener('click', () => goTo('hero', false));
+
+  /* ---------- smooth travel between sections ---------- */
+  // In-page links glide to their section with an eased scroll. Far jumps (more than about two screens)
+  // fade the page out, move, then let the new section rise in, instead of a long blur of content.
+  // The nav indicator goes straight to the destination rather than stepping through every section.
+  const ease = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const jumpTo = y => scrollTo({ top: y, behavior: 'instant' });
+  let travel = null;
+  let pinY = null;
+  function endTravel() {
+    if (!travel) return;
+    cancelAnimationFrame(travel.raf);
+    clearTimeout(travel.timer);
+    root.classList.remove('travel-out', 'travel-in-from', 'travel-in');
+    travel = null;
+  }
+  ['wheel', 'touchstart', 'mousedown'].forEach(t => addEventListener(t, () => { if (travel) { endTravel(); frame(); } }, { passive: true }));
+  addEventListener('keydown', e => {
+    if (travel && ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(e.key)) { endTravel(); frame(); }
+  });
+  function targetY(el) {
+    if (el.id === 'hero') return 0;
+    const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    return Math.max(0, Math.min(max, Math.round(el.getBoundingClientRect().top + scrollY - margin)));
+  }
+  function arrive(el, focus) {
+    pinY = scrollY;
+    frame();
+    const head = el.querySelector('.sec-head');
+    if (head && motion()) {
+      head.classList.remove('arrive');
+      void head.offsetWidth;
+      head.classList.add('arrive');
+    }
+    if (focus) {
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
+      el.focus({ preventScroll: true });
+    }
+  }
+  function goTo(id, push = true, focus = false) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    endTravel();
+    if (push && location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+    if (links.some(a => a.hash === '#' + id)) setActive(id);
+    const from = scrollY;
+    const y = targetY(el);
+    const dist = y - from;
+    if (!motion() || Math.abs(dist) < 2) { jumpTo(y); arrive(el, focus); return; }
+    if (Math.abs(dist) > innerHeight * 2.2) {
+      const down = dist > 0;
+      root.style.setProperty('--tv-out', down ? '-28px' : '28px');
+      root.style.setProperty('--tv-in', down ? '44px' : '-44px');
+      travel = { raf: 0, timer: 0 };
+      root.classList.add('travel-out');
+      travel.timer = setTimeout(() => {
+        jumpTo(targetY(el));
+        root.classList.replace('travel-out', 'travel-in-from');
+        void root.offsetWidth;
+        root.classList.replace('travel-in-from', 'travel-in');
+        travel.timer = setTimeout(() => { endTravel(); arrive(el, focus); }, 620);
+      }, 240);
+      return;
+    }
+    const dur = Math.min(900, Math.max(450, 320 + Math.abs(dist) * 0.28));
+    const t0 = performance.now();
+    travel = { raf: 0, timer: 0 };
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur);
+      jumpTo(from + dist * ease(p));
+      if (p < 1) { travel.raf = requestAnimationFrame(step); return; }
+      travel = null;
+      arrive(el, focus);
+    };
+    travel.raf = requestAnimationFrame(step);
+  }
+  document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const id = decodeURIComponent(a.hash.slice(1));
+    if (!id || !document.getElementById(id)) return;
+    e.preventDefault();
+    // e.detail is 0 for keyboard activation: move focus with the reader, like a normal link jump
+    goTo(id, true, e.detail === 0);
+  });
   let ticking = false;
   function frame() {
     ticking = false;
     const y = scrollY;
     nav.classList.toggle('scrolled', y > 40);
     toTop.classList.toggle('show', y > 400);
-    spy();
+    // While travelling, or resting where a link took us, keep the clicked section highlighted
+    if (!travel && !(pinY !== null && Math.abs(scrollY - pinY) < 3)) { pinY = null; spy(); }
     updTimeline();
     fabClear();
   }
