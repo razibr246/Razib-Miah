@@ -357,6 +357,7 @@
     projects: { t: 'Highlights: DLAS (a voice-first Digital Legal Aid System for Bangladesh, live on Cloudflare), Ledgerline (offline bookkeeping for 12k shops), Tracewell (open-source tracer, 3.1k stars) and Routebox (live courier dispatch). Five more are under "Show More Projects".', a: [['Browse projects', 'projects']] },
     experience: { t: 'He is learning full-stack development (since 2025), learning AI/ML and building projects (since 2026), and exploring quantum computing and quantum machine learning (since 2026). He is an Executive Member of the Research Wing at the DIU AR/VR & Game Development Lab and was an Executive Member of Daffodil AI Club (Jan – Oct 2026). He is studying for a B.Sc. in Computer Science and Engineering at Daffodil International University (DIU), Jan 2025 – Dec 2028.', a: [['See the timeline', 'experience'], ['See education', 'education']] },
     wins: { t: '2nd Runner-up at the Legal-Tech Hackathon 2026 (UNDP Bangladesh, Top 10 of 194 teams) with Team Law Debuggers, and a prize winner at Agent X, the NetCom Learning × Microsoft AI prompting competition (30th of the Top 50 among 50,000+ participants).', a: [['See achievements', 'achievements']] },
+    research: { t: "Razib's research interests are quantum machine learning (variational circuits, quantum kernels and hybrid quantum-classical models), applied AI for Bangladesh such as the DLAS voice agent, and AR/VR, where he is an Executive Member of the Research Wing at DIU's AR/VR & Game Development Lab. He's open to research collaborations.", a: [['See his research', 'research'], ['Contact him', 'contact']] },
     hire: { t: "He's open to full-time roles and freelance projects. Email " + EMAIL + ' or use the contact form. He usually replies within a day.', a: [['Open contact form', 'contact'], ['Copy email', 'copy']] },
     where: { t: "He's based in Dhaka, Bangladesh (UTC+6) and works remotely with teams in other time zones.", a: [['Contact him', 'contact']] },
     fallback: { t: 'I only know what is on this page. Try one of the topics below, or email Razib at ' + EMAIL + '.', a: [['Copy email', 'copy']] }
@@ -364,6 +365,7 @@
   const ROUTES = [
     ['hire', /hire|hiring|contact|email|mail|reach|available|availab|freelance|job|rate|price|cost|\bcv\b|resume|résumé/],
     ['wins', /achiev|award|\bwin|\bwon|hackathon|certif|icpc|prize|runner|undp|debugger|agent ?x|netcom|prompt/],
+    ['research', /research|paper|publication|journal|thesis|collaborat|research wing|\blab\b/],
     ['experience', /experience|career|learning|journey|company|history|worked|years|education|degree|university|study|studied|club|ar ?\/?vr|research wing/],
     ['projects', /project|built|build|portfolio|\bapp|github|open.?source|dlas|legal.?aid|ledgerline|tracewell|routebox|bornomala|dorpon|kotha|shonkha|chhoto/],
     ['quantum', /quantum|qml|qubit|qiskit|pennylane|circuit|entangle|superposition/],
