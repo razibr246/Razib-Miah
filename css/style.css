@@ -28,6 +28,7 @@ img{max-width:100%}
   --trail-1:rgba(120,175,255,.62); --trail-2:rgba(56,189,248,.52); --trail-3:rgba(61,211,156,.5);
   --fl-a:#2457B8; --fl-b:#237556; --fl-c:#3A4A66; --fl-hot:#C2352E;
   --sun:block; --moon:none;
+  --mark-bg:linear-gradient(135deg,#7DD3FC 0%,#38BDF8 50%,#0284C7 100%); --mark-ink:#F1F5F9; --mark-edge:rgba(226,232,240,.55); --mark-glow:rgba(56,189,248,.32); --mark-glow-hi:rgba(56,189,248,.45); --mark-shade:rgba(12,74,110,.3);
   --f-display:"DM Serif Display","Times New Roman",Times,serif;
   --f-body:"Montserrat","Segoe UI",system-ui,-apple-system,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
@@ -54,6 +55,7 @@ img{max-width:100%}
   --sun-halo:rgba(47,111,235,.22);
   --trail-1:rgba(47,111,235,.5); --trail-2:rgba(2,132,199,.42); --trail-3:rgba(14,159,110,.42);
   --sun:none; --moon:block;
+  --mark-bg:linear-gradient(135deg,#4BA3F5 0%,#2F6FEB 55%,#1D4ED8 100%); --mark-ink:#FFF7EF; --mark-edge:rgba(255,247,239,.6); --mark-glow:rgba(47,111,235,.28); --mark-glow-hi:rgba(47,111,235,.42); --mark-shade:rgba(13,26,46,.28);
   --portrait-light:1;
   color-scheme:light}}
 :root[data-theme="light"]{
@@ -73,6 +75,7 @@ img{max-width:100%}
   --sun-halo:rgba(47,111,235,.22);
   --trail-1:rgba(47,111,235,.5); --trail-2:rgba(2,132,199,.42); --trail-3:rgba(14,159,110,.42);
   --sun:none; --moon:block;
+  --mark-bg:linear-gradient(135deg,#4BA3F5 0%,#2F6FEB 55%,#1D4ED8 100%); --mark-ink:#FFF7EF; --mark-edge:rgba(255,247,239,.6); --mark-glow:rgba(47,111,235,.28); --mark-glow-hi:rgba(47,111,235,.42); --mark-shade:rgba(13,26,46,.28);
   --portrait-light:1;
   color-scheme:light}
 
@@ -126,10 +129,10 @@ button{font:inherit;color:inherit}
 .nav.scrolled,.nav.open{background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);border-bottom-color:var(--line)}
 .nav-in{position:relative;max-width:1200px;margin-inline:auto;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{display:inline-flex;align-items:center;gap:10px;min-width:0;text-decoration:none;white-space:nowrap;color:var(--text)}
-/* same mark as the tab icon: sky-blue tile, whitish-ash serif R */
-.brand-mark{width:36px;height:36px;flex:none;border-radius:10px;background:linear-gradient(135deg,#7DD3FC 0%,#38BDF8 50%,#0284C7 100%);box-shadow:inset 0 0 0 1px rgba(226,232,240,.55),0 4px 14px rgba(56,189,248,.32);transition:transform .35s cubic-bezier(.3,1.5,.5,1),box-shadow .35s}
-.brand-mark span{display:grid;place-items:center;width:100%;height:100%;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,0) 52%);font:400 1.22rem/1 var(--f-display);color:#F1F5F9;text-shadow:0 1.5px 0 rgba(12,74,110,.3)}
-.brand:hover .brand-mark{transform:rotate(-6deg) scale(1.06);box-shadow:inset 0 0 0 1px rgba(226,232,240,.7),0 6px 20px rgba(56,189,248,.45)}
+/* the R mark follows the theme: site blues with a cream R in light, sky blue with a whitish-ash R in dark */
+.brand-mark{width:36px;height:36px;flex:none;border-radius:10px;background:var(--mark-bg);box-shadow:inset 0 0 0 1px var(--mark-edge),0 4px 14px var(--mark-glow);transition:transform .35s cubic-bezier(.3,1.5,.5,1),box-shadow .35s}
+.brand-mark span{display:grid;place-items:center;width:100%;height:100%;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 52%);font:400 1.22rem/1 var(--f-display);color:var(--mark-ink);text-shadow:0 1.5px 0 var(--mark-shade)}
+.brand:hover .brand-mark{transform:rotate(-6deg) scale(1.06);box-shadow:inset 0 0 0 1px var(--mark-edge),0 6px 20px var(--mark-glow-hi)}
 .brand-name{font:400 1.15rem/1.2 var(--f-display)}
 .nav-pill{position:relative;padding:5px;border:1px solid var(--line);border-radius:100px;background:color-mix(in srgb,var(--bg3) 55%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .nav-ind{position:absolute;left:0;top:5px;height:calc(100% - 10px);width:var(--ind-w,0px);transform:translateX(var(--ind-x,0px));border-radius:100px;background:var(--grad-btn);box-shadow:0 4px 15px var(--a1-glow);opacity:0;transition:transform .55s cubic-bezier(.3,.85,.3,1),width .55s cubic-bezier(.3,.85,.3,1),opacity .3s}
