@@ -391,7 +391,7 @@
   const A = {
     intro: { t: "Hi! I'm a quick guide to Razib's portfolio. Pick a topic below or type a question.", a: [] },
     who: { t: 'Razib Miah is a passionate full-stack engineer in Dhaka who also works in AI/ML and quantum machine learning (QML). He builds fast web products end to end, trains ML models, and is exploring how quantum computing can improve machine learning.', a: [['Read about him', 'about']] },
-    skills: { t: 'Web: TypeScript, React, Next.js, Node.js and Go with PostgreSQL. Backend in Python: FastAPI, Django, Flask, Pydantic, SQLAlchemy and Celery. AI/ML: Python, PyTorch, TensorFlow, scikit-learn and Hugging Face. Quantum: Qiskit and PennyLane for quantum circuits and hybrid quantum-classical models.', a: [['See all skills', 'skills']] },
+    skills: { t: 'Languages: TypeScript, Python, Go, C# and Rust. Web: React, Next.js and Node.js with PostgreSQL. Backend in Python: FastAPI, Django, Flask, Pydantic, SQLAlchemy and Celery. AI/ML: Python, PyTorch, TensorFlow, scikit-learn and Hugging Face. Quantum: Qiskit and PennyLane for quantum circuits and hybrid quantum-classical models.', a: [['See all skills', 'skills']] },
     quantum: { t: 'Razib loves quantum computing. He is exploring quantum machine learning: quantum circuits, variational algorithms and hybrid quantum-classical models. The About section shows a Bell-state circuit, the "hello world" of entanglement.', a: [['Show me', 'about'], ['Quantum skills', 'skills']] },
     projects: { t: 'Highlights: DLAS (a voice-first Digital Legal Aid System for Bangladesh, live on Cloudflare), Ledgerline (offline bookkeeping for 12k shops), Tracewell (open-source tracer, 3.1k stars) and Routebox (live courier dispatch). Five more are under "Show More Projects".', a: [['Browse projects', 'projects']] },
     experience: { t: 'He is learning full-stack development (since 2025), learning AI/ML and building projects (since 2026), and exploring quantum computing and quantum machine learning (since 2026). He is an Executive Member of the Research Wing at the DIU AR/VR & Game Development Lab and was an Executive Member of Daffodil AI Club (Jan – Oct 2026). He is studying for a B.Sc. in Computer Science and Engineering at Daffodil International University (DIU), Jan 2025 – Dec 2028.', a: [['See the timeline', 'experience'], ['See education', 'education']] },
@@ -408,7 +408,7 @@
     ['experience', /experience|career|learning|journey|company|history|worked|years|education|degree|university|study|studied|club|ar ?\/?vr|research wing/],
     ['projects', /project|built|build|portfolio|\bapp|github|open.?source|dlas|legal.?aid|ledgerline|tracewell|routebox|bornomala|dorpon|kotha|shonkha|chhoto/],
     ['quantum', /quantum|qml|qubit|qiskit|pennylane|circuit|entangle|superposition/],
-    ['skills', /skill|stack|tech|language|framework|tool|react|golang|\bgo\b|typescript|python|fastapi|django|flask|backend|node|postgres|aws|docker|\bai\b|\bml\b|machine learning|pytorch|tensorflow|llm/],
+    ['skills', /skill|stack|tech|language|framework|tool|react|golang|\bgo\b|c#|c sharp|csharp|\.net|rust|typescript|python|fastapi|django|flask|backend|node|postgres|aws|docker|\bai\b|\bml\b|machine learning|pytorch|tensorflow|llm/],
     ['where', /where|location|based|time ?zone|dhaka|bangladesh|remote/],
     ['who', /who|about|yourself|razib|intro|tell me/]
   ];
