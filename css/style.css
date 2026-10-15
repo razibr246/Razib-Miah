@@ -879,3 +879,64 @@ html:has(.lb[open]) .cursor{opacity:0}
 /* Small laptops: eight menu items need tighter spacing to fit beside the logo */
 @media (min-width:1025px) and (max-width:1240px){.nav-links a{padding:7px 11px;font-size:.8rem}.nav-in{gap:10px}}
 @media (min-width:1025px) and (max-width:1100px){.brand-name{display:none}}
+
+/* ---------- liquid glass: top bar and hero controls ---------- */
+/* Floating capsules instead of a full-width bar: the page shows through, blurred and brightened,
+   with a light rim on the top-left edge like Apple's Liquid Glass. */
+:root{
+  --lg-tint:rgba(16,28,52,.34); --lg-sheen:rgba(255,255,255,.10);
+  --lg-rim:rgba(255,255,255,.38); --lg-rim-low:rgba(255,255,255,.08);
+  --lg-shadow:0 10px 30px rgba(0,0,0,.42),0 1px 3px rgba(0,0,0,.3);
+  --lg-fade:rgba(6,11,20,.86);
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --lg-tint:rgba(255,248,240,.40); --lg-sheen:rgba(255,255,255,.55);
+  --lg-rim:rgba(255,255,255,.95); --lg-rim-low:rgba(255,255,255,.40);
+  --lg-shadow:0 10px 30px rgba(90,50,15,.13),0 1px 3px rgba(90,50,15,.10);
+  --lg-fade:rgba(255,235,215,.88)}}
+:root[data-theme="light"]{
+  --lg-tint:rgba(255,248,240,.40); --lg-sheen:rgba(255,255,255,.55);
+  --lg-rim:rgba(255,255,255,.95); --lg-rim-low:rgba(255,255,255,.40);
+  --lg-shadow:0 10px 30px rgba(90,50,15,.13),0 1px 3px rgba(90,50,15,.10);
+  --lg-fade:rgba(255,235,215,.88)}
+
+.nav-pill,.nav .sq-btn,.hire,.brand,.rail-btn,.badge,.roles span,.dp-back,.dp-bar .sq-btn,.dp-float{
+  background:linear-gradient(180deg,var(--lg-sheen),transparent 70%),var(--lg-tint);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);
+  border:1px solid var(--lg-rim-low);
+  box-shadow:inset 0 1px 0 var(--lg-rim),inset 0 -1px 1px rgba(255,255,255,.06),var(--lg-shadow)}
+.nav .sq-btn,.hire,.brand,.rail-btn,.badge,.roles span,.dp-back,.dp-bar .sq-btn{position:relative}
+/* the bright rim: a 1px gradient ring, strongest at the top-left */
+.nav-pill::after,.nav .sq-btn::after,.hire::after,.brand::after,.rail-btn::after,.badge::after,.roles span::after,.dp-back::after,.dp-bar .sq-btn::after,.dp-float::after{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(135deg,var(--lg-rim) 0%,transparent 34%,transparent 64%,var(--lg-rim-low) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+
+/* top bar: no solid strip; a soft fade behind the capsules once the page scrolls */
+.nav,.nav.scrolled,.nav.open{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent}
+.nav::before{content:"";position:absolute;inset:0 0 -22px;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--lg-fade) 0%,color-mix(in srgb,var(--lg-fade) 55%,transparent) 55%,transparent);opacity:0;transition:opacity .35s}
+.nav.scrolled::before,.nav.open::before{opacity:1}
+.brand{padding:4px 14px 4px 4px;border-radius:14px}
+.nav .sq-btn{width:44px;height:44px;border-radius:50%}
+.hire{padding:11px 18px;border-radius:100px;border-color:color-mix(in srgb,var(--a1) 40%,var(--lg-rim-low))}
+.nav .sq-btn:hover,.brand:hover,.rail-btn:hover,.dp-bar .sq-btn:hover{background:linear-gradient(180deg,var(--lg-sheen),transparent 70%),color-mix(in srgb,var(--lg-tint) 70%,rgba(255,255,255,.3))}
+.hire:hover,.dp-back:hover{background:linear-gradient(180deg,var(--lg-sheen),transparent 70%),color-mix(in srgb,var(--a1) 14%,var(--lg-tint))}
+.nav-ind,.nav-links a.active{box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(0,0,0,.12),0 4px 15px var(--a1-glow)}
+@media (min-width:1025px) and (max-width:1100px){.brand{padding:4px}}
+/* phone and tablet menu: a thicker sheet of glass so the links stay easy to read */
+@media (max-width:1024px){
+  .nav-pill{background:linear-gradient(180deg,var(--lg-sheen),transparent 60%),color-mix(in srgb,var(--bg3) 74%,transparent);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%)}
+}
+/* hero glass keeps each control's own color hint */
+.badge{background:linear-gradient(180deg,var(--lg-sheen),transparent 70%),color-mix(in srgb,var(--ok) 12%,var(--lg-tint));border-color:color-mix(in srgb,var(--ok) 35%,var(--lg-rim-low))}
+.roles span{background:linear-gradient(180deg,var(--lg-sheen),transparent 70%),color-mix(in srgb,var(--a1) 9%,var(--lg-tint));border-color:color-mix(in srgb,var(--a1) 26%,var(--lg-rim-low));box-shadow:inset 0 1px 0 var(--lg-rim),0 4px 12px rgba(0,0,0,.06)}
+.dp-float{box-shadow:inset 0 1px 0 var(--lg-rim),var(--lg-shadow)}
+/* browsers without backdrop blur, and people who ask for less transparency: solid surfaces */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .nav-pill,.nav .sq-btn,.hire,.brand,.rail-btn,.badge,.roles span,.dp-back,.dp-bar .sq-btn,.dp-float{background-color:var(--bg3)}
+}
+@media (prefers-reduced-transparency:reduce){
+  .nav-pill,.nav .sq-btn,.hire,.brand,.rail-btn,.badge,.roles span,.dp-back,.dp-bar .sq-btn,.dp-float{background:var(--bg3);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .nav::before{background:var(--bg)}
+}
