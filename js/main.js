@@ -66,6 +66,11 @@
       if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
     });
     moveInd();
+    if (motion() && pill.classList.contains('ind-on')) {
+      ind.classList.remove('moving');
+      void ind.offsetWidth;
+      ind.classList.add('moving');
+    }
   }
   function spy() {
     const line = innerHeight * 0.45;
@@ -109,6 +114,31 @@
   }
   typeLoop($('#typed'), ['Turning Ideas into Fast Software', 'Building Smart AI Systems', 'Exploring Quantum Machine Learning', 'Where Code Meets Qubits', 'Welcome to My Portfolio'], { type: 95, erase: 55, pause: 1800, start: 700 });
   typeLoop($('#roleTyped'), ['Full-Stack Engineer', 'AI/ML Engineer', 'Problem Solver'], { type: 100, erase: 55, pause: 2600, start: 2600 });
+
+  /* ---------- section titles rise word by word ---------- */
+  if (motion() && hasIO) {
+    const wrapWord = node => {
+      const m = document.createElement('span');
+      m.className = 'wm';
+      const w = document.createElement('span');
+      w.className = 'w';
+      w.append(node);
+      m.append(w);
+      return m;
+    };
+    $$('.sec-head h2, .foot-cta h2').forEach(h => {
+      const parts = [];
+      Array.from(h.childNodes).forEach(n => {
+        if (n.nodeType !== 3) { parts.push(wrapWord(n)); return; }
+        n.textContent.split(/(\s+)/).forEach(t => {
+          if (t) parts.push(/^\s+$/.test(t) ? document.createTextNode(t) : wrapWord(document.createTextNode(t)));
+        });
+      });
+      h.replaceChildren(...parts);
+      h.classList.add('words');
+      h.querySelectorAll('.w').forEach((w, i) => w.style.setProperty('--wi', i));
+    });
+  }
 
   /* ---------- scroll reveal ---------- */
   if (motion() && hasIO) {
@@ -220,6 +250,15 @@
     btn.setAttribute('aria-expanded', String(open));
     const lbl = btn.querySelector('.lbl');
     if (lbl) lbl.textContent = open ? btn.dataset.less : btn.dataset.more;
+  }));
+
+  /* ---------- a soft light follows the pointer across cards ---------- */
+  if (finePointer) $$('.proj-card, .rs-card, .tl-item, .edu, .sk-card, .c-row, .form').forEach(card => card.addEventListener('pointermove', e => {
+    const host = card.classList.contains('tl-item') ? card.querySelector('.tl-block') : card;
+    if (!host) return;
+    const r = host.getBoundingClientRect();
+    host.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    host.style.setProperty('--my', (e.clientY - r.top) + 'px');
   }));
 
   /* ---------- achievements ---------- */
@@ -560,9 +599,18 @@
     goTo(id, true, e.detail === 0);
   });
   let ticking = false;
+  const progress = document.createElement('div');
+  progress.className = 'progress';
+  progress.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(progress);
+  const orbs = $$('.orb');
   function frame() {
     ticking = false;
     const y = scrollY;
+    const maxY = document.documentElement.scrollHeight - innerHeight;
+    progress.style.transform = 'scaleX(' + (maxY > 0 ? Math.min(1, y / maxY) : 0).toFixed(4) + ')';
+    // background glows drift at different speeds for a little depth
+    if (motion()) orbs.forEach((o, i) => { o.style.translate = '0 ' + (-y * (0.04 + i * 0.03)).toFixed(1) + 'px'; });
     nav.classList.toggle('scrolled', y > 40);
     toTop.classList.toggle('show', y > 400);
     // While travelling, or resting where a link took us, keep the clicked section highlighted

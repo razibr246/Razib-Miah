@@ -8,12 +8,71 @@
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   /* ---------- theme: light by default (set in each page's <head>), the button switches and remembers ---------- */
-  $('#themeBtn').addEventListener('click', () => {
+  // Where supported, the new theme spreads out in a circle from the button.
+  $('#themeBtn').addEventListener('click', e => {
+    const btn = e.currentTarget;
     const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    const meta = $('meta[name="theme-color"]');
-    if (meta) meta.content = next === 'dark' ? '#060B14' : '#FFEBD7';
-    try { localStorage.setItem('rm-theme', next); } catch (e) {}
+    const apply = () => {
+      root.setAttribute('data-theme', next);
+      const meta = $('meta[name="theme-color"]');
+      if (meta) meta.content = next === 'dark' ? '#060B14' : '#FFEBD7';
+      try { localStorage.setItem('rm-theme', next); } catch (err) {}
+    };
+    if (!document.startViewTransition || !motion()) { apply(); return; }
+    const r = btn.getBoundingClientRect();
+    const x = r.left + r.width / 2, y = r.top + r.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    root.classList.add('theme-vt');
+    const vt = document.startViewTransition(apply);
+    vt.ready.then(() => {
+      root.animate(
+        { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)'] },
+        { duration: 700, easing: 'cubic-bezier(.2,.7,.2,1)', pseudoElement: '::view-transition-new(root)' }
+      );
+    }).catch(() => {});
+    vt.finished.finally(() => root.classList.remove('theme-vt'));
+  });
+
+  /* ---------- liquid glass: a light that follows the pointer, and frosting over photos ---------- */
+  const glass = $$('.nav-pill, .nav .sq-btn, .hire, .brand, .rail-btn, .badge, .roles span, .dp-back, .dp-bar .sq-btn, .dp-float');
+  if (finePointer) glass.forEach(g => {
+    g.addEventListener('pointermove', e => {
+      const r = g.getBoundingClientRect();
+      g.style.setProperty('--lx', (e.clientX - r.left) + 'px');
+      g.style.setProperty('--ly', (e.clientY - r.top) + 'px');
+      g.classList.add('lit');
+    });
+    g.addEventListener('pointerleave', () => g.classList.remove('lit'));
+  });
+  // Capsules that float over the page frost up while a photo or code panel is underneath them,
+  // so their labels stay readable (the same idea as Apple's adaptive glass).
+  const floating = glass.filter(g => g.closest('.nav, .dp-bar, .dp-float'));
+  const OWN = '.nav, .dp-bar, .dp-float';
+  const BUSY = 'img, video, .ach-photo, .thumb, .dp-hero, .q-visual, .code';
+  const overBusy = g => {
+    const r = g.getBoundingClientRect();
+    if (!r.width) return false;
+    const y = r.top + r.height / 2;
+    const xs = r.width > 240 ? [0.15, 0.5, 0.85].map(f => r.left + r.width * f) : [r.left + r.width / 2];
+    return xs.some(x => document.elementsFromPoint(x, y).some(el => !el.closest(OWN) && el.closest(BUSY)));
+  };
+  let busyTimer = 0;
+  const checkBusy = () => { busyTimer = 0; floating.forEach(g => g.classList.toggle('is-busy', overBusy(g))); };
+  const queueBusy = () => { if (!busyTimer) busyTimer = setTimeout(checkBusy, 80); };
+  addEventListener('scroll', queueBusy, { passive: true });
+  addEventListener('resize', queueBusy);
+  addEventListener('load', checkBusy);
+  checkBusy();
+
+  /* ---------- the main buttons lean toward the pointer ---------- */
+  if (finePointer && motion()) $$('.btn-grad, .hire, .rail-btn, .bot-fab, .nav .sq-btn, .dp-back, .dp-bar .sq-btn').forEach(el => {
+    const pull = el.classList.contains('btn-grad') ? 0.2 : 0.28;
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+      el.style.translate = (dx * pull).toFixed(1) + 'px ' + (dy * pull).toFixed(1) + 'px';
+    });
+    el.addEventListener('pointerleave', () => { el.style.translate = ''; });
   });
 
   /* ---------- "R" pointer: its tip is the exact click point; it shrinks to a dot over text ---------- */
