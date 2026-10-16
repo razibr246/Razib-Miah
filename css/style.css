@@ -318,8 +318,10 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .tech b{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font:500 .74rem var(--f-mono);color:color-mix(in srgb,var(--h) 62%,var(--text));background:color-mix(in srgb,var(--h) 15%,transparent);border:1px solid color-mix(in srgb,var(--h) 32%,transparent)}
 .tech b.logo{background:#fff;border-color:rgba(14,30,60,.12);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .tech b.logo img{display:block;width:20px;height:20px;object-fit:contain}
-/* skills timeline: folder cards in the site palette that stick under the nav and stack as you scroll. Each card
-   takes one theme hue (--h) and tints the page's card surface with it, so both themes follow along. Each tab sits a
+/* skills timeline: folder cards that stick under the nav and stack as you scroll. Each card wears the colors of
+   its own tools: a main hue (--h) and an accent (--h2), both mixed into the page's card surface and text colors,
+   so the light and dark themes still follow along. Its drawing is two-tone and a faint pattern of its logos sits
+   behind it (main.js). Each tab sits a
    step further right, so the tabs of covered cards stay visible in a row. main.js gives every card the height of
    the tallest (so the stack leaves together), sets the sticky top, and fades covered cards (--dim) */
 .sk-tl{position:relative;margin-top:clamp(44px,6vw,72px);padding:clamp(20px,3vw,30px) clamp(12px,3vw,32px) clamp(24px,4vw,40px);border:1px solid var(--line-hi);border-radius:20px;background:var(--bg2)}
@@ -330,31 +332,40 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-stack{--tab-h:32px;--tab-w:min(150px,(100% - 66px) / 6);--sk-sh:rgba(0,0,0,.42);position:relative;display:flex;flex-direction:column;gap:clamp(28px,9vh,96px)}
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .sk-stack{--sk-sh:rgba(110,60,20,.08)}}
 :root[data-theme="light"] .sk-stack{--sk-sh:rgba(110,60,20,.08)}
-.sk-card{--h:var(--a1);--pc:color-mix(in srgb,var(--h) 13%,var(--bg3));--rim:color-mix(in srgb,var(--h) 32%,var(--bg3));--hk:color-mix(in srgb,var(--h) 68%,var(--text));position:relative;padding-top:var(--tab-h);color:var(--text)}
-.sk-card:nth-child(2){--h:var(--cyan)}
-.sk-card:nth-child(3){--h:var(--a2)}
-.sk-card:nth-child(4){--h:color-mix(in srgb,var(--a1) 45%,#7A4DFF)}
-.sk-card:nth-child(5){--h:var(--a3)}
-.sk-card:nth-child(6){--h:var(--warn)}
+.sk-card{--h:#087EA4;--h2:#61DAFB;--pc:color-mix(in srgb,var(--h) 13%,var(--bg3));--rim:color-mix(in srgb,var(--h) 34%,var(--bg3));--hk:color-mix(in srgb,var(--h) 60%,var(--text));--h2k:color-mix(in srgb,var(--h2) 72%,var(--text));position:relative;padding-top:var(--tab-h);color:var(--text)}
+/* React blue · FastAPI teal with Python yellow · AWS orange with Docker blue · PyTorch red with Hugging Face
+   yellow · Qiskit purple with magenta · Slack pink with Slack blue */
+.sk-card:nth-child(2){--h:#009485;--h2:#FFD43B}
+.sk-card:nth-child(3){--h:#FF9900;--h2:#2496ED}
+.sk-card:nth-child(4){--h:#EE4C2C;--h2:#FFD21E}
+.sk-card:nth-child(5){--h:#6929C4;--h2:#D02670}
+.sk-card:nth-child(6){--h:#E01E5A;--h2:#36C5F0}
 .sk-anim .sk-card{position:sticky;top:var(--sk-top,calc(var(--nav-h) + 14px))}
-.sk-tab{position:absolute;z-index:1;top:0;left:calc(18px + var(--i,0) * (var(--tab-w) + 6px));width:var(--tab-w);height:calc(var(--tab-h) + 1px);display:flex;align-items:center;justify-content:center;gap:8px;padding-inline:8px;border:1px solid var(--rim);border-bottom:0;border-radius:10px 10px 0 0;background:var(--pc);color:var(--hk);font:600 .62rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.sk-tab{position:absolute;z-index:1;top:0;left:calc(18px + var(--i,0) * (var(--tab-w) + 6px));width:var(--tab-w);height:calc(var(--tab-h) + 1px);display:flex;align-items:center;justify-content:center;gap:8px;padding-inline:8px;border:1px solid var(--rim);border-bottom:0;border-radius:10px 10px 0 0;background:linear-gradient(90deg,var(--h),var(--h2)) top/100% 3px no-repeat,var(--pc);color:var(--hk);font:600 .62rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
 .sk-tab b{color:var(--text)}
 .sk-tab span{overflow:hidden;text-overflow:ellipsis}
 /* the tab's feet curve into the card, rim included */
 .sk-tab::before,.sk-tab::after{content:"";position:absolute;bottom:0;width:11px;height:11px}
 .sk-tab::before{right:calc(100% - 1px);background:radial-gradient(circle at 0 0,transparent 9.6px,var(--rim) 10px,var(--rim) 10.6px,var(--pc) 11px)}
 .sk-tab::after{left:calc(100% - 1px);background:radial-gradient(circle at 100% 0,transparent 9.6px,var(--rim) 10px,var(--rim) 10.6px,var(--pc) 11px)}
-.sk-panel{position:relative;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(18px,3vw,36px);min-height:var(--sk-h,0px);padding:clamp(16px,2.2vw,24px);border-radius:22px;background:radial-gradient(70% 90% at 100% 100%,color-mix(in srgb,var(--h) 14%,transparent),transparent 70%),var(--pc);box-shadow:inset 0 0 0 1px var(--rim),0 -6px 16px var(--sk-sh)}
+.sk-panel{position:relative;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(18px,3vw,36px);min-height:var(--sk-h,0px);padding:clamp(16px,2.2vw,24px);border-radius:22px;background:radial-gradient(60% 80% at 100% 100%,color-mix(in srgb,var(--h2) 14%,transparent),transparent 70%),radial-gradient(50% 60% at 0% 0%,color-mix(in srgb,var(--h) 10%,transparent),transparent 70%),var(--pc);box-shadow:inset 0 0 0 1px var(--rim),0 -6px 16px var(--sk-sh)}
 .sk-panel::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--bg);opacity:var(--dim,0);pointer-events:none;will-change:opacity}
-.sk-art{position:relative;display:grid;place-items:center;min-height:240px;overflow:hidden;border-radius:16px;border:1px solid color-mix(in srgb,var(--h) 24%,transparent);background:radial-gradient(70% 60% at 30% 20%,color-mix(in srgb,var(--h) 22%,transparent),transparent 70%),color-mix(in srgb,var(--h) 7%,var(--bg2))}
+.sk-art{position:relative;display:grid;place-items:center;min-height:240px;overflow:hidden;border-radius:16px;border:1px solid color-mix(in srgb,var(--h) 26%,transparent);background:radial-gradient(70% 60% at 25% 18%,color-mix(in srgb,var(--h2) 20%,transparent),transparent 70%),linear-gradient(150deg,color-mix(in srgb,var(--h) 16%,var(--bg2)),color-mix(in srgb,var(--h) 5%,var(--bg2)))}
 .sk-art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--h) 34%,transparent) 1px,transparent 1.6px);background-size:16px 16px;-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%)}
+/* the card's own logos, tiled at a slant, drifting slightly as the card arrives; clearer at the edges than behind the drawing */
+.sk-art.has-pat::before{inset:-30%;background:var(--pat) 0 0/92px 92px;rotate:-14deg;opacity:var(--pat-o,.2);transform:translate3d(0,calc((1 - var(--in,1)) * -40px),0);-webkit-mask-image:radial-gradient(closest-side,rgba(0,0,0,.2) 30%,#000 80%);mask-image:radial-gradient(closest-side,rgba(0,0,0,.2) 30%,#000 80%);will-change:transform}
+:root[data-theme="dark"] .sk-art.has-pat::before{--pat-o:.15}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sk-art.has-pat::before{--pat-o:.15}}
 /* the drawing settles into place as its card arrives (--in runs 0 to 1) */
 .sk-glyph{position:relative;width:min(78%,260px);height:auto;fill:none;stroke:var(--hk);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transform:translate3d(0,calc((1 - var(--in,1)) * 34px),0) scale(calc(.88 + var(--in,1) * .12));opacity:calc(.35 + var(--in,1) * .65);will-change:transform,opacity}
 .sk-glyph .f{fill:color-mix(in srgb,var(--h) 34%,transparent)}
 .sk-glyph .thin{stroke-width:1.5;opacity:.55}
 .sk-glyph .dash{stroke-dasharray:5 7}
 .sk-glyph .node{fill:var(--pc)}
-.sk-glyph .node.f{fill:var(--hk)}
+.sk-glyph .node.f{fill:color-mix(in srgb,var(--h) 45%,var(--pc))}
+.sk-glyph .a{fill:var(--h2);stroke-width:2}
+.sk-glyph .as{stroke:var(--h2k)}
+.sk-glyph .node.a{fill:var(--h2)}
 .sk-glyph text{fill:var(--hk);stroke:none;font:500 13px var(--f-mono)}
 .sk-logos{position:absolute;left:12px;bottom:12px;display:flex;gap:6px}
 .sk-logos b{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#fff;border:1px solid rgba(14,30,60,.1);box-shadow:0 4px 12px rgba(4,10,24,.16)}
@@ -365,7 +376,7 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-label{align-self:flex-start;padding:4px 9px;border-radius:6px;border:1px solid color-mix(in srgb,var(--h) 26%,transparent);background:color-mix(in srgb,var(--h) 12%,transparent);color:var(--hk);font:600 .6rem var(--f-mono);letter-spacing:.2em;text-transform:uppercase}
 .sk-list{display:flex;flex-direction:column;gap:6px;margin:10px 0 18px}
 .sk-list li{position:relative;padding-left:18px;font-weight:500;font-size:.92rem;line-height:1.45;color:var(--sub)}
-.sk-list li::before{content:"";position:absolute;left:2px;top:.5em;width:6px;height:6px;border-radius:1.5px;background:var(--h);rotate:45deg}
+.sk-list li::before{content:"";position:absolute;left:2px;top:.5em;width:6px;height:6px;border-radius:1.5px;background:linear-gradient(135deg,var(--h),var(--h2));rotate:45deg}
 .sk-tools{margin-top:auto;display:flex;flex-direction:column}
 .tool-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .tool-chips li{padding:5px 11px;border-radius:100px;border:1px solid color-mix(in srgb,var(--h) 26%,var(--line-hi));background:color-mix(in srgb,var(--h) 6%,var(--bg3));font-size:.78rem;font-weight:600;transition:border-color .3s,background-color .3s}

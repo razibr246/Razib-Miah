@@ -242,6 +242,32 @@
   sizeStack();
   if (mqMotion.addEventListener) mqMotion.addEventListener('change', sizeStack);
 
+  // Behind each drawing, a faint tile of the card's own logos. The logo files are folded into one small SVG
+  // so the browser paints a single background. Opened from disk the files can't be read, so the dots stay.
+  const logoText = {};
+  const readLogo = src => logoText[src] || (logoText[src] = fetch(src).then(r => (r.ok ? r.text() : '')).catch(() => ''));
+  const SLOTS = [[8, 8], [54, 22], [20, 54], [66, 68]];
+  skCards.forEach(async card => {
+    const art = card.querySelector('.sk-art');
+    const srcs = $$('.sk-logos img', art).map(i => i.getAttribute('src'));
+    if (!srcs.length) return;
+    const texts = await Promise.all(srcs.map(readLogo));
+    const parser = new DOMParser(), xml = new XMLSerializer();
+    const marks = SLOTS.map(([x, y], k) => {
+      const doc = parser.parseFromString(texts[k % texts.length], 'image/svg+xml');
+      const svg = doc.documentElement;
+      if (svg.nodeName !== 'svg') return '';
+      svg.querySelectorAll('script, foreignObject').forEach(n => n.remove());
+      svg.setAttribute('x', x); svg.setAttribute('y', y);
+      svg.setAttribute('width', 20); svg.setAttribute('height', 20);
+      return xml.serializeToString(svg);
+    }).join('');
+    if (!marks) return;
+    const tile = '<svg xmlns="http://www.w3.org/2000/svg" width="92" height="92" viewBox="0 0 92 92">' + marks + '</svg>';
+    art.style.setProperty('--pat', 'url("data:image/svg+xml,' + encodeURIComponent(tile) + '")');
+    art.classList.add('has-pat');
+  });
+
   /* ---------- 3D tilt ---------- */
   function tilt(el, max, scale) {
     el.addEventListener('pointermove', e => {
