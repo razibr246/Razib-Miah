@@ -58,7 +58,8 @@
   };
   let busyTimer = 0;
   const checkBusy = () => { busyTimer = 0; floating.forEach(g => g.classList.toggle('is-busy', overBusy(g))); };
-  const queueBusy = () => { if (!busyTimer) busyTimer = setTimeout(checkBusy, 80); };
+  // checked inside an animation frame, after the page has moved, so it never forces an extra layout mid-scroll
+  const queueBusy = () => { if (!busyTimer) busyTimer = setTimeout(() => requestAnimationFrame(checkBusy), 100); };
   addEventListener('scroll', queueBusy, { passive: true });
   addEventListener('resize', queueBusy);
   addEventListener('load', checkBusy);

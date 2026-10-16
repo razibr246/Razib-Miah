@@ -583,14 +583,14 @@
   /* ---------- smooth wheel scrolling ---------- */
   // Mouse wheels and trackpads glide to rest instead of stepping. Keyboard, scrollbar and touch stay native,
   // and so do zoom gestures, sideways scrolling and any panel that scrolls on its own.
-  const glide = { on: false, y: 0, to: 0, set: 0, t: 0, raf: 0 };
+  const glide = { on: false, y: 0, to: 0, set: 0, t: 0, raf: 0, tau: 110 };
   function glideStop() { cancelAnimationFrame(glide.raf); glide.on = false; }
   function glideStep(now) {
     // someone else moved the page (scrollbar, keys, find-in-page): let them have it
     if (Math.abs(scrollY - glide.set) > 2) { glide.on = false; return; }
     const dt = Math.min(64, now - glide.t);
     glide.t = now;
-    glide.y += (glide.to - glide.y) * (1 - Math.exp(-dt / 110));
+    glide.y += (glide.to - glide.y) * (1 - Math.exp(-dt / glide.tau));
     if (Math.abs(glide.to - glide.y) < 0.5) glide.y = glide.to;
     jumpTo(glide.y);
     glide.set = scrollY;
@@ -610,6 +610,7 @@
     if (document.querySelector('dialog[open]') || scrollsInside(e.target, e.deltaY)) return;
     e.preventDefault();
     const d = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1);
+    glide.tau = Math.abs(d) >= 50 ? 120 : 70;
     if (!glide.on) {
       glide.y = glide.to = glide.set = scrollY;
       glide.t = performance.now();
@@ -706,7 +707,7 @@
     const hit = fabHit();
     progress.style.transform = 'scaleX(' + (maxY > 0 ? Math.min(1, y / maxY) : 0).toFixed(4) + ')';
     // background glows drift at different speeds for a little depth
-    if (motion()) orbs.forEach((o, i) => { o.style.transform = 'translate3d(0,' + (-y * (0.04 + i * 0.03)).toFixed(1) + 'px,0)'; });
+    if (finePointer && motion()) orbs.forEach((o, i) => { o.style.transform = 'translate3d(0,' + (-y * (0.04 + i * 0.03)).toFixed(1) + 'px,0)'; });
     nav.classList.toggle('scrolled', y > 40);
     toTop.classList.toggle('show', y > 400);
     drawTimeline(tlState);
@@ -718,11 +719,15 @@
     if (!ticking) { ticking = true; requestAnimationFrame(frame); }
   }, { passive: true });
   let lastW = innerWidth;
+  let lastH = innerHeight;
   addEventListener('resize', debounce(() => {
     moveInd();
-    if (innerWidth !== lastW) { lastW = innerWidth; applyLoops(); }
+    const wChanged = innerWidth !== lastW;
+    if (wChanged) { lastW = innerWidth; applyLoops(); }
     updTimeline();
-    sizeStack();
+    // On phones the address bar sliding in and out only changes the height; re-pinning the cards for that makes them jump
+    if (wChanged || (finePointer && innerHeight !== lastH)) sizeStack();
+    lastH = innerHeight;
     fabClear();
   }, 180));
   frame();
