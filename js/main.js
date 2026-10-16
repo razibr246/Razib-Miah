@@ -199,32 +199,39 @@
     if (open) setLoop(row2, 60);
   });
 
-  /* ---------- skills timeline ---------- */
-  const skRows = $$('.sk-row');
-  if (motion() && hasIO) {
-    root.classList.add('sk-anim');
-    const skIO = new IntersectionObserver(entries => {
-      entries.forEach(en => {
-        if (en.isIntersecting) { en.target.classList.add('is-on'); skIO.unobserve(en.target); }
-      });
-    }, { threshold: 0.35 });
-    skRows.forEach(r => skIO.observe(r));
-  } else {
-    skRows.forEach(r => r.classList.add('is-on'));
+  /* ---------- skills timeline: stacked cards ---------- */
+  // Each card sticks under the nav and the next one slides over it. Every card gets the height of the tallest,
+  // so the stack leaves the screen together; a card taller than the screen sticks lower, with its bottom in view.
+  const skStack = $('#skStack');
+  const skCards = $$('.sk-card', skStack);
+  let skOn = false, skTop = 0, skH = 1;
+  function sizeStack() {
+    skOn = motion() && skCards.length > 1;
+    root.classList.toggle('sk-anim', skOn);
+    skStack.style.removeProperty('--sk-h');
+    skStack.style.removeProperty('--sk-top');
+    skCards.forEach(c => { c.style.removeProperty('--dim'); c.style.removeProperty('--in'); });
+    if (!skOn) return;
+    skH = Math.max(...skCards.map(c => c.querySelector('.sk-panel').offsetHeight));
+    const tabH = skCards[0].querySelector('.sk-tab').offsetHeight;
+    skTop = Math.min($('.nav').offsetHeight + 14, innerHeight - skH - tabH - 14);
+    skStack.style.setProperty('--sk-h', skH + 'px');
+    skStack.style.setProperty('--sk-top', skTop + 'px');
+    updStack();
   }
-  skRows.forEach(row => {
-    const stage = row.querySelector('.sk-stage');
-    stage.addEventListener('click', () => {
-      const focusOn = !row.classList.contains('is-focus');
-      skRows.forEach(r => {
-        r.classList.remove('is-focus');
-        r.classList.toggle('is-dim', focusOn && r !== row);
-        r.querySelector('.sk-stage').setAttribute('aria-pressed', String(focusOn && r === row));
-      });
-      row.classList.toggle('is-focus', focusOn);
-      row.classList.add('is-on');
-    });
-  });
+  function updStack() {
+    if (!skOn) return;
+    // how far each card has slid over the one before it, 0 to 1
+    const arrive = skCards.map(c => Math.min(1, Math.max(0, 1 - (c.getBoundingClientRect().top - skTop) / skH)));
+    let covered = 0;
+    for (let i = skCards.length - 1; i >= 0; i--) {
+      skCards[i].style.setProperty('--in', arrive[i].toFixed(3));
+      skCards[i].style.setProperty('--dim', Math.min(0.5, covered * 0.42).toFixed(3));
+      if (i > 0) covered += arrive[i];
+    }
+  }
+  sizeStack();
+  if (mqMotion.addEventListener) mqMotion.addEventListener('change', sizeStack);
 
   /* ---------- 3D tilt ---------- */
   function tilt(el, max, scale) {
@@ -238,7 +245,6 @@
     el.addEventListener('pointerleave', () => { el.style.transform = ''; });
   }
   if (finePointer && motion()) {
-    $$('.sk-card').forEach(c => tilt(c, 8, 1.03));
     $$('.tl-block').forEach(b => tilt(b, 5, 1.02));
   }
 
@@ -253,7 +259,7 @@
   }));
 
   /* ---------- a soft light follows the pointer across cards ---------- */
-  if (finePointer) $$('.proj-card, .rs-card, .tl-item, .edu, .sk-card, .c-row, .form').forEach(card => card.addEventListener('pointermove', e => {
+  if (finePointer) $$('.proj-card, .rs-card, .tl-item, .edu, .c-row, .form').forEach(card => card.addEventListener('pointermove', e => {
     const host = card.classList.contains('tl-item') ? card.querySelector('.tl-block') : card;
     if (!host) return;
     const r = host.getBoundingClientRect();
@@ -616,6 +622,7 @@
     // While travelling, or resting where a link took us, keep the clicked section highlighted
     if (!travel && !(pinY !== null && Math.abs(scrollY - pinY) < 3)) { pinY = null; spy(); }
     updTimeline();
+    updStack();
     fabClear();
   }
   addEventListener('scroll', () => {
@@ -626,11 +633,12 @@
     moveInd();
     if (innerWidth !== lastW) { lastW = innerWidth; applyLoops(); }
     updTimeline();
+    sizeStack();
     fabClear();
   }, 180));
   frame();
   moveInd();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { moveInd(); applyLoops(); fabClear(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { moveInd(); applyLoops(); sizeStack(); fabClear(); });
 
   /* ---------- arriving with a #section link (e.g. "Back to Achievements") ---------- */
   // The page's smooth scrolling gets cut off while fonts and images load, so jump

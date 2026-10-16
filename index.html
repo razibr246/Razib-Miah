@@ -233,67 +233,120 @@
         </div>
       </div>
       <div class="wrap">
-        <div class="sk-tl reveal" id="skTl">
-          <div class="sk-tl-head"><h3 class="sk-tl-title">Skills <em>timeline</em></h3><span class="sk-tl-tag">From concept to completion</span></div>
-          <ol class="sk-tl-body">
-            <li class="sk-row">
-              <button class="sk-stage" type="button" aria-pressed="false" aria-controls="skc-1">Frontend</button>
-              <span class="sk-node" aria-hidden="true"></span>
-              <div class="sk-card" id="skc-1">
-                <p class="sk-label">Skills</p>
-                <ul class="sk-list"><li>Design systems</li><li>Core Web Vitals and performance</li><li>Accessibility</li><li>State and data fetching</li></ul>
-                <p class="sk-label">Tools</p>
-                <ul class="tool-chips"><li>React</li><li>Next.js</li><li>TypeScript</li><li>Tailwind CSS</li><li>Storybook</li><li>Playwright</li></ul>
+        <div class="sk-tl" id="skTl">
+          <div class="sk-tl-head reveal"><h3 class="sk-tl-title">Skills <em>timeline</em></h3><span class="sk-tl-tag">From concept to completion</span></div>
+          <ol class="sk-stack" id="skStack">
+            <li class="sk-card" style="--i:0">
+              <span class="sk-tab" aria-hidden="true"><b>01</b><span>Frontend</span></span>
+              <div class="sk-panel">
+                <div class="sk-art" aria-hidden="true">
+                  <svg class="sk-glyph" viewBox="0 0 200 160"><rect x="20" y="22" width="160" height="116" rx="12"/><path d="M20 46h160"/><circle class="f" cx="36" cy="34" r="3.5"/><circle class="f" cx="48" cy="34" r="3.5"/><circle class="f" cx="60" cy="34" r="3.5"/><rect class="f" x="34" y="60" width="62" height="40" rx="6"/><path d="M110 64h52M110 78h40M110 92h46"/><rect x="34" y="112" width="104" height="12" rx="6"/><path class="f" d="M146 98l14 34 5-13 13-5z"/></svg>
+                  <span class="sk-logos"><b><img src="assets/tech/react.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/nextjs.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/typescript.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b></span>
+                </div>
+                <div class="sk-body">
+                  <p class="sk-step">Stage 01 / 06</p>
+                  <h4 class="sk-name">Frontend</h4>
+                  <p class="sk-label">Skills</p>
+                  <ul class="sk-list"><li>Design systems</li><li>Core Web Vitals and performance</li><li>Accessibility</li><li>State and data fetching</li></ul>
+                  <div class="sk-tools">
+                    <p class="sk-label">Tools</p>
+                    <ul class="tool-chips"><li>React</li><li>Next.js</li><li>TypeScript</li><li>Tailwind CSS</li><li>Storybook</li><li>Playwright</li></ul>
+                  </div>
+                </div>
               </div>
             </li>
-            <li class="sk-row">
-              <button class="sk-stage" type="button" aria-pressed="false" aria-controls="skc-2">Backend</button>
-              <span class="sk-node" aria-hidden="true"></span>
-              <div class="sk-card" id="skc-2">
-                <p class="sk-label">Skills</p>
-                <ul class="sk-list"><li>REST and GraphQL API design</li><li>Async Python APIs with FastAPI</li><li>Data validation with Pydantic</li><li>Background jobs and task queues</li><li>Event-driven services</li><li>Payments and auth</li><li>Observability</li></ul>
-                <p class="sk-label">Tools</p>
-                <ul class="tool-chips"><li>Python</li><li>FastAPI</li><li>Django</li><li>Flask</li><li>Pydantic</li><li>SQLAlchemy</li><li>Celery</li><li>Uvicorn</li><li>Go</li><li>C#</li><li>Rust</li><li>Node.js</li><li>Fastify</li><li>gRPC</li><li>Redis Streams</li><li>OpenTelemetry</li></ul>
+            <li class="sk-card" style="--i:1">
+              <span class="sk-tab" aria-hidden="true"><b>02</b><span>Backend</span></span>
+              <div class="sk-panel">
+                <div class="sk-art" aria-hidden="true">
+                  <svg class="sk-glyph" viewBox="0 0 200 160"><rect x="44" y="22" width="132" height="32" rx="8"/><rect x="44" y="64" width="132" height="32" rx="8"/><rect x="44" y="106" width="132" height="32" rx="8"/><circle class="f" cx="62" cy="38" r="4"/><circle class="f" cx="62" cy="80" r="4"/><circle class="f" cx="62" cy="122" r="4"/><path d="M84 38h56M84 80h40M84 122h64M44 38H24v84h20M24 80h20"/><path class="dash" d="M160 80h-12"/></svg>
+                  <span class="sk-logos"><b><img src="assets/tech/python.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/fastapi.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/go.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/rust.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b></span>
+                </div>
+                <div class="sk-body">
+                  <p class="sk-step">Stage 02 / 06</p>
+                  <h4 class="sk-name">Backend</h4>
+                  <p class="sk-label">Skills</p>
+                  <ul class="sk-list"><li>REST and GraphQL API design</li><li>Async Python APIs with FastAPI</li><li>Data validation with Pydantic</li><li>Background jobs and task queues</li><li>Event-driven services</li><li>Payments and auth</li><li>Observability</li></ul>
+                  <div class="sk-tools">
+                    <p class="sk-label">Tools</p>
+                    <ul class="tool-chips"><li>Python</li><li>FastAPI</li><li>Django</li><li>Flask</li><li>Pydantic</li><li>SQLAlchemy</li><li>Celery</li><li>Uvicorn</li><li>Go</li><li>C#</li><li>Rust</li><li>Node.js</li><li>Fastify</li><li>gRPC</li><li>Redis Streams</li><li>OpenTelemetry</li></ul>
+                  </div>
+                </div>
               </div>
             </li>
-            <li class="sk-row">
-              <button class="sk-stage" type="button" aria-pressed="false" aria-controls="skc-3">Data &amp; Infra</button>
-              <span class="sk-node" aria-hidden="true"></span>
-              <div class="sk-card" id="skc-3">
-                <p class="sk-label">Skills</p>
-                <ul class="sk-list"><li>Schema design and query tuning</li><li>Caching and read replicas</li><li>CI/CD with preview deploys</li><li>Infrastructure as code</li></ul>
-                <p class="sk-label">Tools</p>
-                <ul class="tool-chips"><li>PostgreSQL</li><li>PostGIS</li><li>Docker</li><li>Kubernetes</li><li>AWS</li><li>Terraform</li></ul>
+            <li class="sk-card" style="--i:2">
+              <span class="sk-tab" aria-hidden="true"><b>03</b><span>Data &amp; Infra</span></span>
+              <div class="sk-panel">
+                <div class="sk-art" aria-hidden="true">
+                  <svg class="sk-glyph" viewBox="0 0 200 160"><ellipse cx="74" cy="42" rx="42" ry="14"/><path d="M32 42v74c0 7.7 18.8 14 42 14s42-6.3 42-14V42"/><path d="M32 67c0 7.7 18.8 14 42 14s42-6.3 42-14M32 92c0 7.7 18.8 14 42 14s42-6.3 42-14"/><path class="f" d="M132 70h40a14 14 0 0 0 0-28a20 20 0 0 0-38-4a12 12 0 0 0-2 32z"/><path class="dash" d="M152 70v30h-36"/></svg>
+                  <span class="sk-logos"><b><img src="assets/tech/postgresql.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/docker.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/aws.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b></span>
+                </div>
+                <div class="sk-body">
+                  <p class="sk-step">Stage 03 / 06</p>
+                  <h4 class="sk-name">Data &amp; Infra</h4>
+                  <p class="sk-label">Skills</p>
+                  <ul class="sk-list"><li>Schema design and query tuning</li><li>Caching and read replicas</li><li>CI/CD with preview deploys</li><li>Infrastructure as code</li></ul>
+                  <div class="sk-tools">
+                    <p class="sk-label">Tools</p>
+                    <ul class="tool-chips"><li>PostgreSQL</li><li>PostGIS</li><li>Docker</li><li>Kubernetes</li><li>AWS</li><li>Terraform</li></ul>
+                  </div>
+                </div>
               </div>
             </li>
-            <li class="sk-row">
-              <button class="sk-stage" type="button" aria-pressed="false" aria-controls="skc-4">AI / ML</button>
-              <span class="sk-node" aria-hidden="true"></span>
-              <div class="sk-card" id="skc-4">
-                <p class="sk-label">Skills</p>
-                <ul class="sk-list"><li>Machine learning models</li><li>Deep learning</li><li>NLP and computer vision</li><li>LLM apps and RAG</li></ul>
-                <p class="sk-label">Tools</p>
-                <ul class="tool-chips"><li>Python</li><li>PyTorch</li><li>TensorFlow</li><li>scikit-learn</li><li>Hugging Face</li><li>pgvector</li></ul>
+            <li class="sk-card" style="--i:3">
+              <span class="sk-tab" aria-hidden="true"><b>04</b><span>AI / ML</span></span>
+              <div class="sk-panel">
+                <div class="sk-art" aria-hidden="true">
+                  <svg class="sk-glyph" viewBox="0 0 200 160"><path class="thin" d="M40 40L100 28M40 40L100 62M40 40L100 98M40 40L100 132M40 80L100 28M40 80L100 62M40 80L100 98M40 80L100 132M40 120L100 28M40 120L100 62M40 120L100 98M40 120L100 132M100 28L160 60M100 28L160 100M100 62L160 60M100 62L160 100M100 98L160 60M100 98L160 100M100 132L160 60M100 132L160 100"/><circle class="node" cx="40" cy="40" r="9"/><circle class="node" cx="40" cy="80" r="9"/><circle class="node" cx="40" cy="120" r="9"/><circle class="node" cx="100" cy="28" r="9"/><circle class="node f" cx="100" cy="62" r="9"/><circle class="node" cx="100" cy="98" r="9"/><circle class="node" cx="100" cy="132" r="9"/><circle class="node f" cx="160" cy="60" r="11"/><circle class="node" cx="160" cy="100" r="11"/></svg>
+                  <span class="sk-logos"><b><img src="assets/tech/pytorch.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/tensorflow.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/huggingface.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b></span>
+                </div>
+                <div class="sk-body">
+                  <p class="sk-step">Stage 04 / 06</p>
+                  <h4 class="sk-name">AI / ML</h4>
+                  <p class="sk-label">Skills</p>
+                  <ul class="sk-list"><li>Machine learning models</li><li>Deep learning</li><li>NLP and computer vision</li><li>LLM apps and RAG</li></ul>
+                  <div class="sk-tools">
+                    <p class="sk-label">Tools</p>
+                    <ul class="tool-chips"><li>Python</li><li>PyTorch</li><li>TensorFlow</li><li>scikit-learn</li><li>Hugging Face</li><li>pgvector</li></ul>
+                  </div>
+                </div>
               </div>
             </li>
-            <li class="sk-row">
-              <button class="sk-stage" type="button" aria-pressed="false" aria-controls="skc-5">Quantum ML</button>
-              <span class="sk-node" aria-hidden="true"></span>
-              <div class="sk-card" id="skc-5">
-                <p class="sk-label">Skills</p>
-                <ul class="sk-list"><li>Quantum circuits and gates</li><li>Variational quantum algorithms</li><li>Quantum kernels and neural networks</li><li>Hybrid quantum-classical models</li></ul>
-                <p class="sk-label">Tools</p>
-                <ul class="tool-chips"><li>Qiskit</li><li>PennyLane</li><li>Cirq</li><li>NumPy</li><li>PyTorch</li></ul>
+            <li class="sk-card" style="--i:4">
+              <span class="sk-tab" aria-hidden="true"><b>05</b><span>Quantum ML</span></span>
+              <div class="sk-panel">
+                <div class="sk-art" aria-hidden="true">
+                  <svg class="sk-glyph" viewBox="0 0 200 160"><circle cx="100" cy="80" r="56"/><ellipse class="dash" cx="100" cy="80" rx="56" ry="17"/><path class="thin" d="M100 20v120"/><path d="M100 80l30-36"/><circle class="f" cx="130" cy="44" r="7"/><circle class="f" cx="100" cy="80" r="4"/><text x="108" y="16">|0⟩</text><text x="108" y="156">|1⟩</text></svg>
+                  <span class="sk-logos"><b><img src="assets/tech/qiskit.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/numpy.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/pytorch.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b></span>
+                </div>
+                <div class="sk-body">
+                  <p class="sk-step">Stage 05 / 06</p>
+                  <h4 class="sk-name">Quantum ML</h4>
+                  <p class="sk-label">Skills</p>
+                  <ul class="sk-list"><li>Quantum circuits and gates</li><li>Variational quantum algorithms</li><li>Quantum kernels and neural networks</li><li>Hybrid quantum-classical models</li></ul>
+                  <div class="sk-tools">
+                    <p class="sk-label">Tools</p>
+                    <ul class="tool-chips"><li>Qiskit</li><li>PennyLane</li><li>Cirq</li><li>NumPy</li><li>PyTorch</li></ul>
+                  </div>
+                </div>
               </div>
             </li>
-            <li class="sk-row">
-              <button class="sk-stage" type="button" aria-pressed="false" aria-controls="skc-6">Leadership</button>
-              <span class="sk-node" aria-hidden="true"></span>
-              <div class="sk-card" id="skc-6">
-                <p class="sk-label">Skills</p>
-                <ul class="sk-list"><li>Mentoring and code review</li><li>RFCs and incident reports</li><li>Honest estimates</li><li>Hackathon team lead</li></ul>
-                <p class="sk-label">Tools</p>
-                <ul class="tool-chips"><li>GitHub Projects</li><li>Linear</li><li>Notion</li><li>Slack</li><li>Figma</li></ul>
+            <li class="sk-card" style="--i:5">
+              <span class="sk-tab" aria-hidden="true"><b>06</b><span>Leadership</span></span>
+              <div class="sk-panel">
+                <div class="sk-art" aria-hidden="true">
+                  <svg class="sk-glyph" viewBox="0 0 200 160"><circle cx="100" cy="66" r="18"/><path d="M66 134a34 34 0 0 1 68 0"/><circle cx="52" cy="82" r="13"/><path d="M26 134a26 26 0 0 1 42-20"/><circle cx="148" cy="82" r="13"/><path d="M174 134a26 26 0 0 0-42-20"/><path class="f" d="M100 14l4 9 9 4-9 4-4 9-4-9-9-4 9-4z"/></svg>
+                </div>
+                <div class="sk-body">
+                  <p class="sk-step">Stage 06 / 06</p>
+                  <h4 class="sk-name">Leadership</h4>
+                  <p class="sk-label">Skills</p>
+                  <ul class="sk-list"><li>Mentoring and code review</li><li>RFCs and incident reports</li><li>Honest estimates</li><li>Hackathon team lead</li></ul>
+                  <div class="sk-tools">
+                    <p class="sk-label">Tools</p>
+                    <ul class="tool-chips"><li>GitHub Projects</li><li>Linear</li><li>Notion</li><li>Slack</li><li>Figma</li></ul>
+                  </div>
+                </div>
               </div>
             </li>
           </ol>
