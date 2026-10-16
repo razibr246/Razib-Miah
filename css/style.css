@@ -189,8 +189,11 @@ button{font:inherit;color:inherit}
 .hero-figure.is-portrait{align-items:center}
 .is-portrait .sun-wrap{top:50%;bottom:auto;width:min(84%,29.5rem,calc(var(--fig-h) - 56px));translate:-50% -50%;animation:none}
 .is-portrait .sun-glow{inset:-40%;-webkit-mask-image:none;mask-image:none}
-@property --ring-a{syntax:"<angle>";inherits:false;initial-value:0deg}
-.portrait-ring{position:relative;z-index:1;width:min(84%,29.5rem,calc(var(--fig-h) - 56px));aspect-ratio:1;max-width:100%;border-radius:50%;padding:12px;background:radial-gradient(closest-side,var(--bg) calc(100% - 6.5px),transparent calc(100% - 5.5px)),conic-gradient(from var(--ring-a),#9AD6FF,#4F8CFF 30%,#2E55E8 50%,#4F8CFF 70%,#9AD6FF);box-shadow:0 20px 50px rgba(0,0,0,.35),0 0 70px var(--a1-glow-hi);animation:ringSpin 14s linear infinite,portraitIn 1.2s cubic-bezier(.2,.7,.2,1) both}
+.portrait-ring{position:relative;z-index:1;width:min(84%,29.5rem,calc(var(--fig-h) - 56px));aspect-ratio:1;max-width:100%;border-radius:50%;padding:12px;box-shadow:0 20px 50px rgba(0,0,0,.35),0 0 70px var(--a1-glow-hi);animation:portraitIn 1.2s cubic-bezier(.2,.7,.2,1) both}
+/* the blue ring turns as a GPU layer; a disc in the page color covers its middle */
+.portrait-ring::before,.portrait-ring::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:50%;pointer-events:none}
+.portrait-ring::before{background:conic-gradient(#9AD6FF,#4F8CFF 30%,#2E55E8 50%,#4F8CFF 70%,#9AD6FF);animation:spin 14s linear infinite;will-change:rotate}
+.portrait-ring::after{background:radial-gradient(closest-side,var(--bg) calc(100% - 6.5px),transparent calc(100% - 5.5px))}
 .portrait{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;background:var(--bg2);filter:brightness(1.05) contrast(1.04);transition:filter .5s ease}
 .portrait-light{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px);opacity:var(--portrait-light);transition:opacity .6s ease;object-position:50% 38%;filter:contrast(1.04) saturate(1.06)}
 .follow-rail{grid-column:3;grid-row:1;justify-self:end;align-self:center;display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;z-index:3}
@@ -228,8 +231,8 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .glow-line::after{content:"";position:absolute;left:50%;top:50%;width:min(760px,96vw);height:180px;translate:-50% -50%;border-radius:50%;background:radial-gradient(ellipse at center,var(--a1-glow),transparent 66%);filter:blur(16px)}
 
 /* ---------- scroll reveal (switched on by script when motion is allowed) ---------- */
-.reveal-on .reveal{opacity:0;translate:0 34px;transition:opacity .85s cubic-bezier(.2,.7,.2,1) var(--d,0ms),translate .85s cubic-bezier(.2,.7,.2,1) var(--d,0ms)}
-.reveal-on .reveal.out-up{translate:0 -34px}
+.reveal-on .reveal{opacity:0;translate:0 30px;transition:opacity .9s cubic-bezier(.22,1,.36,1) var(--d,0ms),translate 1.1s cubic-bezier(.16,1,.3,1) var(--d,0ms)}
+.reveal-on .reveal.out-up{translate:0 -30px}
 .reveal-on .reveal.in{opacity:1;translate:0 0}
 @media (min-width:1100px){
   .reveal-on .reveal.from-left:not(.in):not(.out-up){translate:-56px 0}
@@ -315,52 +318,58 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .tech b{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font:500 .74rem var(--f-mono);color:color-mix(in srgb,var(--h) 62%,var(--text));background:color-mix(in srgb,var(--h) 15%,transparent);border:1px solid color-mix(in srgb,var(--h) 32%,transparent)}
 .tech b.logo{background:#fff;border-color:rgba(14,30,60,.12);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .tech b.logo img{display:block;width:20px;height:20px;object-fit:contain}
-/* skills timeline: bright folder cards that stick under the nav and stack as you scroll. Each tab sits a step
-   further right, so the tabs of covered cards stay visible in a row. main.js gives every card the height of the
-   tallest (so the stack leaves together), sets the sticky top, and fades covered cards (--dim) */
+/* skills timeline: folder cards in the site palette that stick under the nav and stack as you scroll. Each card
+   takes one theme hue (--h) and tints the page's card surface with it, so both themes follow along. Each tab sits a
+   step further right, so the tabs of covered cards stay visible in a row. main.js gives every card the height of
+   the tallest (so the stack leaves together), sets the sticky top, and fades covered cards (--dim) */
 .sk-tl{position:relative;margin-top:clamp(44px,6vw,72px);padding:clamp(20px,3vw,30px) clamp(12px,3vw,32px) clamp(24px,4vw,40px);border:1px solid var(--line-hi);border-radius:20px;background:var(--bg2)}
-.sk-tl::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background-image:linear-gradient(color-mix(in srgb,var(--a2) 9%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--a2) 9%,transparent) 1px,transparent 1px);background-size:30px 30px;animation:moveGrid 5s linear infinite;-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 80%);mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 80%)}
+.sk-tl::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background-image:linear-gradient(color-mix(in srgb,var(--a1) 8%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--a1) 8%,transparent) 1px,transparent 1px);background-size:30px 30px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 40%);mask-image:linear-gradient(180deg,#000,transparent 40%)}
 .sk-tl-head{position:relative;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 20px;padding-bottom:16px;margin-bottom:clamp(28px,4vw,44px);border-bottom:1px solid var(--line)}
 .sk-tl-title{font:400 1.45rem/1.2 var(--f-display)}
 .sk-tl-tag{font:500 .66rem var(--f-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--a1-ink)}
-.sk-stack{--tab-h:32px;--tab-w:min(150px,(100% - 66px) / 6);position:relative;display:flex;flex-direction:column;gap:clamp(28px,9vh,96px)}
-.sk-card{--pc:#1F5BFF;--pi:#FFFFFF;position:relative;padding-top:var(--tab-h);color:var(--pi)}
-.sk-card:nth-child(2){--pc:#C5E01C;--pi:#15210A}
-.sk-card:nth-child(3){--pc:#14B8C9;--pi:#06222A}
-.sk-card:nth-child(4){--pc:#5A35F0;--pi:#FFFFFF}
-.sk-card:nth-child(5){--pc:#D4237A;--pi:#FFFFFF}
-.sk-card:nth-child(6){--pc:#FF6B1A;--pi:#2A1003}
+.sk-stack{--tab-h:32px;--tab-w:min(150px,(100% - 66px) / 6);--sk-sh:rgba(0,0,0,.42);position:relative;display:flex;flex-direction:column;gap:clamp(28px,9vh,96px)}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .sk-stack{--sk-sh:rgba(110,60,20,.08)}}
+:root[data-theme="light"] .sk-stack{--sk-sh:rgba(110,60,20,.08)}
+.sk-card{--h:var(--a1);--pc:color-mix(in srgb,var(--h) 13%,var(--bg3));--rim:color-mix(in srgb,var(--h) 32%,var(--bg3));--hk:color-mix(in srgb,var(--h) 68%,var(--text));position:relative;padding-top:var(--tab-h);color:var(--text)}
+.sk-card:nth-child(2){--h:var(--cyan)}
+.sk-card:nth-child(3){--h:var(--a2)}
+.sk-card:nth-child(4){--h:color-mix(in srgb,var(--a1) 45%,#7A4DFF)}
+.sk-card:nth-child(5){--h:var(--a3)}
+.sk-card:nth-child(6){--h:var(--warn)}
 .sk-anim .sk-card{position:sticky;top:var(--sk-top,calc(var(--nav-h) + 14px))}
-.sk-tab{position:absolute;top:0;left:calc(18px + var(--i,0) * (var(--tab-w) + 6px));width:var(--tab-w);height:var(--tab-h);display:flex;align-items:center;justify-content:center;gap:8px;padding-inline:8px;border-radius:10px 10px 0 0;background:var(--pc);font:600 .62rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.sk-tab{position:absolute;z-index:1;top:0;left:calc(18px + var(--i,0) * (var(--tab-w) + 6px));width:var(--tab-w);height:calc(var(--tab-h) + 1px);display:flex;align-items:center;justify-content:center;gap:8px;padding-inline:8px;border:1px solid var(--rim);border-bottom:0;border-radius:10px 10px 0 0;background:var(--pc);color:var(--hk);font:600 .62rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.sk-tab b{color:var(--text)}
 .sk-tab span{overflow:hidden;text-overflow:ellipsis}
-.sk-tab::before,.sk-tab::after{content:"";position:absolute;bottom:0;width:10px;height:10px}
-.sk-tab::before{right:100%;background:radial-gradient(circle at 0 0,transparent 9.5px,var(--pc) 10px)}
-.sk-tab::after{left:100%;background:radial-gradient(circle at 100% 0,transparent 9.5px,var(--pc) 10px)}
-.sk-panel{position:relative;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(18px,3vw,36px);min-height:var(--sk-h,0px);padding:clamp(16px,2.2vw,24px);border-radius:22px;background:radial-gradient(90% 70% at 100% 0%,rgba(255,255,255,.2),transparent 60%),var(--pc);box-shadow:0 -10px 34px rgba(4,10,24,.24)}
-.sk-panel::after{content:"";position:absolute;inset:0;border-radius:inherit;background:#020611;opacity:var(--dim,0);pointer-events:none}
-.sk-art{position:relative;display:grid;place-items:center;min-height:240px;overflow:hidden;border-radius:16px;border:1px solid color-mix(in srgb,var(--pi) 18%,transparent);background:radial-gradient(70% 60% at 30% 20%,color-mix(in srgb,var(--pi) 16%,transparent),transparent 70%),color-mix(in srgb,var(--pi) 8%,transparent)}
-.sk-art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--pi) 24%,transparent) 1px,transparent 1.6px);background-size:16px 16px;-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%)}
+/* the tab's feet curve into the card, rim included */
+.sk-tab::before,.sk-tab::after{content:"";position:absolute;bottom:0;width:11px;height:11px}
+.sk-tab::before{right:calc(100% - 1px);background:radial-gradient(circle at 0 0,transparent 9.6px,var(--rim) 10px,var(--rim) 10.6px,var(--pc) 11px)}
+.sk-tab::after{left:calc(100% - 1px);background:radial-gradient(circle at 100% 0,transparent 9.6px,var(--rim) 10px,var(--rim) 10.6px,var(--pc) 11px)}
+.sk-panel{position:relative;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(18px,3vw,36px);min-height:var(--sk-h,0px);padding:clamp(16px,2.2vw,24px);border-radius:22px;background:radial-gradient(70% 90% at 100% 100%,color-mix(in srgb,var(--h) 14%,transparent),transparent 70%),var(--pc);box-shadow:inset 0 0 0 1px var(--rim),0 -6px 16px var(--sk-sh)}
+.sk-panel::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--bg);opacity:var(--dim,0);pointer-events:none;will-change:opacity}
+.sk-art{position:relative;display:grid;place-items:center;min-height:240px;overflow:hidden;border-radius:16px;border:1px solid color-mix(in srgb,var(--h) 24%,transparent);background:radial-gradient(70% 60% at 30% 20%,color-mix(in srgb,var(--h) 22%,transparent),transparent 70%),color-mix(in srgb,var(--h) 7%,var(--bg2))}
+.sk-art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--h) 34%,transparent) 1px,transparent 1.6px);background-size:16px 16px;-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%)}
 /* the drawing settles into place as its card arrives (--in runs 0 to 1) */
-.sk-glyph{position:relative;width:min(78%,260px);height:auto;fill:none;stroke:var(--pi);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transform:translateY(calc((1 - var(--in,1)) * 34px)) scale(calc(.88 + var(--in,1) * .12));opacity:calc(.35 + var(--in,1) * .65)}
-.sk-glyph .f{fill:color-mix(in srgb,var(--pi) 38%,transparent)}
+.sk-glyph{position:relative;width:min(78%,260px);height:auto;fill:none;stroke:var(--hk);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transform:translate3d(0,calc((1 - var(--in,1)) * 34px),0) scale(calc(.88 + var(--in,1) * .12));opacity:calc(.35 + var(--in,1) * .65);will-change:transform,opacity}
+.sk-glyph .f{fill:color-mix(in srgb,var(--h) 34%,transparent)}
 .sk-glyph .thin{stroke-width:1.5;opacity:.55}
 .sk-glyph .dash{stroke-dasharray:5 7}
 .sk-glyph .node{fill:var(--pc)}
-.sk-glyph .node.f{fill:var(--pi)}
-.sk-glyph text{fill:var(--pi);stroke:none;font:500 13px var(--f-mono)}
+.sk-glyph .node.f{fill:var(--hk)}
+.sk-glyph text{fill:var(--hk);stroke:none;font:500 13px var(--f-mono)}
 .sk-logos{position:absolute;left:12px;bottom:12px;display:flex;gap:6px}
-.sk-logos b{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#fff;box-shadow:0 4px 12px rgba(4,10,24,.2)}
+.sk-logos b{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#fff;border:1px solid rgba(14,30,60,.1);box-shadow:0 4px 12px rgba(4,10,24,.16)}
 .sk-logos img{display:block;width:20px;height:20px;object-fit:contain}
 .sk-body{display:flex;flex-direction:column;min-width:0;padding-block:4px}
-.sk-step{font:600 .64rem var(--f-mono);letter-spacing:.2em;text-transform:uppercase}
+.sk-step{font:600 .64rem var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--hk)}
 .sk-name{margin:6px 0 14px;font:400 clamp(1.6rem,3vw,2.2rem)/1.1 var(--f-display)}
-.sk-label{align-self:flex-start;padding:4px 9px;border-radius:6px;background:color-mix(in srgb,var(--pi) 14%,transparent);font:600 .6rem var(--f-mono);letter-spacing:.2em;text-transform:uppercase}
+.sk-label{align-self:flex-start;padding:4px 9px;border-radius:6px;border:1px solid color-mix(in srgb,var(--h) 26%,transparent);background:color-mix(in srgb,var(--h) 12%,transparent);color:var(--hk);font:600 .6rem var(--f-mono);letter-spacing:.2em;text-transform:uppercase}
 .sk-list{display:flex;flex-direction:column;gap:6px;margin:10px 0 18px}
-.sk-list li{position:relative;padding-left:18px;font-weight:500;font-size:.92rem;line-height:1.45}
-.sk-list li::before{content:"";position:absolute;left:2px;top:.5em;width:6px;height:6px;border-radius:1.5px;background:currentColor;rotate:45deg}
+.sk-list li{position:relative;padding-left:18px;font-weight:500;font-size:.92rem;line-height:1.45;color:var(--sub)}
+.sk-list li::before{content:"";position:absolute;left:2px;top:.5em;width:6px;height:6px;border-radius:1.5px;background:var(--h);rotate:45deg}
 .sk-tools{margin-top:auto;display:flex;flex-direction:column}
 .tool-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.tool-chips li{padding:5px 11px;border-radius:100px;border:1px solid color-mix(in srgb,var(--pi) 30%,transparent);background:color-mix(in srgb,var(--pi) 10%,transparent);font-size:.78rem;font-weight:600}
+.tool-chips li{padding:5px 11px;border-radius:100px;border:1px solid color-mix(in srgb,var(--h) 26%,var(--line-hi));background:color-mix(in srgb,var(--h) 6%,var(--bg3));font-size:.78rem;font-weight:600;transition:border-color .3s,background-color .3s}
+.tool-chips li:hover{border-color:var(--h);background:color-mix(in srgb,var(--h) 14%,var(--bg3))}
 @media (max-width:760px){
   .sk-stack{--tab-h:30px}
   .sk-tab{letter-spacing:.08em}
@@ -779,7 +788,6 @@ html:has(.lb[open]) .cursor{opacity:0}
 @keyframes statusBlink{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes sunRise{from{translate:-50% 12%}to{translate:-50% 0}}
 @keyframes sunPulse{0%,100%{scale:1}50%{scale:1.025}}
-@keyframes ringSpin{to{--ring-a:360deg}}
 @keyframes qpulse{0%{transform:translateX(0);opacity:0}10%,88%{opacity:1}100%{transform:translateX(170px);opacity:0}}
 @keyframes portraitIn{from{scale:.92}to{scale:1}}
 @media (prefers-reduced-motion:reduce){
@@ -1004,11 +1012,6 @@ section[tabindex="-1"]:focus,main[tabindex="-1"]:focus{outline:none}
 .reveal-on .words .w{display:inline-block;transform:translate3d(0,110%,0) rotate(5deg);transform-origin:0 100%;opacity:0;transition:transform 1s cubic-bezier(.16,1,.3,1),opacity .7s ease;transition-delay:calc(var(--d,0ms) + var(--wi,0) * 90ms)}
 .reveal-on .in .w{transform:none;opacity:1}
 .reveal-on .words.reveal,.reveal-on .words.reveal.out-up{opacity:1;translate:none;filter:none}
-/* content comes into focus as it scrolls in (larger screens; phones keep the lighter fade) */
-@media (hover:hover) and (min-width:900px){
-  .reveal-on .reveal{filter:blur(6px);transition:opacity .9s cubic-bezier(.2,.7,.2,1) var(--d,0ms),translate .9s cubic-bezier(.2,.7,.2,1) var(--d,0ms),filter .9s cubic-bezier(.2,.7,.2,1) var(--d,0ms)}
-  .reveal-on .reveal.in{filter:none}
-}
 /* photos settle from a slight zoom as their card arrives */
 .ach-photo img,.th-shot img{transition:transform 1.1s cubic-bezier(.16,1,.3,1)}
 .reveal-on .reveal:not(.in) .ach-photo img,.reveal-on .reveal:not(.in) .th-shot img{transform:scale(1.14)}
@@ -1025,4 +1028,4 @@ section[tabindex="-1"]:focus,main[tabindex="-1"]:focus{outline:none}
 .btn:active,.pc-view:active,.pc-ico:active,.ach-btn:active,.mini-btn:active,.bot-fab:active,.nav-links a:active,:is(.nav .sq-btn,.hire,.rail-btn,.dp-back,.dp-bar .sq-btn):active{scale:.95}
 /* theme switch: the new theme spreads in a circle from the button (shared.js) */
 html.theme-vt::view-transition-old(root),html.theme-vt::view-transition-new(root){animation:none;mix-blend-mode:normal}
-.orb{will-change:translate}
+.orb{will-change:transform}

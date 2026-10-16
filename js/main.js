@@ -72,14 +72,14 @@
       ind.classList.add('moving');
     }
   }
-  function spy() {
+  function spyId() {
     const line = innerHeight * 0.45;
-    let id = spySections[0].id;
     for (let i = spySections.length - 1; i >= 0; i--) {
-      if (spySections[i].getBoundingClientRect().top <= line) { id = spySections[i].id; break; }
+      if (spySections[i].getBoundingClientRect().top <= line) return spySections[i].id;
     }
-    setActive(id);
+    return spySections[0].id;
   }
+  function spy() { setActive(spyId()); }
   function setMenu(open) {
     nav.classList.toggle('open', open);
     menuBtn.setAttribute('aria-expanded', String(open));
@@ -204,29 +204,38 @@
   // so the stack leaves the screen together; a card taller than the screen sticks lower, with its bottom in view.
   const skStack = $('#skStack');
   const skCards = $$('.sk-card', skStack);
-  let skOn = false, skTop = 0, skH = 1;
+  let skOn = false, skTop = 0, skH = 1, skY0 = 0, skStep = 1;
+  const skLast = skCards.map(() => ({ inn: '', dim: '' }));
   function sizeStack() {
     skOn = motion() && skCards.length > 1;
     root.classList.toggle('sk-anim', skOn);
     skStack.style.removeProperty('--sk-h');
     skStack.style.removeProperty('--sk-top');
-    skCards.forEach(c => { c.style.removeProperty('--dim'); c.style.removeProperty('--in'); });
+    skCards.forEach((c, i) => { c.style.removeProperty('--dim'); c.style.removeProperty('--in'); skLast[i].inn = skLast[i].dim = ''; });
     if (!skOn) return;
     skH = Math.max(...skCards.map(c => c.querySelector('.sk-panel').offsetHeight));
     const tabH = skCards[0].querySelector('.sk-tab').offsetHeight;
     skTop = Math.min($('.nav').offsetHeight + 14, innerHeight - skH - tabH - 14);
     skStack.style.setProperty('--sk-h', skH + 'px');
     skStack.style.setProperty('--sk-top', skTop + 'px');
+    // where the cards sit before they stick: equal heights, evenly spaced
+    skY0 = skStack.getBoundingClientRect().top + scrollY;
+    skStep = skH + tabH + (parseFloat(getComputedStyle(skStack).rowGap) || 0);
     updStack();
   }
-  function updStack() {
+  function updStack(y = scrollY) {
     if (!skOn) return;
-    // how far each card has slid over the one before it, 0 to 1
-    const arrive = skCards.map(c => Math.min(1, Math.max(0, 1 - (c.getBoundingClientRect().top - skTop) / skH)));
+    // how far each card has slid over the one before it, 0 to 1 (eased, so it lands softly)
+    const arrive = skCards.map((c, i) => {
+      const t = Math.min(1, Math.max(0, 1 - (skY0 + i * skStep - y - skTop) / skH));
+      return 1 - Math.pow(1 - t, 3);
+    });
     let covered = 0;
     for (let i = skCards.length - 1; i >= 0; i--) {
-      skCards[i].style.setProperty('--in', arrive[i].toFixed(3));
-      skCards[i].style.setProperty('--dim', Math.min(0.5, covered * 0.42).toFixed(3));
+      const inn = arrive[i].toFixed(3), dim = Math.min(0.55, covered * 0.45).toFixed(3);
+      // only touch styles that changed, so frames away from the section cost nothing
+      if (skLast[i].inn !== inn) { skCards[i].style.setProperty('--in', inn); skLast[i].inn = inn; }
+      if (skLast[i].dim !== dim) { skCards[i].style.setProperty('--dim', dim); skLast[i].dim = dim; }
       if (i > 0) covered += arrive[i];
     }
   }
@@ -296,14 +305,19 @@
       tlNodes.forEach(n => n.classList.add('is-past'));
       return;
     }
+    drawTimeline(readTimeline());
+  }
+  function readTimeline() {
+    if (!motion()) return null;
     const r = tl.getBoundingClientRect();
     const p = Math.min(1, Math.max(0, (innerHeight * 0.62 - r.top) / r.height));
-    tlFill.style.transform = 'scaleY(' + p.toFixed(4) + ')';
     const edge = r.top + p * r.height;
-    tlNodes.forEach(n => {
-      const nr = n.getBoundingClientRect();
-      n.classList.toggle('is-past', nr.top + nr.height / 2 <= edge + 1);
-    });
+    return { p, past: tlNodes.map(n => { const nr = n.getBoundingClientRect(); return nr.top + nr.height / 2 <= edge + 1; }) };
+  }
+  function drawTimeline(st) {
+    if (!st) return;
+    tlFill.style.transform = 'scaleY(' + st.p.toFixed(4) + ')';
+    tlNodes.forEach((n, i) => n.classList.toggle('is-past', st.past[i]));
   }
 
   /* ---------- contact form ---------- */
@@ -504,14 +518,17 @@
   /* ---------- chat button steps aside while it would cover the hero's follow links ---------- */
   const rail = $('.follow-rail');
   function fabClear() {
-    if (!rail) return;
-    if (!panel.hidden) { fab.classList.remove('is-away'); return; }
+    const hit = fabHit();
+    if (hit !== null) fab.classList.toggle('is-away', hit);
+  }
+  function fabHit() {
+    if (!rail) return null;
+    if (!panel.hidden) return false;
     // Measured from the button's center, which its hide animation (a scale) doesn't move.
     const f = fab.getBoundingClientRect();
     const cx = (f.left + f.right) / 2, cy = (f.top + f.bottom) / 2, half = fab.offsetWidth / 2 + 12;
     const r = rail.getBoundingClientRect();
-    const hit = r.right > cx - half && r.left < cx + half && r.bottom > cy - half && r.top < cy + half;
-    fab.classList.toggle('is-away', hit);
+    return r.right > cx - half && r.left < cx + half && r.bottom > cy - half && r.top < cy + half;
   }
 
   /* ---------- back to top + scroll-driven updates ---------- */
@@ -612,18 +629,23 @@
   const orbs = $$('.orb');
   function frame() {
     ticking = false;
+    // Read everything first, then write, so the browser lays the page out once per frame
     const y = scrollY;
     const maxY = document.documentElement.scrollHeight - innerHeight;
+    // While travelling, or resting where a link took us, keep the clicked section highlighted
+    const follow = !travel && !(pinY !== null && Math.abs(y - pinY) < 3);
+    const id = follow ? spyId() : null;
+    const tlState = readTimeline();
+    const hit = fabHit();
     progress.style.transform = 'scaleX(' + (maxY > 0 ? Math.min(1, y / maxY) : 0).toFixed(4) + ')';
     // background glows drift at different speeds for a little depth
-    if (motion()) orbs.forEach((o, i) => { o.style.translate = '0 ' + (-y * (0.04 + i * 0.03)).toFixed(1) + 'px'; });
+    if (motion()) orbs.forEach((o, i) => { o.style.transform = 'translate3d(0,' + (-y * (0.04 + i * 0.03)).toFixed(1) + 'px,0)'; });
     nav.classList.toggle('scrolled', y > 40);
     toTop.classList.toggle('show', y > 400);
-    // While travelling, or resting where a link took us, keep the clicked section highlighted
-    if (!travel && !(pinY !== null && Math.abs(scrollY - pinY) < 3)) { pinY = null; spy(); }
-    updTimeline();
-    updStack();
-    fabClear();
+    drawTimeline(tlState);
+    updStack(y);
+    if (hit !== null) fab.classList.toggle('is-away', hit);
+    if (follow) { pinY = null; setActive(id); }
   }
   addEventListener('scroll', () => {
     if (!ticking) { ticking = true; requestAnimationFrame(frame); }
@@ -639,6 +661,7 @@
   frame();
   moveInd();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { moveInd(); applyLoops(); sizeStack(); fabClear(); });
+  addEventListener('load', sizeStack, { once: true });
 
   /* ---------- arriving with a #section link (e.g. "Back to Achievements") ---------- */
   // The page's smooth scrolling gets cut off while fonts and images load, so jump
