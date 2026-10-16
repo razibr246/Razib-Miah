@@ -580,6 +580,46 @@
   addEventListener('keydown', e => {
     if (travel && ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(e.key)) { endTravel(); frame(); }
   });
+  /* ---------- smooth wheel scrolling ---------- */
+  // Mouse wheels and trackpads glide to rest instead of stepping. Keyboard, scrollbar and touch stay native,
+  // and so do zoom gestures, sideways scrolling and any panel that scrolls on its own.
+  const glide = { on: false, y: 0, to: 0, set: 0, t: 0, raf: 0 };
+  function glideStop() { cancelAnimationFrame(glide.raf); glide.on = false; }
+  function glideStep(now) {
+    // someone else moved the page (scrollbar, keys, find-in-page): let them have it
+    if (Math.abs(scrollY - glide.set) > 2) { glide.on = false; return; }
+    const dt = Math.min(64, now - glide.t);
+    glide.t = now;
+    glide.y += (glide.to - glide.y) * (1 - Math.exp(-dt / 110));
+    if (Math.abs(glide.to - glide.y) < 0.5) glide.y = glide.to;
+    jumpTo(glide.y);
+    glide.set = scrollY;
+    if (glide.y === glide.to) { glide.on = false; return; }
+    glide.raf = requestAnimationFrame(glideStep);
+  }
+  function scrollsInside(el, dy) {
+    for (; el && el !== document.body && el !== root; el = el.parentElement) {
+      if (el.scrollHeight <= el.clientHeight + 1) continue;
+      const oy = getComputedStyle(el).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1)) return true;
+    }
+    return false;
+  }
+  addEventListener('wheel', e => {
+    if (!motion() || e.ctrlKey || e.defaultPrevented || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    if (document.querySelector('dialog[open]') || scrollsInside(e.target, e.deltaY)) return;
+    e.preventDefault();
+    const d = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1);
+    if (!glide.on) {
+      glide.y = glide.to = glide.set = scrollY;
+      glide.t = performance.now();
+      glide.on = true;
+      glide.raf = requestAnimationFrame(glideStep);
+    }
+    glide.to = Math.max(0, Math.min(document.documentElement.scrollHeight - innerHeight, glide.to + d));
+  }, { passive: false });
+  ['mousedown', 'touchstart'].forEach(t => addEventListener(t, glideStop, { passive: true }));
+  addEventListener('keydown', glideStop);
   function targetY(el) {
     if (el.id === 'hero') return 0;
     const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
@@ -604,6 +644,7 @@
     const el = document.getElementById(id);
     if (!el) return;
     endTravel();
+    glideStop();
     if (push && location.hash !== '#' + id) history.pushState(null, '', '#' + id);
     if (links.some(a => a.hash === '#' + id)) setActive(id);
     const from = scrollY;

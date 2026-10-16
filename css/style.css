@@ -186,6 +186,7 @@ button{font:inherit;color:inherit}
 .sun-ring::before,.sun-ring::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%}
 .sun-ring::before{top:50%;left:-5px;margin-top:-4.5px;background:var(--a2);box-shadow:0 0 14px var(--a2)}
 .sun-ring::after{top:14.64%;right:14.64%;translate:50% -50%;background:var(--a1);box-shadow:0 0 14px var(--a1)}
+.sun-sat{position:absolute;left:75%;top:93.3%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan)}
 .hero-figure.is-portrait{align-items:center}
 .is-portrait .sun-wrap{top:50%;bottom:auto;width:min(84%,29.5rem,calc(var(--fig-h) - 56px));translate:-50% -50%;animation:none}
 .is-portrait .sun-glow{inset:-40%;-webkit-mask-image:none;mask-image:none}
@@ -929,28 +930,28 @@ html:has(.lb[open]) .cursor{opacity:0}
    top and bottom edges plus an inner glow and shade give the glass thickness; a soft light follows the pointer;
    and a capsule frosts up (.is-busy, set by shared.js) while it floats over a photo so its text stays readable. */
 :root{
-  --lg-tint:rgba(14,24,44,.24); --lg-tint-busy:rgba(8,14,28,.66); --lg-sheen:rgba(255,255,255,.08);
+  --lg-tint:rgba(14,24,44,.14); --lg-tint-busy:rgba(8,14,28,.66); --lg-sheen:rgba(255,255,255,.08);
   --lg-rim:rgba(255,255,255,.40); --lg-rim-low:rgba(255,255,255,.07); --lg-spec:rgba(255,255,255,.16);
-  --lg-filter:blur(10px) saturate(190%) brightness(1.08);
-  --lg-depth:inset 0 1px 0 rgba(255,255,255,.30),inset 0 -1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.06),inset 0 7px 14px -9px rgba(255,255,255,.22),inset 0 -9px 16px -11px rgba(0,0,0,.45),0 10px 30px rgba(0,0,0,.42),0 1px 3px rgba(0,0,0,.3);
-  --lg-fade:rgba(6,11,20,.86);
+  --lg-filter:blur(7px) saturate(170%) brightness(1.1);
+  --lg-depth:inset 0 1px 0 rgba(255,255,255,.30),inset 0 -1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.06),inset 0 7px 14px -9px rgba(255,255,255,.22),inset 0 -9px 16px -11px rgba(0,0,0,.45),inset 0 0 16px rgba(255,255,255,.05),0 10px 30px rgba(0,0,0,.42),0 1px 3px rgba(0,0,0,.3);
+  --lg-fade:rgba(6,11,20,.76);
 }
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
-  --lg-tint:rgba(255,250,244,.20); --lg-tint-busy:rgba(255,246,236,.76); --lg-sheen:rgba(255,255,255,.42);
+  --lg-tint:rgba(255,255,255,.06); --lg-tint-busy:rgba(255,246,236,.7); --lg-sheen:rgba(255,255,255,.34);
   --lg-rim:rgba(255,255,255,.98); --lg-rim-low:rgba(255,255,255,.45); --lg-spec:rgba(255,255,255,.75);
-  --lg-filter:blur(10px) saturate(180%) brightness(1.06);
-  --lg-depth:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.45),inset 0 0 0 1px rgba(255,255,255,.22),inset 0 7px 14px -9px rgba(255,255,255,.9),inset 0 -9px 16px -11px rgba(140,80,25,.22),0 8px 28px rgba(90,50,15,.14),0 1px 2px rgba(90,50,15,.12);
-  --lg-fade:rgba(255,235,215,.86)}}
+  --lg-filter:blur(5px) saturate(112%) brightness(1.03);
+  --lg-depth:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.28),inset 0 8px 16px -10px rgba(255,255,255,.95),inset 0 -10px 18px -12px rgba(140,80,25,.24),inset 0 0 16px rgba(255,255,255,.32),0 10px 30px rgba(90,50,15,.12),0 1px 2px rgba(90,50,15,.1);
+  --lg-fade:rgba(255,235,215,.7)}}
 :root[data-theme="light"]{
-  --lg-tint:rgba(255,250,244,.20); --lg-tint-busy:rgba(255,246,236,.76); --lg-sheen:rgba(255,255,255,.42);
+  --lg-tint:rgba(255,255,255,.06); --lg-tint-busy:rgba(255,246,236,.7); --lg-sheen:rgba(255,255,255,.34);
   --lg-rim:rgba(255,255,255,.98); --lg-rim-low:rgba(255,255,255,.45); --lg-spec:rgba(255,255,255,.75);
-  --lg-filter:blur(10px) saturate(180%) brightness(1.06);
-  --lg-depth:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.45),inset 0 0 0 1px rgba(255,255,255,.22),inset 0 7px 14px -9px rgba(255,255,255,.9),inset 0 -9px 16px -11px rgba(140,80,25,.22),0 8px 28px rgba(90,50,15,.14),0 1px 2px rgba(90,50,15,.12);
-  --lg-fade:rgba(255,235,215,.86)}
+  --lg-filter:blur(5px) saturate(112%) brightness(1.03);
+  --lg-depth:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.28),inset 0 8px 16px -10px rgba(255,255,255,.95),inset 0 -10px 18px -12px rgba(140,80,25,.24),inset 0 0 16px rgba(255,255,255,.32),0 10px 30px rgba(90,50,15,.12),0 1px 2px rgba(90,50,15,.1);
+  --lg-fade:rgba(255,235,215,.7)}
 
 .nav-pill,.nav .sq-btn,.hire,.brand,.rail-btn,.badge,.roles span,.dp-back,.dp-bar .sq-btn,.dp-float{
   isolation:isolate;
-  background-color:var(--lg-tint);background-image:linear-gradient(180deg,var(--lg-sheen),transparent 62%);
+  background-color:var(--lg-tint);background-image:linear-gradient(180deg,var(--lg-sheen),transparent 48%);
   -webkit-backdrop-filter:var(--lg-filter);backdrop-filter:var(--lg-filter);
   border:1px solid var(--lg-rim-low);box-shadow:var(--lg-depth);
   transition:background-color .45s ease,border-color .3s,box-shadow .3s,transform .25s ease,translate .45s cubic-bezier(.2,.8,.2,1),scale .18s ease,color .25s}
