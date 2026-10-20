@@ -338,8 +338,6 @@
           }
           return { front, back };
         };
-        const chip = $('.sk-engine', bloch.closest('.sk-art'));
-        if (chip) chip.hidden = false;
         if (!spinning) drawBloch(performance.now());
       } catch (e) { /* keep drawing with JavaScript */ }
     };

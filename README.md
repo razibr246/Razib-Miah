@@ -82,8 +82,7 @@ Open `css/style.css`. The colors are the `--` variables at the top: the first bl
 The Quantum ML card's wireframe sphere is computed by a small Rust module in `rust/bloch`, compiled to
 WebAssembly at `assets/wasm/bloch.wasm`. The page fetches it the first time the card comes near and reads the
 sphere's edges straight from its memory every frame. If it can't load (an older browser, or `index.html` opened
-straight from disk), the same math runs in JavaScript, so the card always works. A small "Rendered in Rust"
-chip shows when the Rust module is the one drawing.
+straight from disk), the same math runs in JavaScript, so the card always works.
 
 The compiled file is committed, so the site still has no build step. After changing `rust/bloch/src/lib.rs`,
 rebuild it (needs [Rust](https://rustup.rs) with the `wasm32-unknown-unknown` target):
