@@ -372,6 +372,27 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-glyph .as{stroke:var(--h2k)}
 .sk-glyph .node.a{fill:var(--h2)}
 .sk-glyph text{fill:var(--hk);stroke:none;font:500 13px var(--f-mono)}
+/* quantum card: a turning wireframe Bloch sphere inside two orbits, with its three axes and a qubit riding the
+   outer orbit (main.js turns it while the card is on screen) */
+.sk-bloch{width:min(94%,330px);stroke-width:1}
+.sk-bloch stop{stop-color:color-mix(in srgb,var(--h2) 22%,#fff);stop-opacity:.7}
+.sk-bloch stop+stop{stop-opacity:0}
+.sk-bloch .bl-glow{stroke:none}
+.sk-bloch .bl-back{stroke:var(--hk);stroke-width:.55;opacity:.24}
+.sk-bloch .bl-front{stroke:var(--hk);stroke-width:.8;opacity:.6}
+.sk-bloch .bl-eq{stroke:var(--h2k);stroke-width:1.5;opacity:.75}
+.sk-bloch .bl-ring{stroke:color-mix(in srgb,var(--h) 45%,var(--text));stroke-width:2.2}
+.sk-bloch .bl-orbit{stroke:var(--h2k);stroke-width:1.9}
+.sk-bloch .bl-axis path{stroke-width:1.2}
+.sk-bloch .bl-axis .hd{stroke:none}
+.sk-bloch .bl-z{stroke:var(--a2);fill:var(--a2)}
+.sk-bloch .bl-y{stroke:var(--h2);fill:var(--h2)}
+.sk-bloch .bl-x{stroke:var(--a3);fill:var(--a3)}
+.sk-bloch .bl-halo{fill:var(--h2);stroke:none;opacity:.22}
+.sk-bloch .bl-qubit{fill:var(--h2);stroke:var(--bg3);stroke-width:1.6}
+.sk-bloch text{font-size:11px}
+:root[data-theme="dark"] .sk-bloch .bl-glow{opacity:.28}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sk-bloch .bl-glow{opacity:.28}}
 .sk-logos{position:absolute;left:12px;bottom:12px;display:flex;gap:6px}
 .sk-logos b{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#fff;border:1px solid rgba(14,30,60,.1);box-shadow:0 4px 12px rgba(4,10,24,.16)}
 .sk-logos img{display:block;width:20px;height:20px;object-fit:contain}

@@ -268,6 +268,70 @@
     art.classList.add('has-pat');
   });
 
+  /* ---------- quantum card: the Bloch sphere turns and a qubit rides its orbit ---------- */
+  // Geodesic sphere: an icosahedron with each face split into n×n triangles, pushed out to the unit sphere.
+  function blochMesh(n) {
+    const t = (1 + Math.sqrt(5)) / 2;
+    const V = [[-1,t,0],[1,t,0],[-1,-t,0],[1,-t,0],[0,-1,t],[0,1,t],[0,-1,-t],[0,1,-t],[t,0,-1],[t,0,1],[-t,0,-1],[-t,0,1]];
+    const F = [[0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],[1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],[3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],[4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]];
+    const pts = [], index = new Map(), edges = new Map();
+    const vid = p => {
+      const l = Math.hypot(...p), q = p.map(c => c / l), k = q.map(c => c.toFixed(4)).join();
+      if (!index.has(k)) { index.set(k, pts.length); pts.push(q); }
+      return index.get(k);
+    };
+    const edge = (a, b) => { const k = a < b ? a + '-' + b : b + '-' + a; if (a !== b) edges.set(k, [a, b]); };
+    F.forEach(([a, b, c]) => {
+      const A = V[a], B = V[b], C = V[c], at = (i, j) => vid(A.map((v, d) => v + (B[d] - v) * i / n + (C[d] - v) * j / n));
+      for (let i = 0; i <= n; i++) for (let j = 0; i + j <= n; j++) {
+        if (i + j < n) { edge(at(i, j), at(i + 1, j)); edge(at(i, j), at(i, j + 1)); edge(at(i + 1, j), at(i, j + 1)); }
+      }
+    });
+    return { pts, edges: [...edges.values()] };
+  }
+  // Turn by `a` around the vertical axis, then tip toward the viewer; returns front and back edge paths.
+  function blochPaths(mesh, a, cx, cy, r) {
+    const ca = Math.cos(a), sa = Math.sin(a), tx = 0.42, ct = Math.cos(tx), st = Math.sin(tx);
+    const P = mesh.pts.map(([x, y, z]) => {
+      const x1 = x * ca + z * sa, z1 = -x * sa + z * ca;
+      return [cx + r * x1, cy - r * (y * ct - z1 * st), y * st + z1 * ct];
+    });
+    let front = '', back = '';
+    mesh.edges.forEach(([i, j]) => {
+      const p = P[i], q = P[j], seg = 'M' + p[0].toFixed(1) + ' ' + p[1].toFixed(1) + 'L' + q[0].toFixed(1) + ' ' + q[1].toFixed(1);
+      if (p[2] + q[2] >= 0) front += seg; else back += seg;
+    });
+    return { front, back };
+  }
+  const bloch = $('.sk-bloch');
+  if (bloch) {
+    const front = $('.bl-front', bloch), back = $('.bl-back', bloch), qubit = $('.bl-qubit', bloch), halo = $('.bl-halo', bloch);
+    const mesh = blochMesh(3);
+    const ORB = { cx: 100, cy: 82, rx: 94, ry: 24, c: Math.cos(-12 * Math.PI / 180), s: Math.sin(-12 * Math.PI / 180) };
+    let spinning = false, raf = 0, t0 = performance.now();
+    const drawBloch = now => {
+      const t = (now - t0) / 1000;
+      const p = blochPaths(mesh, 0.5 + t * Math.PI / 20, 100, 80, 50); // one turn every 40s
+      front.setAttribute('d', p.front);
+      back.setAttribute('d', p.back);
+      const th = 2.7 + t * Math.PI / 4.5; // one lap every 9s
+      const ex = ORB.rx * Math.cos(th), ey = ORB.ry * Math.sin(th);
+      const x = (ORB.cx + ex * ORB.c - ey * ORB.s).toFixed(1), y = (ORB.cy + ex * ORB.s + ey * ORB.c).toFixed(1);
+      // the upper half of the orbit is the far side: the qubit dims while the sphere is in front of it
+      const behind = ey < 0 && Math.hypot(x - 100, y - 80) < 52;
+      [qubit, halo].forEach(c => { c.setAttribute('cx', x); c.setAttribute('cy', y); });
+      qubit.style.opacity = behind ? 0.4 : 1;
+      if (spinning) raf = requestAnimationFrame(drawBloch);
+    };
+    drawBloch(t0);
+    if (hasIO) new IntersectionObserver(([en]) => {
+      const go = en.isIntersecting && motion();
+      if (go === spinning) return;
+      spinning = go;
+      if (go) raf = requestAnimationFrame(drawBloch); else cancelAnimationFrame(raf);
+    }, { rootMargin: '80px' }).observe(bloch);
+  }
+
   /* ---------- 3D tilt ---------- */
   function tilt(el, max, scale) {
     el.addEventListener('pointermove', e => {
