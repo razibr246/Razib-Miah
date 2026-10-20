@@ -1,0 +1,17 @@
+[package]
+name = "bloch"
+version = "0.1.0"
+edition = "2021"
+description = "Geometry for the Quantum ML card's turning Bloch sphere, compiled to WebAssembly"
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

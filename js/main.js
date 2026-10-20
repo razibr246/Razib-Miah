@@ -316,9 +316,37 @@
     const mesh = blochMesh(3);
     const ORB = { cx: 100, cy: 82, rx: 94, ry: 24, c: Math.cos(-12 * Math.PI / 180), s: Math.sin(-12 * Math.PI / 180) };
     let spinning = false, raf = 0, t0 = performance.now();
+    // The geometry comes from a small Rust module compiled to WebAssembly (rust/bloch), fetched the first time
+    // the card comes near. Until it arrives, or if it can't (an older browser, or the page opened from disk),
+    // the same math runs in JavaScript above.
+    let rust = null, rustAsked = false;
+    const loadRust = async () => {
+      rustAsked = true;
+      const url = 'assets/wasm/bloch.wasm';
+      try {
+        let inst;
+        try { inst = (await WebAssembly.instantiateStreaming(fetch(url))).instance; }
+        catch (e) { inst = (await WebAssembly.instantiate(await (await fetch(url)).arrayBuffer())).instance; }
+        const ex = inst.exports, count = ex.build(3);
+        // five numbers per edge, read straight from the module's memory: start x, y, end x, y, and depth
+        rust = a => {
+          const f = new Float32Array(ex.memory.buffer, ex.project(a, 100, 80, 50), count * 5);
+          let front = '', back = '';
+          for (let k = 0; k < f.length; k += 5) {
+            const seg = 'M' + f[k].toFixed(1) + ' ' + f[k + 1].toFixed(1) + 'L' + f[k + 2].toFixed(1) + ' ' + f[k + 3].toFixed(1);
+            if (f[k + 4] >= 0) front += seg; else back += seg;
+          }
+          return { front, back };
+        };
+        const chip = $('.sk-engine', bloch.closest('.sk-art'));
+        if (chip) chip.hidden = false;
+        if (!spinning) drawBloch(performance.now());
+      } catch (e) { /* keep drawing with JavaScript */ }
+    };
     const drawBloch = now => {
       const t = (now - t0) / 1000;
-      const p = blochPaths(mesh, 0.5 + t * Math.PI / 20, 100, 80, 50); // one turn every 40s
+      const turn = 0.5 + t * Math.PI / 20; // one turn every 40s
+      const p = rust ? rust(turn) : blochPaths(mesh, turn, 100, 80, 50);
       front.setAttribute('d', p.front);
       back.setAttribute('d', p.back);
       const th = 2.7 + t * Math.PI / 4.5; // one lap every 9s
@@ -331,12 +359,14 @@
       if (spinning) raf = requestAnimationFrame(drawBloch);
     };
     drawBloch(t0);
+    if (!hasIO) loadRust();
     if (hasIO) new IntersectionObserver(([en]) => {
+      if (en.isIntersecting && !rustAsked) loadRust();
       const go = en.isIntersecting && motion();
       if (go === spinning) return;
       spinning = go;
       if (go) raf = requestAnimationFrame(drawBloch); else cancelAnimationFrame(raf);
-    }, { rootMargin: '80px' }).observe(bloch);
+    }, { rootMargin: '400px 0px' }).observe(bloch);
   }
 
   /* ---------- 3D tilt ---------- */

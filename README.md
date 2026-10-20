@@ -14,6 +14,7 @@ razib-portfolio/
 ├── js/
 │   ├── shared.js                 used by every page: color theme, "R" cursor, photo viewer
 │   └── main.js                   main page only: menu, animations, chat, form, clock
+├── rust/bloch/                   Rust source for the Quantum ML card's turning sphere (see below)
 └── assets/
     ├── razib-portrait.webp       hero photo (920 × 920)
     ├── *-480/-720/-800.webp      smaller copies of the big photos; phones load these instead
@@ -23,6 +24,7 @@ razib-portfolio/
     ├── hackathon-*.webp          Legal-Tech Hackathon photos (*-sm = small thumbnails)
     ├── agentx-*.webp             Agent X photos (*-sm = small thumbnails)
     ├── tech/*.svg                tool logos in the Skills strip (from Devicon and Simple Icons)
+    ├── wasm/bloch.wasm           the Rust sphere, compiled to WebAssembly
     └── favicon.svg               browser tab icon
 ```
 
@@ -74,3 +76,24 @@ To receive messages in your inbox:
 ## Change the colors
 
 Open `css/style.css`. The colors are the `--` variables at the top: the first block is dark mode, and the next two are light mode.
+
+## The Rust part
+
+The Quantum ML card's wireframe sphere is computed by a small Rust module in `rust/bloch`, compiled to
+WebAssembly at `assets/wasm/bloch.wasm`. The page fetches it the first time the card comes near and reads the
+sphere's edges straight from its memory every frame. If it can't load (an older browser, or `index.html` opened
+straight from disk), the same math runs in JavaScript, so the card always works. A small "Rendered in Rust"
+chip shows when the Rust module is the one drawing.
+
+The compiled file is committed, so the site still has no build step. After changing `rust/bloch/src/lib.rs`,
+rebuild it (needs [Rust](https://rustup.rs) with the `wasm32-unknown-unknown` target):
+
+```
+cd rust/bloch
+cargo test
+cargo build --release --target wasm32-unknown-unknown
+cp target/wasm32-unknown-unknown/release/bloch.wasm ../../assets/wasm/
+```
+
+`.vercelignore` keeps the Rust source out of the deployed site; only the compiled file is served.
+
