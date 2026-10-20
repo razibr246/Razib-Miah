@@ -138,6 +138,7 @@ button{font:inherit;color:inherit}
 .nav-ind{position:absolute;left:0;top:5px;height:calc(100% - 10px);width:var(--ind-w,0px);transform:translateX(var(--ind-x,0px));border-radius:100px;background:var(--grad-btn);box-shadow:0 4px 15px var(--a1-glow);opacity:0;transition:transform .55s cubic-bezier(.3,.85,.3,1),width .55s cubic-bezier(.3,.85,.3,1),opacity .3s}
 .nav-pill:not(.ind-on) .nav-ind{transition:none}
 .nav-pill.ind-on .nav-ind{opacity:1}
+.nav-pill.ind-on.ind-off .nav-ind{opacity:0}
 .nav-links{position:relative;display:flex;gap:2px}
 .nav-links a{display:block;padding:7px 15px;border-radius:100px;color:var(--sub);text-decoration:none;font-size:.84rem;font-weight:600;transition:color .35s}
 .nav-links a:hover{color:var(--text)}
@@ -222,6 +223,7 @@ button{font:inherit;color:inherit}
 /* ---------- section heads ---------- */
 .sec{padding-block:clamp(44px,6vw,80px);scroll-margin-top:calc(var(--nav-h) - 8px)}
 .sec-head{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding-block:clamp(34px,5vw,56px);margin-bottom:clamp(24px,4vw,44px)}
+@media (max-width:600px){.sec{padding-block:34px}.sec-head{padding-block:22px;margin-bottom:22px}}
 .ghost{position:absolute;top:50%;left:calc(50% - 50vw);width:100vw;translate:0 -50%;overflow:hidden;z-index:-1;pointer-events:none}
 .ghost span{display:block;width:max-content;margin-inline:auto;font:400 clamp(5rem,15vw,12.5rem)/1.05 var(--f-display);text-transform:uppercase;letter-spacing:.06em;color:transparent;-webkit-text-stroke:1.2px var(--line-hi);animation:ghostDrift 18s ease-in-out infinite alternate}
 .eyebrow{display:inline-block;font:500 .7rem/1 var(--f-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--a1-ink);padding:8px 14px;border-radius:8px;border:1px solid color-mix(in srgb,var(--a1) 40%,transparent);background:color-mix(in srgb,var(--a1) 10%,var(--bg));animation:bob 2.4s ease-in-out infinite}
@@ -427,6 +429,7 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 /* ---------- projects ---------- */
 .proj-row{position:relative;margin-inline:calc(var(--gutter) * -1);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;padding-block:16px 30px}
 .proj-row + .proj-row{margin-top:2px}
+.proj-row:not(.looping){overscroll-behavior-x:contain;scroll-padding-inline:var(--gutter)}
 .proj-row .track{display:flex;gap:26px;width:max-content;padding-inline:var(--gutter)}
 .proj-row.looping{overflow:hidden;scroll-snap-type:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
 .proj-row.looping .track{padding-inline:0;animation:loopX var(--dur,60s) linear infinite}
@@ -530,7 +533,7 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .rs-card h3{font:400 1.45rem/1.2 var(--f-display);margin-top:4px}
 .rs-desc{color:var(--sub);font-size:.92rem;line-height:1.7}
 .rs-desc strong{color:var(--text);font-weight:600}
-.rs-link{margin-top:auto;padding-top:6px;display:inline-flex;align-items:center;gap:7px;align-self:flex-start;color:var(--c-ink);font-size:.86rem;font-weight:600;text-decoration:none}
+.rs-link{margin-top:auto;padding-top:6px;padding-bottom:6px;margin-bottom:-6px;display:inline-flex;align-items:center;gap:7px;align-self:flex-start;color:var(--c-ink);font-size:.86rem;font-weight:600;text-decoration:none}
 .rs-link .ic{width:15px;height:15px;transition:transform .25s}
 .rs-link:hover{text-decoration:underline;text-underline-offset:4px}
 .rs-link:hover .ic{transform:translateX(3px)}
@@ -751,6 +754,9 @@ a.c-row:hover .c-arrow{transform:translate(3px,-3px);color:var(--a1-ink)}
 .to-top{position:fixed;right:27px;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:60;width:42px;height:42px;border-radius:12px;border:1px solid var(--line-hi);background:var(--bg3);color:var(--text);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow-sm);opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity .3s,transform .3s,border-color .2s}
 .to-top.show{opacity:1;pointer-events:auto;transform:none}
 .to-top:hover{border-color:var(--a1)}
+/* phones: both buttons tuck away while you read downward and come back on the way up or when you stop */
+.bot-fab.is-tucked,.to-top.show.is-tucked{opacity:0;scale:.7;pointer-events:none}
+.to-top{transition:opacity .3s,transform .3s,scale .3s,border-color .2s}
 .bot-panel{position:fixed;right:20px;bottom:calc(146px + env(safe-area-inset-bottom,0px));z-index:61;width:min(370px,calc(100vw - 32px));height:min(520px,calc(100vh - 220px));display:flex;flex-direction:column;overflow:hidden;border-radius:20px;background:var(--bot-bg);border:1px solid var(--line-hi);-webkit-backdrop-filter:blur(28px) saturate(1.5);backdrop-filter:blur(28px) saturate(1.5);box-shadow:var(--shadow),0 4px 16px var(--a1-glow);transform-origin:bottom right;animation:panelIn .28s ease both}
 @supports (height:100dvh){.bot-panel{height:min(520px,calc(100dvh - 220px))}}
 .bot-head{display:flex;align-items:center;gap:12px;padding:14px 14px 14px 16px;border-bottom:1px solid var(--line)}
@@ -1003,6 +1009,7 @@ html:has(.lb[open]) .cursor{opacity:0}
 .hire{padding:11px 18px;border-radius:100px;border-color:color-mix(in srgb,var(--a1) 38%,var(--lg-rim-low))}
 .nav .sq-btn:hover,.brand:hover,.rail-btn:hover,.dp-bar .sq-btn:hover{background-color:color-mix(in srgb,var(--lg-tint) 60%,rgba(255,255,255,.28))}
 .hire:hover,.dp-back:hover{background-color:color-mix(in srgb,var(--a1) 14%,var(--lg-tint))}
+.hire.is-current,.hire.is-current:hover{color:var(--on-grad);border-color:transparent;background-color:transparent;background-image:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),var(--grad-btn);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px var(--a1-glow)}
 .nav-links a{transition:color .35s,background-color .3s}
 .nav-links a:not(.active):hover{background-color:color-mix(in srgb,var(--text) 7%,transparent)}
 /* the selected tab is a glossy blue drop that stretches as it slides, then settles */

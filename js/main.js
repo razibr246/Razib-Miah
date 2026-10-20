@@ -46,7 +46,9 @@
   const pill = $('#navPill');
   const ind = $('#navInd');
   const links = $$('#navLinks a');
-  const spySections = links.map(a => document.getElementById(a.hash.slice(1))).filter(Boolean);
+  const hireBtn = $('.nav .hire');
+  // Contact has no tab of its own: while it's on screen, the blue drop steps aside and Hire Me lights up instead
+  const spySections = [...links.map(a => document.getElementById(a.hash.slice(1))), document.getElementById('contact')].filter(Boolean);
   let activeId = 'hero';
   function moveInd() {
     const a = links.find(l => l.classList.contains('active'));
@@ -65,6 +67,10 @@
       a.classList.toggle('active', on);
       if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
     });
+    const inPill = links.some(a => a.hash === '#' + id);
+    pill.classList.toggle('ind-off', !inPill);
+    if (hireBtn) hireBtn.classList.toggle('is-current', id === 'contact');
+    if (!inPill) return;
     moveInd();
     if (motion() && pill.classList.contains('ind-on')) {
       ind.classList.remove('moving');
@@ -163,7 +169,7 @@
     const track = row.querySelector('.track');
     $$(':scope > .clone', track).forEach(n => n.remove());
     row.classList.remove('looping');
-    if (!motion() || row.hidden) return;
+    if (!motion() || row.hidden || (row.classList.contains('proj-row') && touchUI.matches)) return;
     row.classList.add('looping');
     const originals = Array.from(track.children);
     const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -184,6 +190,7 @@
     track.style.setProperty('--loop', setW + 'px');
     track.style.setProperty('--dur', (setW / speed).toFixed(1) + 's');
   }
+  const touchUI = matchMedia('(pointer: coarse), (max-width: 760px)');
   const loops = [...$$('.ticker').map(r => [r, 38]), ...$$('.proj-row').map(r => [r, 60])];
   const applyLoops = () => loops.forEach(([r, s]) => setLoop(r, s));
   applyLoops();
@@ -711,7 +718,7 @@
     endTravel();
     glideStop();
     if (push && location.hash !== '#' + id) history.pushState(null, '', '#' + id);
-    if (links.some(a => a.hash === '#' + id)) setActive(id);
+    if (spySections.some(s => s.id === id)) setActive(id);
     const from = scrollY;
     const y = targetY(el);
     const dist = y - from;
@@ -759,6 +766,8 @@
   progress.setAttribute('aria-hidden', 'true');
   document.body.appendChild(progress);
   const orbs = $$('.orb');
+  let lastY = scrollY, tuckTimer = 0;
+  const tuck = on => [fab, toTop].forEach(b => b && b.classList.toggle('is-tucked', on));
   function frame() {
     ticking = false;
     // Read everything first, then write, so the browser lays the page out once per frame
@@ -778,6 +787,13 @@
     updStack(y);
     if (hit !== null) fab.classList.toggle('is-away', hit);
     if (follow) { pinY = null; setActive(id); }
+    if (touchUI.matches && panel.hidden) {
+      if (y > lastY + 6 && y > 320) tuck(true);
+      else if (y < lastY - 6) tuck(false);
+      clearTimeout(tuckTimer);
+      tuckTimer = setTimeout(() => tuck(false), 900);
+    }
+    lastY = y;
   }
   addEventListener('scroll', () => {
     if (!ticking) { ticking = true; requestAnimationFrame(frame); }
