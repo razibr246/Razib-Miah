@@ -15,7 +15,7 @@
     const apply = () => {
       root.setAttribute('data-theme', next);
       const meta = $('meta[name="theme-color"]');
-      if (meta) meta.content = next === 'dark' ? '#060B14' : '#FFEBD7';
+      if (meta) meta.content = next === 'dark' ? '#140D09' : '#FFF1E2';
       try { localStorage.setItem('rm-theme', next); } catch (err) {}
     };
     if (!document.startViewTransition || !motion()) { apply(); return; }
