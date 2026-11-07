@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Razib Miah</title>
+<title>Razib Miah — Full-Stack &amp; AI/ML Engineer</title>
 <meta name="description" content="Razib Miah, a full-stack engineer working in AI/ML and quantum machine learning. Projects, skills, experience and contact.">
 <meta name="theme-color" content="#FFF1E2">
 <script>
@@ -60,19 +60,20 @@
       <nav class="nav-pill" id="navPill" aria-label="Sections">
         <span class="nav-ind" id="navInd" aria-hidden="true"></span>
         <ul class="nav-links" id="navLinks">
-          <li><a href="#hero" class="active" aria-current="true">Home</a></li>
+          <li><a href="#hero" class="active" aria-current="location">Home</a></li>
+          <li><a href="#projects">Work</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#skills">Skills</a></li>
-          <li><a href="#projects">Projects</a></li>
           <li><a href="#research">Research</a></li>
           <li><a href="#achievements">Achievements</a></li>
           <li><a href="#experience">Experience</a></li>
           <li><a href="#education">Education</a></li>
+          <li class="nav-contact"><a href="#contact">Contact</a></li>
         </ul>
       </nav>
       <div class="nav-right">
         <button class="sq-btn" id="themeBtn" type="button" aria-label="Change color theme"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg></button>
-        <a class="hire" href="#contact">Hire Me <span aria-hidden="true">→</span></a>
+        <a class="hire" href="#contact">Contact <span aria-hidden="true">→</span></a>
         <button class="sq-btn menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navPill" aria-label="Open menu"><svg class="ic i-bars"><use href="#i-bars"/></svg><svg class="ic i-x"><use href="#i-x"/></svg></button>
       </div>
     </div>
@@ -81,28 +82,187 @@
   <main id="main">
     <!-- ================= HERO ================= -->
     <section class="hero wrap" id="hero">
-      <div class="hero-head">
-        <span class="badge reveal" style="--d:80ms"><i class="dot-live"></i>Available for Work</span>
-        <h1 class="hero-name reveal" style="--d:190ms">Razib <span class="grad">Miah</span></h1>
-      </div>
-      <div class="hero-stage">
-        <div class="hero-left">
-          <p class="roles reveal" style="--d:300ms"><span>Full-Stack Engineer</span> <b aria-hidden="true">·</b> <span>AI/ML Engineer</span> <b aria-hidden="true">·</b> <span>Quantum ML</span></p>
-          <p class="typed-line reveal" style="--d:410ms"><span class="sr-only">Turning ideas into fast software, smart AI and quantum machine learning.</span><span aria-hidden="true"><span id="typed">Turning Ideas into Fast Software</span><span class="caret"></span></span></p>
-          <p class="hero-copy reveal" style="--d:520ms">I build fast web products, train AI models and explore how quantum computing can make machine learning smarter.</p>
-          <div class="reveal" style="--d:630ms"><a class="btn btn-grad" href="#contact">Let's Collaborate <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+      <div class="hero-left">
+        <span class="badge hero-enter"><i class="dot-live" aria-hidden="true"></i>Available for work</span>
+        <h1 class="hero-name hero-enter" style="--enter:70ms">Razib <span class="grad">Miah</span></h1>
+        <p class="hero-role hero-enter" style="--enter:130ms">Full-stack &amp; AI/ML engineer</p>
+        <p class="hero-copy hero-enter" style="--enter:190ms">I build web products and machine learning systems, and explore how quantum computing can help solve ML problems.</p>
+        <div class="hero-actions hero-enter" style="--enter:250ms">
+          <a class="btn btn-grad" href="#projects">View selected work <svg class="ic" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+          <a class="btn btn-ghost" href="#contact">Get in touch <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
-        <figure class="hero-figure is-portrait">
-          <span class="sun-wrap" aria-hidden="true"><span class="sun-glow"></span><span class="sun-ring"><i class="sun-sat"></i></span></span>
-          <span class="portrait-ring"><img class="portrait" src="assets/razib-portrait.webp" srcset="assets/razib-portrait-480.webp 480w, assets/razib-portrait.webp 920w" sizes="(max-width:900px) 360px, (min-width:2200px) 560px, 470px" alt="Portrait of Razib Miah" width="920" height="920" decoding="async"><img class="portrait portrait-light" src="assets/razib-portrait-light.webp" srcset="assets/razib-portrait-light-480.webp 480w, assets/razib-portrait-light.webp 920w" sizes="(max-width:900px) 360px, (min-width:2200px) 560px, 470px" alt="" width="920" height="920" decoding="async" fetchpriority="high"></span>
-        </figure>
-        <div class="follow-rail reveal" style="--d:740ms">
-          <span class="follow-label">Follow</span>
-          <span class="follow-line" aria-hidden="true"></span>
+        <div class="follow-rail hero-enter" style="--enter:310ms" aria-label="Find Razib online">
           <a class="rail-btn" href="https://www.linkedin.com/in/razibr246" target="_blank" rel="noopener" aria-label="LinkedIn"><svg class="ic"><use href="#i-linkedin"/></svg></a>
           <a class="rail-btn" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="GitHub"><svg class="ic"><use href="#i-github"/></svg></a>
           <a class="rail-btn" href="https://m.me/razibr246" target="_blank" rel="noopener" aria-label="Message me on Messenger"><svg class="ic"><use href="#i-messenger"/></svg></a>
         </div>
+      </div>
+      <figure class="hero-figure hero-enter" style="--enter:130ms">
+        <div class="portrait-top" aria-hidden="true"><span>PORTFOLIO</span><svg class="ic"><use href="#i-spark"/></svg></div>
+        <span class="portrait-ring"><img class="portrait" src="assets/razib-portrait.webp" srcset="assets/razib-portrait-480.webp 480w, assets/razib-portrait.webp 920w" sizes="(max-width:760px) 78vw, (max-width:1200px) 42vw, 550px" alt="Portrait of Razib Miah" width="920" height="920" decoding="async"><img class="portrait portrait-light" src="assets/razib-portrait-light.webp" srcset="assets/razib-portrait-light-480.webp 480w, assets/razib-portrait-light.webp 920w" sizes="(max-width:760px) 78vw, (max-width:1200px) 42vw, 550px" alt="" width="920" height="920" decoding="async" fetchpriority="high"></span>
+        <figcaption class="portrait-caption"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>Dhaka, Bangladesh</figcaption>
+      </figure>
+    </section>
+
+    <!-- ================= PROJECTS ================= -->
+    <section class="sec" id="projects">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="eyebrow reveal">Portfolio</span>
+          <h2 class="reveal" style="--d:70ms">Selected <em>work</em></h2>
+        </div>
+        <article class="proj-card proj-feature reveal" id="dlas">
+          <div class="thumb th-shot" style="--tint:var(--ok)">
+            <img src="assets/project-dlas.webp" srcset="assets/project-dlas-720.webp 720w, assets/project-dlas.webp 1440w" sizes="(max-width:760px) 92vw, (max-width:1200px) 52vw, 650px" alt="Screenshot of the Digital Legal Aid System website" width="1440" height="810" loading="lazy" decoding="async">
+            <span class="map-chip"><i></i>Live · Bangla voice agent · 16699</span>
+          </div>
+          <div class="pc-body">
+            <span class="pc-num">Featured project</span>
+            <h3>Digital Legal Aid System</h3>
+            <p class="pc-meta">2026 · Gov-tech platform</p>
+            <p class="pc-desc">Voice-first legal aid platform for Bangladesh. Citizens call a Bangla voice agent to report a problem and get a case ID, then track it online while officers, lawyers and mediators handle it in their own portals.</p>
+            <ul class="tags"><li>Next.js</li><li>TypeScript</li><li>Cloudflare Workers</li><li>Voice AI</li></ul>
+            <div class="pc-actions"><a class="btn btn-ghost" href="https://github.com/razibr246/Digital-Legal-Aid-System" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg>Source code</a><a class="btn btn-grad" href="https://legal-voice-agent.adribmahmud.workers.dev/" target="_blank" rel="noopener" aria-label="View the DLAS live site">Live site <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+          </div>
+        </article>
+        <details class="concepts">
+          <summary class="concept-summary">
+            <span><strong>Explore project concepts</strong><small>8 mockups across software, AI and quantum ML</small></span>
+            <svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg>
+          </summary>
+          <div class="concept-grid">
+            <article class="proj-card">
+              <div class="thumb" style="--tint:var(--a2)" aria-hidden="true">
+                <div class="ledger">
+                  <div class="row head"><span>Today · Mirpur shop</span><span>● Synced</span></div>
+                  <div class="row"><span>Rice, 25 kg</span><b>৳ 1,850</b></div>
+                  <div class="row"><span>Tea leaves</span><b>৳ 420</b></div>
+                  <div class="row"><span>Mobile wallet in</span><b class="pos">+৳ 3,000</b></div>
+                  <div class="row total"><span>Balance</span><b class="grad">৳ 12,640</b></div>
+                </div>
+              </div>
+              <div class="pc-body">
+                <h3>Ledgerline</h3>
+                <p class="pc-meta">Fintech</p>
+                <p class="pc-desc">Bookkeeping app for small shops with offline-first sync and mobile-wallet reconciliation. Two cashiers can sell the same stock at once without conflicts.</p>
+                <ul class="tags"><li>React Native</li><li>Go</li><li>PostgreSQL</li><li>CRDT</li></ul>
+              </div>
+            </article>
+            <article class="proj-card">
+              <div class="thumb" aria-hidden="true">
+                <span class="th-label">trace 7f3a91 · GET /orders</span>
+                <div class="flame">
+                  <div class="fr"><span class="fb" style="--x:0%;--w:100%;--c:var(--fl-a)">GET /orders · 182 ms</span></div>
+                  <div class="fr"><span class="fb" style="--x:0%;--w:12%;--c:var(--fl-c)">auth</span><span class="fb" style="--x:12.6%;--w:61.8%;--c:var(--fl-b)">db.query · 121 ms</span><span class="fb" style="--x:75%;--w:25%;--c:var(--fl-a)">render · 41 ms</span></div>
+                  <div class="fr"><span class="fb" style="--x:12.6%;--w:13.8%;--c:var(--fl-c)">pool</span><span class="fb hot" style="--x:27%;--w:47.4%;--c:var(--fl-hot)">SELECT orders · 96 ms</span><span class="fb" style="--x:75%;--w:12%;--c:var(--fl-c)">json</span></div>
+                  <div class="fr"><span class="fb hot" style="--x:27%;--w:36%;--c:var(--fl-hot)">seq scan · 88 ms</span></div>
+                </div>
+              </div>
+              <div class="pc-body">
+                <h3>Tracewell</h3>
+                <p class="pc-meta">Developer tools</p>
+                <p class="pc-desc">Open-source request tracer for Node services. One line of middleware records slow queries and draws a flame graph for every request.</p>
+                <ul class="tags"><li>TypeScript</li><li>Node.js</li><li>OpenTelemetry</li></ul>
+              </div>
+            </article>
+            <article class="proj-card">
+              <div class="thumb" style="--tint:var(--a2)" aria-hidden="true">
+                <svg class="map" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+                  <defs><linearGradient id="routeGrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" style="stop-color:var(--a2)"/><stop offset="1" style="stop-color:var(--a1)"/></linearGradient></defs>
+                  <g class="roads"><path d="M-10 132 L330 112"/><path d="M-10 58 L330 74"/><path d="M84 -10 L104 190"/><path d="M196 -10 L222 190"/><path d="M262 -10 L300 190"/></g>
+                  <path class="route" d="M36 150 C 70 140 84 112 104 100 S 160 84 206 80 S 254 54 286 38"/>
+                  <circle class="stop" cx="36" cy="150" r="5"/>
+                  <circle class="stop" cx="104" cy="100" r="4"/>
+                  <circle class="stop" cx="206" cy="80" r="4"/>
+                  <circle class="ping" cx="286" cy="38" r="6"/>
+                  <circle class="dest" cx="286" cy="38" r="6"/>
+                </svg>
+                <span class="map-chip"><i></i>Rider 14 · reassigned in 6 s</span>
+              </div>
+              <div class="pc-body">
+                <h3>Routebox</h3>
+                <p class="pc-meta">Logistics</p>
+                <p class="pc-desc">Live dispatch dashboard for a courier network across 14 districts. Riders get reassigned within seconds of a cancellation.</p>
+                <ul class="tags"><li>Next.js</li><li>Redis Streams</li><li>PostGIS</li></ul>
+              </div>
+            </article>
+            <article class="proj-card">
+              <div class="thumb th-ocr" style="--tint:var(--a2)" aria-hidden="true">
+                <span class="th-label">sample 0421 · model v3</span>
+                <div class="letters"><span>অ</span><span class="hit">আ<em>আ · 0.97</em></span><span>ক</span></div>
+              </div>
+              <div class="pc-body">
+                <h3>Bornomala</h3>
+                <p class="pc-meta">Applied ML</p>
+                <p class="pc-desc">Bangla handwriting recognizer for early-grade classrooms. Runs offline on low-end Android phones and scores letters as children write.</p>
+                <ul class="tags"><li>Python</li><li>PyTorch</li><li>Flutter</li></ul>
+              </div>
+            </article>
+            <article class="proj-card">
+              <div class="thumb" style="--tint:var(--ok)" aria-hidden="true">
+                <div class="up">
+                  <div class="up-top"><span>api.dorpon.dev</span><b>99.98% uptime</b></div>
+                  <div class="bars"><i style="--at:17"></i><i class="bad" style="--at:24"></i></div>
+                  <div class="up-axis"><span>90 days ago</span><span>Today</span></div>
+                  <svg class="spark" viewBox="0 0 200 40" preserveAspectRatio="none"><polyline points="0,28 12,26 24,30 36,22 48,24 60,18 72,26 84,20 96,24 108,8 120,22 132,20 144,24 156,18 168,22 180,16 200,20"/></svg>
+                </div>
+              </div>
+              <div class="pc-body">
+                <h3>Dorpon</h3>
+                <p class="pc-meta">Monitoring</p>
+                <p class="pc-desc">Self-hosted status page and uptime monitor. Checks endpoints from three regions and posts incidents to Slack before customers notice.</p>
+                <ul class="tags"><li>Go</li><li>SQLite</li><li>HTMX</li></ul>
+              </div>
+            </article>
+            <article class="proj-card">
+              <div class="thumb" aria-hidden="true">
+                <div class="chat-mini">
+                  <p class="bub me">Where is order #4821?</p>
+                  <p class="bub bot">Shipped this morning. It reaches Mirpur by 5 pm today.<span class="src">2 sources · order DB, courier API</span></p>
+                </div>
+              </div>
+              <div class="pc-body">
+                <h3>Kotha</h3>
+                <p class="pc-meta">Conversational AI</p>
+                <p class="pc-desc">Support agent that answers order questions in Bangla and English, grounded in a shop's own help docs and live order data.</p>
+                <ul class="tags"><li>Python</li><li>FastAPI</li><li>pgvector</li><li>LLM</li></ul>
+              </div>
+            </article>
+            <article class="proj-card">
+              <div class="thumb" style="--tint:var(--a2)" aria-hidden="true">
+                <div class="mini-code">
+                  <p><span class="tk">import</span> { toWords } <span class="tk">from</span> <span class="ts">"shonkha"</span>;</p>
+                  <p>toWords(<span class="tn">500</span>, { currency: <span class="tk">true</span> });</p>
+                  <p class="out"><span class="tc">// →</span><span class="bn">পাঁচশো টাকা</span></p>
+                </div>
+              </div>
+              <div class="pc-body">
+                <h3>Shonkha</h3>
+                <p class="pc-meta">Developer tools</p>
+                <p class="pc-desc">Tiny library that turns numbers into Bangla words and taka amounts for invoices, receipts and cheques.</p>
+                <ul class="tags"><li>TypeScript</li><li>npm</li><li>Unicode</li></ul>
+              </div>
+            </article>
+            <article class="proj-card">
+              <div class="thumb" style="--tint:var(--blue)" aria-hidden="true">
+                <svg class="qk" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+                  <path class="qk-a" d="M0 0H320V22C290 40 250 60 200 70C140 82 120 128 40 160L0 175Z"/>
+                  <path class="qk-b" d="M0 175L40 160C120 128 140 82 200 70C250 60 290 40 320 22V180H0Z"/>
+                  <path class="qk-line" d="M0 175L40 160C120 128 140 82 200 70C250 60 290 40 320 22"/>
+                  <g class="qk-pa"><circle cx="60" cy="40" r="5"/><circle cx="95" cy="70" r="5"/><circle cx="130" cy="35" r="5"/><circle cx="170" cy="50" r="5"/><circle cx="220" cy="30" r="5"/><circle cx="262" cy="18" r="5"/><circle cx="70" cy="110" r="5"/><circle cx="150" cy="62" r="5"/></g>
+                  <g class="qk-pb"><circle cx="120" cy="150" r="5"/><circle cx="200" cy="120" r="5"/><circle cx="250" cy="100" r="5"/><circle cx="290" cy="80" r="5"/><circle cx="170" cy="140" r="5"/><circle cx="240" cy="152" r="5"/><circle cx="92" cy="166" r="5"/><circle cx="300" cy="132" r="5"/></g>
+                </svg>
+                <span class="map-chip"><i></i>quantum kernel · 4 qubits</span>
+              </div>
+              <div class="pc-body">
+                <h3>Qubit Lens</h3>
+                <p class="pc-meta">Quantum ML</p>
+                <p class="pc-desc">Hybrid quantum-classical classifier that compares a quantum kernel with a classical SVM on small datasets, with circuit diagrams and decision-boundary plots.</p>
+                <ul class="tags"><li>Qiskit</li><li>PennyLane</li><li>scikit-learn</li></ul>
+              </div>
+            </article>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -110,12 +270,11 @@
     <section class="sec" id="about">
       <div class="wrap">
         <div class="sec-head">
-          <div class="ghost" aria-hidden="true"><span>About</span></div>
           <span class="eyebrow reveal">Who I am</span>
           <h2 class="reveal" style="--d:100ms">About <em>Me</em></h2>
         </div>
         <div class="about">
-          <div class="about-text reveal from-left">
+          <div class="about-text reveal">
             <p class="about-lead">I'm <strong class="grad">Razib Miah</strong>, a passionate <strong>Full-Stack Engineer</strong> who also works in <strong>AI/ML</strong> and <strong>Quantum Machine Learning (QML)</strong>. I build fast, reliable web products, train models that make them smarter, and explore how <strong>quantum computing</strong> can push machine learning further.</p>
             <ul class="focus-chips" aria-label="Focus areas">
               <li><svg class="ic"><use href="#i-code"/></svg>Full-stack engineering</li>
@@ -140,13 +299,13 @@
             </div>
             <button class="btn btn-line btn-sm" type="button" data-toggle="aboutMore" data-more="View Details" data-less="Show Less" aria-expanded="false" aria-controls="aboutMore"><span class="lbl">View Details</span><svg class="ic ic-chev"><use href="#i-chev"/></svg></button>
           </div>
-          <div class="about-card reveal from-right">
+          <div class="about-card reveal">
             <figure class="code" aria-label="Profile summary written as code">
               <div class="code-bar"><span class="dots" aria-hidden="true"><b></b><b></b><b></b></span><span class="code-tab">profile.py</span><span class="code-lang">Python</span></div>
 <pre><code><span class="l"><span class="tc"># the short version</span></span>
 <span class="l"><span class="tk">class</span> Razib:</span>
 <span class="l">    name = <span class="ts">"Razib Miah"</span></span>
-<span class="l">    role = <span class="ts">"<span id="roleTyped">Full-Stack Engineer</span><span class="tcaret" aria-hidden="true"></span>"</span></span>
+<span class="l">    role = <span class="ts">"Full-Stack Engineer"</span></span>
 <span class="l">    based = <span class="ts">"Dhaka, Bangladesh"</span></span>
 <span class="l">    builds = [<span class="ts">"web apps"</span>, <span class="ts">"APIs"</span>, <span class="ts">"ML models"</span>]</span>
 <span class="l">    exploring = [<span class="ts">"quantum ML"</span>, <span class="ts">"quantum circuits"</span>]</span>
@@ -199,7 +358,6 @@
     <section class="sec" id="skills">
       <div class="wrap">
         <div class="sec-head">
-          <div class="ghost" aria-hidden="true"><span>Skills</span></div>
           <span class="eyebrow reveal">What I do</span>
           <h2 class="reveal" style="--d:100ms">My <em>Skills</em></h2>
         </div>
@@ -355,184 +513,10 @@
       </div>
     </section>
 
-    <!-- ================= PROJECTS ================= -->
-    <div class="glow-line" aria-hidden="true"></div>
-    <section class="sec" id="projects">
-      <div class="wrap">
-        <div class="sec-head">
-          <div class="ghost" aria-hidden="true"><span>Projects</span></div>
-          <span class="eyebrow reveal">What I've built</span>
-          <h2 class="reveal" style="--d:100ms">My <em>Projects</em></h2>
-        </div>
-      </div>
-      <div class="proj-row reveal" id="projRow1">
-        <div class="track">
-          <article class="proj-card">
-            <div class="thumb th-shot" style="--tint:var(--ok)" aria-hidden="true">
-              <img src="assets/project-dlas.webp" srcset="assets/project-dlas-720.webp 720w, assets/project-dlas.webp 1440w" sizes="(max-width:520px) 84vw, 27rem" alt="" width="1440" height="810" loading="lazy" decoding="async">
-              <span class="map-chip"><i></i>Live · Bangla voice agent · 16699</span>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">01</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246/Digital-Legal-Aid-System" target="_blank" rel="noopener" aria-label="DLAS source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://legal-voice-agent.adribmahmud.workers.dev/" target="_blank" rel="noopener" aria-label="View the DLAS live site"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>DLAS · Digital Legal Aid System</h3>
-              <p class="pc-meta">2026 · Gov-tech platform</p>
-              <p class="pc-desc">Voice-first legal aid platform for Bangladesh. Citizens call a Bangla voice agent to report a problem and get a case ID, then track it online while officers, lawyers and mediators handle it in their own portals.</p>
-              <ul class="tags"><li>Next.js</li><li>TypeScript</li><li>Cloudflare Workers</li><li>Voice AI</li></ul>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="thumb" style="--tint:var(--a2)" aria-hidden="true">
-              <div class="ledger">
-                <div class="row head"><span>Today · Mirpur shop</span><span>● Synced</span></div>
-                <div class="row"><span>Rice, 25 kg</span><b>৳ 1,850</b></div>
-                <div class="row"><span>Tea leaves</span><b>৳ 420</b></div>
-                <div class="row"><span>Mobile wallet in</span><b class="pos">+৳ 3,000</b></div>
-                <div class="row total"><span>Balance</span><b class="grad">৳ 12,640</b></div>
-              </div>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">02</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="Ledgerline source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://example.com/" target="_blank" rel="noopener" aria-label="View the Ledgerline site"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>Ledgerline</h3>
-              <p class="pc-meta">2026 · Lead engineer</p>
-              <p class="pc-desc">Bookkeeping app for small shops with offline-first sync and mobile-wallet reconciliation. Two cashiers can sell the same stock at once without conflicts.</p>
-              <ul class="tags"><li>React Native</li><li>Go</li><li>PostgreSQL</li><li>CRDT</li></ul>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="thumb" aria-hidden="true">
-              <span class="th-label">trace 7f3a91 · GET /orders</span>
-              <div class="flame">
-                <div class="fr"><span class="fb" style="--x:0%;--w:100%;--c:var(--fl-a)">GET /orders · 182 ms</span></div>
-                <div class="fr"><span class="fb" style="--x:0%;--w:12%;--c:var(--fl-c)">auth</span><span class="fb" style="--x:12.6%;--w:61.8%;--c:var(--fl-b)">db.query · 121 ms</span><span class="fb" style="--x:75%;--w:25%;--c:var(--fl-a)">render · 41 ms</span></div>
-                <div class="fr"><span class="fb" style="--x:12.6%;--w:13.8%;--c:var(--fl-c)">pool</span><span class="fb hot" style="--x:27%;--w:47.4%;--c:var(--fl-hot)">SELECT orders · 96 ms</span><span class="fb" style="--x:75%;--w:12%;--c:var(--fl-c)">json</span></div>
-                <div class="fr"><span class="fb hot" style="--x:27%;--w:36%;--c:var(--fl-hot)">seq scan · 88 ms</span></div>
-              </div>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">03</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="Tracewell source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://example.com/" target="_blank" rel="noopener" aria-label="View the Tracewell docs"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>Tracewell</h3>
-              <p class="pc-meta">2025 · Creator and maintainer</p>
-              <p class="pc-desc">Open-source request tracer for Node services. One line of middleware records slow queries and draws a flame graph for every request.</p>
-              <ul class="tags"><li>TypeScript</li><li>Node.js</li><li>OpenTelemetry</li></ul>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="thumb" style="--tint:var(--a2)" aria-hidden="true">
-              <svg class="map" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
-                <defs><linearGradient id="routeGrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" style="stop-color:var(--a2)"/><stop offset="1" style="stop-color:var(--a1)"/></linearGradient></defs>
-                <g class="roads"><path d="M-10 132 L330 112"/><path d="M-10 58 L330 74"/><path d="M84 -10 L104 190"/><path d="M196 -10 L222 190"/><path d="M262 -10 L300 190"/></g>
-                <path class="route" d="M36 150 C 70 140 84 112 104 100 S 160 84 206 80 S 254 54 286 38"/>
-                <circle class="stop" cx="36" cy="150" r="5"/>
-                <circle class="stop" cx="104" cy="100" r="4"/>
-                <circle class="stop" cx="206" cy="80" r="4"/>
-                <circle class="ping" cx="286" cy="38" r="6"/>
-                <circle class="dest" cx="286" cy="38" r="6"/>
-              </svg>
-              <span class="map-chip"><i></i>Rider 14 · reassigned in 6 s</span>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">04</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="Routebox source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://example.com/" target="_blank" rel="noopener" aria-label="View the Routebox case study"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>Routebox</h3>
-              <p class="pc-meta">2024 · Team of five</p>
-              <p class="pc-desc">Live dispatch dashboard for a courier network across 14 districts. Riders get reassigned within seconds of a cancellation.</p>
-              <ul class="tags"><li>Next.js</li><li>Redis Streams</li><li>PostGIS</li></ul>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="proj-row rev reveal" id="projRow2" hidden>
-        <div class="track">
-          <article class="proj-card">
-            <div class="thumb th-ocr" style="--tint:var(--a2)" aria-hidden="true">
-              <span class="th-label">sample 0421 · model v3</span>
-              <div class="letters"><span>অ</span><span class="hit">আ<em>আ · 0.97</em></span><span>ক</span></div>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">05</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="Bornomala source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://example.com/" target="_blank" rel="noopener" aria-label="View the Bornomala demo"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>Bornomala</h3>
-              <p class="pc-meta">2023 · Hackathon winner</p>
-              <p class="pc-desc">Bangla handwriting recognizer for early-grade classrooms. Runs offline on low-end Android phones and scores letters as children write.</p>
-              <ul class="tags"><li>Python</li><li>PyTorch</li><li>Flutter</li></ul>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="thumb" style="--tint:var(--ok)" aria-hidden="true">
-              <div class="up">
-                <div class="up-top"><span>api.dorpon.dev</span><b>99.98% uptime</b></div>
-                <div class="bars"><i style="--at:17"></i><i class="bad" style="--at:24"></i></div>
-                <div class="up-axis"><span>90 days ago</span><span>Today</span></div>
-                <svg class="spark" viewBox="0 0 200 40" preserveAspectRatio="none"><polyline points="0,28 12,26 24,30 36,22 48,24 60,18 72,26 84,20 96,24 108,8 120,22 132,20 144,24 156,18 168,22 180,16 200,20"/></svg>
-              </div>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">06</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="Dorpon source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://example.com/" target="_blank" rel="noopener" aria-label="View the Dorpon demo"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>Dorpon</h3>
-              <p class="pc-meta">2025 · Side project</p>
-              <p class="pc-desc">Self-hosted status page and uptime monitor. Checks endpoints from three regions and posts incidents to Slack before customers notice.</p>
-              <ul class="tags"><li>Go</li><li>SQLite</li><li>HTMX</li></ul>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="thumb" aria-hidden="true">
-              <div class="chat-mini">
-                <p class="bub me">Where is order #4821?</p>
-                <p class="bub bot">Shipped this morning. It reaches Mirpur by 5 pm today.<span class="src">2 sources · order DB, courier API</span></p>
-              </div>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">07</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="Kotha source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://example.com/" target="_blank" rel="noopener" aria-label="View the Kotha demo"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>Kotha</h3>
-              <p class="pc-meta">2026 · AI side project</p>
-              <p class="pc-desc">Support agent that answers order questions in Bangla and English, grounded in a shop's own help docs and live order data.</p>
-              <ul class="tags"><li>Python</li><li>FastAPI</li><li>pgvector</li><li>LLM</li></ul>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="thumb" style="--tint:var(--a2)" aria-hidden="true">
-              <div class="mini-code">
-                <p><span class="tk">import</span> { toWords } <span class="tk">from</span> <span class="ts">"shonkha"</span>;</p>
-                <p>toWords(<span class="tn">500</span>, { currency: <span class="tk">true</span> });</p>
-                <p class="out"><span class="tc">// →</span><span class="bn">পাঁচশো টাকা</span></p>
-              </div>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">08</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="Shonkha source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://example.com/" target="_blank" rel="noopener" aria-label="View the Shonkha docs"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>Shonkha</h3>
-              <p class="pc-meta">2024 · Open-source library</p>
-              <p class="pc-desc">Tiny library that turns numbers into Bangla words and taka amounts for invoices, receipts and cheques.</p>
-              <ul class="tags"><li>TypeScript</li><li>npm</li><li>Unicode</li></ul>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="thumb" style="--tint:var(--blue)" aria-hidden="true">
-              <svg class="qk" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
-                <path class="qk-a" d="M0 0H320V22C290 40 250 60 200 70C140 82 120 128 40 160L0 175Z"/>
-                <path class="qk-b" d="M0 175L40 160C120 128 140 82 200 70C250 60 290 40 320 22V180H0Z"/>
-                <path class="qk-line" d="M0 175L40 160C120 128 140 82 200 70C250 60 290 40 320 22"/>
-                <g class="qk-pa"><circle cx="60" cy="40" r="5"/><circle cx="95" cy="70" r="5"/><circle cx="130" cy="35" r="5"/><circle cx="170" cy="50" r="5"/><circle cx="220" cy="30" r="5"/><circle cx="262" cy="18" r="5"/><circle cx="70" cy="110" r="5"/><circle cx="150" cy="62" r="5"/></g>
-                <g class="qk-pb"><circle cx="120" cy="150" r="5"/><circle cx="200" cy="120" r="5"/><circle cx="250" cy="100" r="5"/><circle cx="290" cy="80" r="5"/><circle cx="170" cy="140" r="5"/><circle cx="240" cy="152" r="5"/><circle cx="92" cy="166" r="5"/><circle cx="300" cy="132" r="5"/></g>
-              </svg>
-              <span class="map-chip"><i></i>quantum kernel · 4 qubits</span>
-            </div>
-            <div class="pc-body">
-              <div class="pc-top"><span class="pc-num">09</span><div class="pc-actions"><a class="pc-ico" href="https://github.com/razibr246" target="_blank" rel="noopener" aria-label="Qubit Lens source code on GitHub"><svg class="ic"><use href="#i-github"/></svg></a><a class="pc-view" href="https://example.com/" target="_blank" rel="noopener" aria-label="View the Qubit Lens notebook"><svg class="ic"><use href="#i-arrow"/></svg>View Site</a></div></div>
-              <h3>Qubit Lens</h3>
-              <p class="pc-meta">2026 · Quantum ML experiment</p>
-              <p class="pc-desc">Hybrid quantum-classical classifier that compares a quantum kernel with a classical SVM on small datasets, with circuit diagrams and decision-boundary plots.</p>
-              <ul class="tags"><li>Qiskit</li><li>PennyLane</li><li>scikit-learn</li></ul>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="proj-foot"><button class="btn btn-grad" id="moreProj" type="button" aria-expanded="false" aria-controls="projRow2"><span class="lbl">Show More Projects</span><svg class="ic ic-chev"><use href="#i-chev"/></svg></button></div>
-    </section>
-
     <!-- ================= RESEARCH ================= -->
-    <div class="glow-line" aria-hidden="true"></div>
     <section class="sec" id="research">
       <div class="wrap">
         <div class="sec-head">
-          <div class="ghost" aria-hidden="true"><span>Research</span></div>
           <span class="eyebrow reveal">What I'm exploring</span>
           <h2 class="reveal" style="--d:100ms">My <em>Research</em></h2>
         </div>
@@ -550,7 +534,7 @@
             <h3>Applied AI for Bangladesh</h3>
             <p class="rs-desc">Machine learning and voice AI for public services, such as <strong>DLAS</strong>, a Bangla voice agent for legal aid that placed <strong>2nd Runner-up at the Legal-Tech Hackathon 2026</strong>.</p>
             <ul class="tags"><li>Python</li><li>PyTorch</li><li>Voice AI</li></ul>
-            <a class="rs-link" href="#projects">See the DLAS project<svg class="ic"><use href="#i-arrow-r"/></svg></a>
+            <a class="rs-link" href="#dlas">See the DLAS project<svg class="ic"><use href="#i-arrow-r"/></svg></a>
           </article>
           <article class="rs-card reveal" style="--c:var(--a1);--c-ink:var(--a1-ink);--d:240ms">
             <div class="rs-top"><span class="rs-ic" aria-hidden="true"><svg class="ic"><use href="#i-vr"/></svg></span><span class="tl-date"><i></i>Jul 2026 – Present</span></div>
@@ -569,11 +553,9 @@
     </section>
 
     <!-- ================= ACHIEVEMENTS ================= -->
-    <div class="glow-line" aria-hidden="true"></div>
     <section class="sec" id="achievements">
       <div class="wrap">
         <div class="sec-head">
-          <div class="ghost" aria-hidden="true"><span>Wins</span></div>
           <span class="eyebrow reveal">My wins</span>
           <h2 class="reveal" style="--d:100ms"><em>Achievements</em></h2>
         </div>
@@ -614,11 +596,9 @@
     </section>
 
     <!-- ================= EXPERIENCE ================= -->
-    <div class="glow-line" aria-hidden="true"></div>
     <section class="sec" id="experience">
       <div class="wrap">
         <div class="sec-head">
-          <div class="ghost" aria-hidden="true"><span>Journey</span></div>
           <span class="eyebrow reveal">My journey</span>
           <h2 class="reveal" style="--d:100ms">My <em>Experiences</em></h2>
         </div>
@@ -627,7 +607,7 @@
           <article class="tl-item" style="--c:var(--blue);--c-ink:var(--blue-ink)">
             <div class="tl-node" aria-hidden="true"><svg class="ic"><use href="#i-atom"/></svg></div>
             <div class="tl-side" aria-hidden="true">2026</div>
-            <div class="tl-card reveal from-left">
+            <div class="tl-card reveal">
               <div class="tl-block">
                 <div class="tl-top"><span class="cat">Quantum · Research</span><span class="tl-date"><i></i>2026 – Present</span></div>
                 <h3>Exploring Quantum Computing &amp; QML</h3>
@@ -643,7 +623,7 @@
           <article class="tl-item" style="--c:var(--a2);--c-ink:var(--a2-ink)">
             <div class="tl-node" aria-hidden="true"><svg class="ic"><use href="#i-spark"/></svg></div>
             <div class="tl-side" aria-hidden="true">2026</div>
-            <div class="tl-card reveal from-right">
+            <div class="tl-card reveal">
               <div class="tl-block">
                 <div class="tl-top"><span class="cat">AI/ML · Projects</span><span class="tl-date"><i></i>2026 – Present</span></div>
                 <h3>Learning AI/ML &amp; Building Projects</h3>
@@ -659,7 +639,7 @@
           <article class="tl-item" style="--c:var(--a1);--c-ink:var(--a1-ink)">
             <div class="tl-node" aria-hidden="true"><svg class="ic"><use href="#i-code"/></svg></div>
             <div class="tl-side" aria-hidden="true">2025</div>
-            <div class="tl-card reveal from-left">
+            <div class="tl-card reveal">
               <div class="tl-block">
                 <div class="tl-top"><span class="cat">Web · Full-stack</span><span class="tl-date"><i></i>2025 – Present</span></div>
                 <h3>Learning Full-Stack Development</h3>
@@ -675,7 +655,7 @@
           <article class="tl-item" style="--c:var(--a2);--c-ink:var(--a2-ink)">
             <div class="tl-node" aria-hidden="true"><svg class="ic"><use href="#i-users"/></svg></div>
             <div class="tl-side" aria-hidden="true">2025</div>
-            <div class="tl-card reveal from-right">
+            <div class="tl-card reveal">
               <div class="tl-block">
                 <div class="tl-top"><span class="cat">Clubs · DIU</span><span class="tl-date"><i></i>May 2025 – Present</span></div>
                 <h3>Club Activities</h3>
@@ -707,11 +687,9 @@
     </section>
 
     <!-- ================= EDUCATION ================= -->
-    <div class="glow-line" aria-hidden="true"></div>
     <section class="sec" id="education">
       <div class="wrap">
         <div class="sec-head">
-          <div class="ghost" aria-hidden="true"><span>Study</span></div>
           <span class="eyebrow reveal">Where I study</span>
           <h2 class="reveal" style="--d:100ms">My <em>Education</em></h2>
         </div>
@@ -732,16 +710,14 @@
     </section>
 
     <!-- ================= CONTACT ================= -->
-    <div class="glow-line" aria-hidden="true"></div>
     <section class="sec" id="contact">
       <div class="wrap">
         <div class="sec-head">
-          <div class="ghost" aria-hidden="true"><span>Contact</span></div>
           <span class="eyebrow reveal">Say hello</span>
           <h2 class="reveal" style="--d:100ms">Get In <em>Touch</em></h2>
         </div>
         <div class="contact">
-          <div class="c-intro reveal from-left">
+          <div class="c-intro reveal">
             <p>Whether you have a product idea, an API that's too slow or a role to fill, I'd love to hear about it. I reply to every message within a day.</p>
             <ul class="c-links">
               <li class="c-row"><span class="c-ic"><svg class="ic"><use href="#i-mail"/></svg></span><span class="c-txt"><small>Email</small><span id="emailText">razibmiah2003<wbr>@gmail.com</span></span><button class="mini-btn" type="button" data-copy="email"><svg class="ic"><use href="#i-copy"/></svg>Copy</button></li>
@@ -750,7 +726,7 @@
               <li><a class="c-row" href="https://m.me/razibr246" target="_blank" rel="noopener"><span class="c-ic"><svg class="ic"><use href="#i-messenger"/></svg></span><span class="c-txt"><small>Messenger</small><span>Say hi</span></span><svg class="ic c-arrow"><use href="#i-arrow"/></svg></a></li>
             </ul>
           </div>
-          <form class="form reveal from-right" id="contactForm" novalidate data-endpoint="">
+          <form class="form reveal" id="contactForm" novalidate data-endpoint="">
             <div class="row2">
               <div class="field"><label for="cf-name">Your name</label><input id="cf-name" name="name" type="text" autocomplete="name" placeholder="Your name" aria-describedby="err-name"><span class="err" id="err-name" hidden></span></div>
               <div class="field"><label for="cf-email">Your email</label><input id="cf-email" name="email" type="email" autocomplete="email" placeholder="you@company.com" aria-describedby="err-email"><span class="err" id="err-email" hidden></span></div>
@@ -777,7 +753,7 @@
     <div class="foot-in">
       <nav aria-label="Footer">
         <h4>Navigation</h4>
-        <ul><li><a href="#hero">Home</a></li><li><a href="#about">About</a></li><li><a href="#skills">Skills</a></li><li><a href="#projects">Projects</a></li><li><a href="#research">Research</a></li><li><a href="#achievements">Achievements</a></li><li><a href="#experience">Experience</a></li><li><a href="#education">Education</a></li><li><a href="#contact">Contact</a></li></ul>
+        <ul><li><a href="#hero">Home</a></li><li><a href="#projects">Work</a></li><li><a href="#about">About</a></li><li><a href="#skills">Skills</a></li><li><a href="#research">Research</a></li><li><a href="#achievements">Achievements</a></li><li><a href="#experience">Experience</a></li><li><a href="#education">Education</a></li><li><a href="#contact">Contact</a></li></ul>
       </nav>
       <div>
         <h4>Socials</h4>
