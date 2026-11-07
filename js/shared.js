@@ -1,4 +1,4 @@
-/* Shared by every page: color theme, the "R" pointer and the photo gallery lightbox. */
+/* Shared by every page: color theme, glass effects and the photo gallery lightbox. */
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -34,7 +34,7 @@
   });
 
   /* ---------- liquid glass: a light that follows the pointer, and frosting over photos ---------- */
-  const glass = $$('.nav-pill, .nav .sq-btn, .hire, .brand, .rail-btn, .badge, .roles span, .dp-back, .dp-bar .sq-btn, .dp-float');
+  const glass = $$('.nav-pill, .nav .sq-btn, .hire, .brand, .rail-btn, .badge, .dp-back, .dp-bar .sq-btn, .dp-float');
   if (finePointer) glass.forEach(g => {
     g.addEventListener('pointermove', e => {
       const r = g.getBoundingClientRect();
@@ -64,76 +64,6 @@
   addEventListener('resize', queueBusy);
   addEventListener('load', checkBusy);
   checkBusy();
-
-  /* ---------- the main buttons lean toward the pointer ---------- */
-  if (finePointer && motion()) $$('.btn-grad, .hire, .rail-btn, .bot-fab, .nav .sq-btn, .dp-back, .dp-bar .sq-btn').forEach(el => {
-    const pull = el.classList.contains('btn-grad') ? 0.2 : 0.28;
-    el.addEventListener('pointermove', e => {
-      const r = el.getBoundingClientRect();
-      const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-      el.style.translate = (dx * pull).toFixed(1) + 'px ' + (dy * pull).toFixed(1) + 'px';
-    });
-    el.addEventListener('pointerleave', () => { el.style.translate = ''; });
-  });
-
-  /* ---------- "R" pointer: its tip is the exact click point; it shrinks to a dot over text ---------- */
-  if (finePointer && motion()) {
-    root.classList.add('has-cursor');
-    const cur = document.createElement('div');
-    cur.className = 'cursor';
-    cur.setAttribute('aria-hidden', 'true');
-    cur.innerHTML = '<span class="cursor-tip"><span class="cursor-r">R</span></span>';
-    document.body.appendChild(cur);
-    const TEXT = 'p, h1, h2, h3, h4, li, dt, dd, figcaption, blockquote, pre, code, small, label, .ach-desc, .tl-org';
-    const LINK = 'a, button, [role="tab"], summary, select';
-    const FIELD = 'input, textarea, [contenteditable="true"], .lb';
-    const tints = ['var(--trail-1)', 'var(--trail-2)', 'var(--trail-3)'];
-    let lastTrail = 0, px = 0, py = 0, raf = 0, mode = '';
-    const trail = (x, y) => {
-      const s = 4 + Math.random() * 7;
-      const d = document.createElement('span');
-      d.className = 'trail';
-      d.style.width = s + 'px';
-      d.style.height = s + 'px';
-      d.style.background = tints[Math.floor(Math.random() * tints.length)];
-      const at = 'translate3d(' + (x - s / 2) + 'px,' + (y - s / 2) + 'px,0)';
-      document.body.appendChild(d);
-      d.animate([{ opacity: 0.7, transform: at + ' scale(1)' }, { opacity: 0, transform: at + ' scale(.2)' }], { duration: 500, easing: 'ease-out' }).onfinish = () => d.remove();
-    };
-    const place = () => {
-      raf = 0;
-      cur.style.transform = 'translate3d(' + px + 'px,' + py + 'px,0)';
-    };
-    const setMode = m => {
-      if (m === mode) return;
-      cur.classList.remove('is-' + mode);
-      mode = m;
-      if (m) cur.classList.add('is-' + m);
-    };
-    document.addEventListener('mousemove', e => {
-      px = e.clientX;
-      py = e.clientY;
-      if (!raf) raf = requestAnimationFrame(place);
-      cur.classList.add('on');
-      const t = e.target instanceof Element ? e.target : null;
-      const m = !t ? '' : t.closest(FIELD) ? 'field' : t.closest(LINK) ? 'link' : t.closest(TEXT) ? 'text' : '';
-      setMode(m);
-      const now = performance.now();
-      if (!m && now - lastTrail > 45) { lastTrail = now; trail(px, py); }
-    }, { passive: true });
-    document.addEventListener('mousedown', e => {
-      cur.classList.add('down');
-      if (mode === 'field') return;
-      const r = document.createElement('span');
-      r.className = 'click-ring';
-      document.body.appendChild(r);
-      const at = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
-      r.animate([{ opacity: 0.7, transform: at + ' scale(.2)' }, { opacity: 0, transform: at + ' scale(1.4)' }], { duration: 450, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = () => r.remove();
-    });
-    document.addEventListener('mouseup', () => cur.classList.remove('down'));
-    document.addEventListener('mouseout', e => { if (!e.relatedTarget) cur.classList.remove('on'); });
-    addEventListener('blur', () => cur.classList.remove('on'));
-  }
 
   /* ---------- photo gallery lightbox ---------- */
   // Each [data-set] block is its own gallery; [data-full] items inside it are the photos, in order.
