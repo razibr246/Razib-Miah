@@ -47,11 +47,12 @@
   const ind = $('#navInd');
   const links = $$('#navLinks a');
   const hireBtn = $('.nav .hire');
-  const spySections = links.map(a => document.getElementById(a.hash.slice(1)));
+  // Contact has no tab of its own: while it's on screen, the blue drop steps aside and Hire Me lights up instead
+  const spySections = [...links.map(a => document.getElementById(a.hash.slice(1))), document.getElementById('contact')].filter(Boolean);
   let activeId = 'hero';
   function moveInd() {
     const a = links.find(l => l.classList.contains('active'));
-    if (!a || !a.offsetWidth || getComputedStyle(ind).display === 'none') return;
+    if (!a || getComputedStyle(ind).display === 'none') return;
     const pr = pill.getBoundingClientRect();
     const ar = a.getBoundingClientRect();
     pill.style.setProperty('--ind-x', (ar.left - pr.left - pill.clientLeft) + 'px');
@@ -64,13 +65,11 @@
     links.forEach(a => {
       const on = a.hash === '#' + id;
       a.classList.toggle('active', on);
-      if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+      if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
     });
-    const inPill = id !== 'contact';
+    const inPill = links.some(a => a.hash === '#' + id);
     pill.classList.toggle('ind-off', !inPill);
-    hireBtn.classList.toggle('is-current', id === 'contact');
-    if (id === 'contact') hireBtn.setAttribute('aria-current', 'location');
-    else hireBtn.removeAttribute('aria-current');
+    if (hireBtn) hireBtn.classList.toggle('is-current', id === 'contact');
     if (!inPill) return;
     moveInd();
     if (motion() && pill.classList.contains('ind-on')) {
@@ -86,36 +85,91 @@
     }
     return spySections[0].id;
   }
+  function spy() { setActive(spyId()); }
   function setMenu(open) {
     nav.classList.toggle('open', open);
     menuBtn.setAttribute('aria-expanded', String(open));
     menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
   }
   menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
-  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  links.forEach(a => a.addEventListener('click', () => setMenu(false)));
   document.addEventListener('click', e => {
     if (nav.classList.contains('open') && !nav.contains(e.target)) setMenu(false);
   });
 
-  /* ---------- reveal each section once ---------- */
-  if (hasIO) {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(({ isIntersecting, target }) => {
-        if (!isIntersecting) return;
-        target.classList.add('in');
-        io.unobserve(target);
+  /* ---------- typing ---------- */
+  function typeLoop(el, words, o) {
+    if (!el || !motion()) return;
+    let w = 0;
+    let txt = words[0];
+    let deleting = true;
+    const step = () => {
+      if (deleting) {
+        txt = txt.slice(0, -1);
+        el.textContent = txt;
+        if (!txt) { deleting = false; w = (w + 1) % words.length; setTimeout(step, 380); return; }
+        setTimeout(step, o.erase);
+        return;
+      }
+      txt = words[w].slice(0, txt.length + 1);
+      el.textContent = txt;
+      if (txt === words[w]) { deleting = true; setTimeout(step, o.pause); return; }
+      setTimeout(step, o.type);
+    };
+    setTimeout(step, o.start + o.pause);
+  }
+  typeLoop($('#typed'), ['Turning Ideas into Fast Software', 'Building Smart AI Systems', 'Exploring Quantum Machine Learning', 'Where Code Meets Qubits', 'Welcome to My Portfolio'], { type: 95, erase: 55, pause: 1800, start: 700 });
+  typeLoop($('#roleTyped'), ['Full-Stack Engineer', 'AI/ML Engineer', 'Problem Solver'], { type: 100, erase: 55, pause: 2600, start: 2600 });
+
+  /* ---------- section titles rise word by word ---------- */
+  if (motion() && hasIO) {
+    const wrapWord = node => {
+      const m = document.createElement('span');
+      m.className = 'wm';
+      const w = document.createElement('span');
+      w.className = 'w';
+      w.append(node);
+      m.append(w);
+      return m;
+    };
+    $$('.sec-head h2, .foot-cta h2').forEach(h => {
+      const parts = [];
+      Array.from(h.childNodes).forEach(n => {
+        if (n.nodeType !== 3) { parts.push(wrapWord(n)); return; }
+        n.textContent.split(/(\s+)/).forEach(t => {
+          if (t) parts.push(/^\s+$/.test(t) ? document.createTextNode(t) : wrapWord(document.createTextNode(t)));
+        });
       });
+      h.replaceChildren(...parts);
+      h.classList.add('words');
+      h.querySelectorAll('.w').forEach((w, i) => w.style.setProperty('--wi', i));
     });
+  }
+
+  /* ---------- scroll reveal ---------- */
+  if (motion() && hasIO) {
     root.classList.add('reveal-on');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        const el = en.target;
+        if (en.isIntersecting) {
+          el.classList.remove('out-up');
+          el.classList.add('in');
+        } else {
+          el.classList.remove('in');
+          el.classList.toggle('out-up', en.boundingClientRect.top < 0);
+        }
+      });
+    }, { threshold: 0.07, rootMargin: '0px 0px -36px 0px' });
     $$('.reveal').forEach(el => io.observe(el));
   }
 
-  /* ---------- seamless skill ticker ---------- */
+  /* ---------- seamless loops: skill tickers and project rows ---------- */
   function setLoop(row, speed) {
     const track = row.querySelector('.track');
     $$(':scope > .clone', track).forEach(n => n.remove());
     row.classList.remove('looping');
-    if (!motion()) return;
+    if (!motion() || row.hidden || (row.classList.contains('proj-row') && touchUI.matches)) return;
     row.classList.add('looping');
     const originals = Array.from(track.children);
     const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -137,9 +191,20 @@
     track.style.setProperty('--dur', (setW / speed).toFixed(1) + 's');
   }
   const touchUI = matchMedia('(pointer: coarse), (max-width: 760px)');
-  const applyLoops = () => $$('.ticker').forEach(row => setLoop(row, 38));
+  const loops = [...$$('.ticker').map(r => [r, 38]), ...$$('.proj-row').map(r => [r, 60])];
+  const applyLoops = () => loops.forEach(([r, s]) => setLoop(r, s));
   applyLoops();
   if (mqMotion.addEventListener) mqMotion.addEventListener('change', applyLoops);
+
+  const moreProj = $('#moreProj');
+  const row2 = $('#projRow2');
+  moreProj.addEventListener('click', () => {
+    const open = row2.hidden;
+    row2.hidden = !open;
+    moreProj.setAttribute('aria-expanded', String(open));
+    moreProj.querySelector('.lbl').textContent = open ? 'Show Less' : 'Show More Projects';
+    if (open) setLoop(row2, 60);
+  });
 
   /* ---------- skills timeline: stacked cards ---------- */
   // Each card sticks under the nav and the next one slides over it. Every card gets the height of the tallest,
@@ -438,7 +503,7 @@
   $$('[data-cv]').forEach(b => b.addEventListener('click', () => {
     if (!fields.message.value.trim()) fields.message.value = 'Hi Razib, could you send me your latest CV? The role is: ';
     goTo('contact');
-    fields.name.focus({ preventScroll: true });
+    setTimeout(() => fields.name.focus({ preventScroll: true }), motion() ? 800 : 0);
   }));
 
   /* ---------- Dhaka clock ---------- */
@@ -473,7 +538,7 @@
     who: { t: 'Razib Miah is a passionate full-stack engineer in Dhaka who also works in AI/ML and quantum machine learning (QML). He builds fast web products end to end, trains ML models, and is exploring how quantum computing can improve machine learning.', a: [['Read about him', 'about']] },
     skills: { t: 'Languages: TypeScript, Python, Go, C# and Rust. Web: React, Next.js and Node.js with PostgreSQL. Backend in Python: FastAPI, Django, Flask, Pydantic, SQLAlchemy and Celery. AI/ML: Python, PyTorch, TensorFlow, scikit-learn and Hugging Face. Quantum: Qiskit and PennyLane for quantum circuits and hybrid quantum-classical models.', a: [['See all skills', 'skills']] },
     quantum: { t: 'Razib loves quantum computing. He is exploring quantum machine learning: quantum circuits, variational algorithms and hybrid quantum-classical models. The About section shows a Bell-state circuit, the "hello world" of entanglement.', a: [['Show me', 'about'], ['Quantum skills', 'skills']] },
-    projects: { t: 'The featured project is DLAS, a voice-first Digital Legal Aid System for Bangladesh. The work section also includes eight concept mockups across software, AI and quantum ML.', a: [['Browse projects', 'projects']] },
+    projects: { t: 'Highlights: DLAS (a voice-first Digital Legal Aid System for Bangladesh, live on Cloudflare), Ledgerline (offline bookkeeping for 12k shops), Tracewell (open-source tracer, 3.1k stars) and Routebox (live courier dispatch). Five more are under "Show More Projects".', a: [['Browse projects', 'projects']] },
     experience: { t: 'He is learning full-stack development (since 2025), learning AI/ML and building projects (since 2026), and exploring quantum computing and quantum machine learning (since 2026). He is an Executive Member of the Research Wing at the DIU AR/VR & Game Development Lab and was an Executive Member of Daffodil AI Club (Jan – Oct 2026). He is studying for a B.Sc. in Computer Science and Engineering at Daffodil International University (DIU), Jan 2025 – Dec 2028.', a: [['See the timeline', 'experience'], ['See education', 'education']] },
     wins: { t: '2nd Runner-up at the Legal-Tech Hackathon 2026 (UNDP Bangladesh, Top 10 of 194 teams) with Team Law Debuggers, and a prize winner at Agent X, the NetCom Learning × Microsoft AI prompting competition (30th of the Top 50 among 50,000+ participants).', a: [['See achievements', 'achievements']] },
     research: { t: "Razib's research interests are quantum machine learning (variational circuits, quantum kernels and hybrid quantum-classical models), applied AI for Bangladesh such as the DLAS voice agent, and AR/VR, where he is an Executive Member of the Research Wing at DIU's AR/VR & Game Development Lab. He's open to research collaborations.", a: [['See his research', 'research'], ['Contact him', 'contact']] },
@@ -595,18 +660,123 @@
   const toTop = $('#toTop');
   toTop.addEventListener('click', () => goTo('hero', false));
 
-  /* ---------- jump to sections ---------- */
-  function goTo(id, push = true, focus = false) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (push && location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+  /* ---------- smooth travel between sections ---------- */
+  // In-page links glide to their section with an eased scroll. Far jumps (more than about two screens)
+  // fade the page out, move, then let the new section rise in, instead of a long blur of content.
+  // The nav indicator goes straight to the destination rather than stepping through every section.
+  const ease = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const jumpTo = y => scrollTo({ top: y, behavior: 'instant' });
+  let travel = null;
+  let pinY = null;
+  function endTravel() {
+    if (!travel) return;
+    cancelAnimationFrame(travel.raf);
+    clearTimeout(travel.timer);
+    root.classList.remove('travel-out', 'travel-in-from', 'travel-in');
+    travel = null;
+  }
+  ['wheel', 'touchstart', 'mousedown'].forEach(t => addEventListener(t, () => { if (travel) { endTravel(); frame(); } }, { passive: true }));
+  addEventListener('keydown', e => {
+    if (travel && ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(e.key)) { endTravel(); frame(); }
+  });
+  /* ---------- smooth wheel scrolling ---------- */
+  // Mouse wheels and trackpads glide to rest instead of stepping. Keyboard, scrollbar and touch stay native,
+  // and so do zoom gestures, sideways scrolling and any panel that scrolls on its own.
+  const glide = { on: false, y: 0, to: 0, set: 0, t: 0, raf: 0, tau: 110 };
+  function glideStop() { cancelAnimationFrame(glide.raf); glide.on = false; }
+  function glideStep(now) {
+    // someone else moved the page (scrollbar, keys, find-in-page): let them have it
+    if (Math.abs(scrollY - glide.set) > 2) { glide.on = false; return; }
+    const dt = Math.min(64, now - glide.t);
+    glide.t = now;
+    glide.y += (glide.to - glide.y) * (1 - Math.exp(-dt / glide.tau));
+    if (Math.abs(glide.to - glide.y) < 0.5) glide.y = glide.to;
+    jumpTo(glide.y);
+    glide.set = scrollY;
+    if (glide.y === glide.to) { glide.on = false; return; }
+    glide.raf = requestAnimationFrame(glideStep);
+  }
+  function scrollsInside(el, dy) {
+    for (; el && el !== document.body && el !== root; el = el.parentElement) {
+      if (el.scrollHeight <= el.clientHeight + 1) continue;
+      const oy = getComputedStyle(el).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1)) return true;
+    }
+    return false;
+  }
+  addEventListener('wheel', e => {
+    if (!motion() || e.ctrlKey || e.defaultPrevented || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    if (document.querySelector('dialog[open]') || scrollsInside(e.target, e.deltaY)) return;
+    e.preventDefault();
+    const d = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1);
+    glide.tau = Math.abs(d) >= 50 ? 120 : 70;
+    if (!glide.on) {
+      glide.y = glide.to = glide.set = scrollY;
+      glide.t = performance.now();
+      glide.on = true;
+      glide.raf = requestAnimationFrame(glideStep);
+    }
+    glide.to = Math.max(0, Math.min(document.documentElement.scrollHeight - innerHeight, glide.to + d));
+  }, { passive: false });
+  ['mousedown', 'touchstart'].forEach(t => addEventListener(t, glideStop, { passive: true }));
+  addEventListener('keydown', glideStop);
+  function targetY(el) {
+    if (el.id === 'hero') return 0;
+    const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    return Math.max(0, Math.min(max, Math.round(el.getBoundingClientRect().top + scrollY - margin)));
+  }
+  function arrive(el, focus) {
+    pinY = scrollY;
+    frame();
+    const head = el.querySelector('.sec-head');
+    if (head && motion()) {
+      head.classList.remove('arrive');
+      void head.offsetWidth;
+      head.classList.add('arrive');
+    }
     if (focus) {
       if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
       el.focus({ preventScroll: true });
     }
-    // Keep nearby jumps smooth and make long jumps immediate.
-    const near = Math.abs(el.getBoundingClientRect().top) < innerHeight * 1.5;
-    el.scrollIntoView({ block: 'start', behavior: motion() && near ? 'smooth' : 'instant' });
+  }
+  function goTo(id, push = true, focus = false) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    endTravel();
+    glideStop();
+    if (push && location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+    if (spySections.some(s => s.id === id)) setActive(id);
+    const from = scrollY;
+    const y = targetY(el);
+    const dist = y - from;
+    if (!motion() || Math.abs(dist) < 2) { jumpTo(y); arrive(el, focus); return; }
+    if (Math.abs(dist) > innerHeight * 2.2) {
+      const down = dist > 0;
+      root.style.setProperty('--tv-out', down ? '-28px' : '28px');
+      root.style.setProperty('--tv-in', down ? '44px' : '-44px');
+      travel = { raf: 0, timer: 0 };
+      root.classList.add('travel-out');
+      travel.timer = setTimeout(() => {
+        jumpTo(targetY(el));
+        root.classList.replace('travel-out', 'travel-in-from');
+        void root.offsetWidth;
+        root.classList.replace('travel-in-from', 'travel-in');
+        travel.timer = setTimeout(() => { endTravel(); arrive(el, focus); }, 620);
+      }, 240);
+      return;
+    }
+    const dur = Math.min(900, Math.max(450, 320 + Math.abs(dist) * 0.28));
+    const t0 = performance.now();
+    travel = { raf: 0, timer: 0 };
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur);
+      jumpTo(from + dist * ease(p));
+      if (p < 1) { travel.raf = requestAnimationFrame(step); return; }
+      travel = null;
+      arrive(el, focus);
+    };
+    travel.raf = requestAnimationFrame(step);
   }
   document.addEventListener('click', e => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -631,7 +801,9 @@
     // Read everything first, then write, so the browser lays the page out once per frame
     const y = scrollY;
     const maxY = document.documentElement.scrollHeight - innerHeight;
-    const id = spyId();
+    // While travelling, or resting where a link took us, keep the clicked section highlighted
+    const follow = !travel && !(pinY !== null && Math.abs(y - pinY) < 3);
+    const id = follow ? spyId() : null;
     const tlState = readTimeline();
     const hit = fabHit();
     progress.style.transform = 'scaleX(' + (maxY > 0 ? Math.min(1, y / maxY) : 0).toFixed(4) + ')';
@@ -642,7 +814,7 @@
     drawTimeline(tlState);
     updStack(y);
     if (hit !== null) fab.classList.toggle('is-away', hit);
-    setActive(id);
+    if (follow) { pinY = null; setActive(id); }
     if (touchUI.matches && panel.hidden) {
       if (y > lastY + 6 && y > 320) tuck(true);
       else if (y < lastY - 6) tuck(false);
