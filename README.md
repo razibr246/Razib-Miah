@@ -48,7 +48,19 @@ python -m http.server 8000
 
 ### Portfolio assistant
 
-The movable voice orb calls the same-origin `/api/assistant` Vercel Function. It retrieves only from the curated portfolio facts in `api/portfolio-knowledge.js`; it has no web-search tools and does not store Gemini conversation history. Voice input uses English (UK) browser speech recognition. When voice replies are enabled, Gemini TTS is prompted for a British English accent; if TTS is unavailable, the browser’s installed `en-GB` voice is used. Add `GEMINI_API_KEY` to the Vercel project’s Environment Variables, then redeploy. For local API work, put a Gemini API key in the ignored `.env.local` file and run `npx vercel dev`. Never put the key in HTML or JavaScript. Voice replies make an additional Gemini TTS request and may incur usage charges. Without the server key, the widget falls back to its built-in portfolio answers.
+The movable voice orb calls the same-origin `/api/assistant` Vercel Function. Portfolio answers are grounded only in `api/portfolio-knowledge.js`; the portfolio chat has no web-search tools and does not store Gemini conversation history. A separate narration mode can speak supplied scripts without rewriting them.
+
+#### Provider compatibility matrix
+
+| Provider / capability | State | Configuration and limits |
+| --- | --- | --- |
+| Gemini Interactions (portfolio answers) | Implemented; requires fresh key and live verification | `GEMINI_API_KEYS` or `GEMINI_API_KEY`; rotates keys on quota, rate-limit, server and network failures. Conversation answers remain portfolio-grounded. |
+| Gemini text-to-speech | Implemented; requires fresh key and live verification | Uses Gemini Flash TTS for lower-latency speech, profile-specific delivery prompts and an `en-GB` speech language. Set `GEMINI_TTS_VOICE` to a British regional or designed voice name supported by Gemini for a more specific speaker; accent/style prompts alone cannot guarantee a particular voice. It may incur additional usage charges. |
+| Browser speech recognition | Available when the browser supports it | English (UK) recognition; runs in the browser and browser support/recognition quality vary. |
+| Browser speech synthesis | Local fallback | Selects an installed `en-GB` voice when available. Accent and voice quality depend on the visitor’s operating system and browser. |
+| Other hosted LLM, STT, or TTS providers | Not configured | The exposed values were all identified as Gemini by the owner. No second provider is configured, so Gemini key rotation is best-effort resilience within one provider, not cross-provider failover. |
+
+Configure fresh Gemini credentials in Vercel → Project Settings → Environment Variables, then redeploy. Set `GEMINI_API_KEYS` to a comma- or newline-separated list of rotated keys (or keep a single key in `GEMINI_API_KEY`). `GEMINI_MODEL`, `GEMINI_TTS_MODEL` and `GEMINI_TTS_VOICE` can override the defaults. For local API work, add keys to the ignored `.env.local` file and run `npx vercel dev`. Never put credentials in HTML, JavaScript, commits, or chat. Exposed keys should be revoked and replaced. No remaining quota/credit balance is inferred; status reflects only observed requests, latency, and failures. Without a server key, the widget falls back to built-in portfolio answers.
 
 ## Things to update before you share it
 

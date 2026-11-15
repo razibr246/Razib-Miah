@@ -690,6 +690,33 @@
   let voiceReplies = false;
   let assistantAudio = null;
   const voiceToggle = $('#botVoiceToggle');
+  const botMode = $('#botMode');
+  const botProfile = $('#botProfile');
+  const botSpeed = $('#botSpeed');
+  const botSpeedValue = $('#botSpeedValue');
+  const conversationHistory = [];
+  let assistantStatus = 'Gemini · checking server setup';
+  fetch('/api/assistant', { headers: { Accept: 'application/json' } })
+    .then(response => response.ok ? response.json() : null)
+    .then(data => {
+      if (!data) return;
+      assistantStatus = !data.configured
+        ? 'Gemini key needed · English (UK)'
+        : data.text?.lastSuccessAt
+          ? `Gemini · last response ${data.text.lastLatencyMs} ms · English (UK)`
+          : data.text?.lastError
+            ? `Gemini · last call ${data.text.lastError} · English (UK)`
+            : `Gemini · ${data.keyCount} key${data.keyCount === 1 ? '' : 's'} configured · not checked`;
+      if (!fab.dataset.listening) statusText.textContent = assistantStatus;
+    }).catch(() => { assistantStatus = 'Gemini status unavailable · English (UK)'; });
+  botMode.addEventListener('change', () => {
+    const narration = botMode.value === 'narrate';
+    bInput.maxLength = narration ? 2400 : 400;
+    bInput.placeholder = narration ? 'Paste a script to narrate (up to 2,400 characters)…' : 'Ask Razib about his work…';
+    $('#botChips').hidden = narration;
+    statusText.textContent = narration ? 'Gemini speech studio · British English' : assistantStatus;
+  });
+  botSpeed.addEventListener('input', () => { botSpeedValue.value = `${Number(botSpeed.value).toFixed(1)}×`; });
   function stopVoiceOutput() {
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     if (assistantAudio) { assistantAudio.pause(); assistantAudio = null; }
@@ -706,7 +733,7 @@
     stopVoiceOutput();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-GB';
-    utterance.rate = .96;
+    utterance.rate = Number(botSpeed.value) * .96;
     utterance.pitch = 1;
     const voices = window.speechSynthesis.getVoices();
     utterance.voice = voices.find(voice => voice.lang.toLowerCase() === 'en-gb') || null;
@@ -727,25 +754,61 @@
     player.onerror = () => { assistantAudio = null; speakBritish(fallbackText); };
     player.play().catch(() => { assistantAudio = null; speakBritish(fallbackText); });
   }
+  async function synthesize(text, mode) {
+    if (!voiceReplies) return;
+    statusText.textContent = 'Gemini · preparing British English speech';
+    try {
+      const response = await fetch('/api/assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: text, mode, profile: botProfile.value, speed: Number(botSpeed.value) })
+      });
+      if (!response.ok) throw new Error(String(response.status));
+      const data = await response.json();
+      if (!voiceReplies) return;
+      statusText.textContent = 'Gemini · British English speech ready';
+      playBritishAudio(data.audio, text);
+    } catch {
+      if (!voiceReplies) return;
+      statusText.textContent = 'Using your browser’s English (UK) voice';
+      speakBritish(text);
+    }
+  }
   async function ask(text, key, fromVoice = false) {
     addMsg('me', text);
     stopVoiceOutput();
     const typing = showTyping();
     if (fromVoice) setVoiceReplies(true);
+    const mode = botMode.value;
+    if (mode === 'narrate') setVoiceReplies(true);
     const fallbackKey = key || route(text);
     try {
       const response = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: text, speak: voiceReplies })
+        body: JSON.stringify({ question: text, mode, profile: botProfile.value, speed: Number(botSpeed.value), history: conversationHistory.slice(-6) })
       });
       if (!response.ok) throw new Error(String(response.status));
       const data = await response.json();
       typing.remove();
-      addMsg('bot', data.answer || A.fallback.t, [], data.sources || []);
-      playBritishAudio(data.audio, data.answer || A.fallback.t);
+      addMsg('bot', mode === 'narrate' ? `Narration ready · ${botProfile.options[botProfile.selectedIndex].text} · ${Number(botSpeed.value).toFixed(1)}×` : (data.answer || A.fallback.t), [], data.sources || []);
+      if (mode === 'chat') {
+        conversationHistory.push({ role: 'user', text }, { role: 'assistant', text: data.answer || A.fallback.t });
+        if (conversationHistory.length > 12) conversationHistory.splice(0, conversationHistory.length - 12);
+      }
+      if (mode === 'chat' && data.latencyMs) {
+        statusText.textContent = `${data.provider || 'Gemini'} · ${data.latencyMs} ms${data.failover ? ' · key failover used' : ''} · English (UK)`;
+      }
+      if (mode === 'chat' && voiceReplies && data.answer) synthesize(data.answer, 'speech');
+      else if (mode === 'narrate') playBritishAudio(data.audio, data.answer || text);
     } catch (error) {
       typing.remove();
+      if (mode === 'narrate') {
+        const note = error.message === '503' ? 'Live Gemini TTS needs a fresh server key. Playing with your browser’s installed voice if available.' : 'Gemini narration is unavailable. Playing with your browser’s installed voice if available.';
+        addMsg('bot', note);
+        speakBritish(text);
+        return;
+      }
       const fallback = A[fallbackKey] || A.fallback;
       const note = error.message === '503'
         ? ' The Gemini key is not configured on the server yet, so this reply comes from the portfolio’s built-in guide.'
@@ -759,7 +822,7 @@
   if (speechAPI) {
     recognition = new speechAPI();
     recognition.lang = 'en-GB';
-    recognition.interimResults = false;
+    recognition.interimResults = true;
     recognition.maxAlternatives = 1;
   }
   const micButton = $('#botMic');
@@ -769,15 +832,27 @@
     fab.dataset.listening = String(listening);
     micButton.setAttribute('aria-pressed', String(listening));
     statusRow.classList.toggle('is-listening', listening);
-    statusText.textContent = message || 'Grounded in portfolio facts · English (UK)';
+    statusText.textContent = message || assistantStatus;
   }
   if (recognition) {
     recognition.onstart = () => setListening(true, 'Listening · English (UK)');
     recognition.onresult = event => {
-      const transcript = event.results?.[0]?.[0]?.transcript?.trim();
-      if (!transcript) return;
-      bInput.value = transcript;
-      ask(transcript, null, true);
+      let interim = '';
+      let finalText = '';
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        const transcript = result[0]?.transcript?.trim();
+        if (result.isFinal) finalText += `${transcript} `;
+        else interim += `${transcript} `;
+      }
+      if (interim.trim()) {
+        bInput.value = `${finalText}${interim}`.trim();
+        statusText.textContent = `Hearing: ${interim.trim().slice(0, 48)}${interim.trim().length > 48 ? '…' : ''}`;
+      }
+      if (finalText.trim()) {
+        bInput.value = finalText.trim();
+        ask(finalText.trim(), null, true);
+      }
     };
     recognition.onerror = event => {
       setListening(false, event.error === 'not-allowed' ? 'Microphone access was blocked' : 'Voice input stopped');
@@ -901,6 +976,12 @@
     if (!q) return;
     bInput.value = '';
     ask(q);
+  });
+  bInput.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      $('#botForm').requestSubmit();
+    }
   });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;

@@ -920,9 +920,16 @@ a.c-row:hover .c-arrow{transform:translate(3px,-3px);color:var(--a1-ink)}
 .bot-chips::-webkit-scrollbar{display:none}
 .bot-chips button{flex:none;padding:7px 12px;border-radius:100px;border:1px solid var(--line-hi);background:var(--bg3);font-size:.76rem;font-weight:600;cursor:pointer}
 .bot-chips button:hover{border-color:color-mix(in srgb,var(--a2) 75%,transparent)}
+.bot-studio{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--bg3) 68%,transparent)}
+.bot-studio label{display:grid;gap:4px;min-width:0;color:var(--sub);font-size:.68rem;font-weight:700;letter-spacing:.04em}
+.bot-studio select{width:100%;min-width:0;padding:8px 10px;border-radius:10px;border:1px solid var(--line-hi);background:var(--bg);color:var(--text);font:inherit;font-size:.78rem;letter-spacing:normal}
+.bot-studio .bot-speed{grid-column:1/-1;grid-template-columns:1fr auto;align-items:center}
+.bot-speed span{display:flex;justify-content:space-between;gap:8px}
+.bot-speed output{color:var(--a1-ink);font-variant-numeric:tabular-nums}
+.bot-speed input{grid-column:1/-1;width:100%;accent-color:var(--a1)}
+.bot-form textarea{flex:1;min-width:0;max-height:112px;resize:vertical;padding:10px 14px;border-radius:15px;border:1px solid var(--line-hi);background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;line-height:1.4}
+.bot-form textarea:focus{outline:none;border-color:var(--a1)}
 .bot-form{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--line)}
-.bot-form input{flex:1;min-width:0;padding:10px 14px;border-radius:100px;border:1px solid var(--line-hi);background:var(--bg);color:var(--text);font:inherit;font-size:1rem}
-.bot-form input:focus{outline:none;border-color:var(--a1)}
 .bot-form .bot-mic{align-self:center}
 .bot-send{width:44px;height:44px;flex:none;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--grad-btn);color:var(--on-grad)}
 @media (max-width:480px){.bot-panel{width:min(370px,calc(100vw - 32px))}.bot-fab{right:16px;width:64px;height:64px}.bot-fab .siri-orb{width:46px;height:46px}.to-top{right:20px}}
