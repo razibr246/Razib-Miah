@@ -294,8 +294,33 @@
   const logoText = {};
   const readLogo = src => logoText[src] || (logoText[src] = fetch(src).then(r => (r.ok ? r.text() : '')).catch(() => ''));
   const SLOTS = [[8, 8], [54, 22], [20, 54], [66, 68]];
+  let patFrame = 0, patPointer = null;
+  const movePattern = event => {
+    if (!motion()) return;
+    patPointer = { art: event.currentTarget, x: event.clientX, y: event.clientY };
+    if (patFrame) return;
+    patFrame = requestAnimationFrame(() => {
+      patFrame = 0;
+      const point = patPointer;
+      patPointer = null;
+      if (!point || !point.art.isConnected) return;
+      const rect = point.art.getBoundingClientRect();
+      const px = (point.x - rect.left) / rect.width - .5;
+      const py = (point.y - rect.top) / rect.height - .5;
+      point.art.style.setProperty('--pat-x', (-px * 16).toFixed(1) + 'px');
+      point.art.style.setProperty('--pat-y', (-py * 16).toFixed(1) + 'px');
+    });
+  };
   skCards.forEach(async card => {
     const art = card.querySelector('.sk-art');
+    if (finePointer && motion()) {
+      art.addEventListener('pointermove', movePattern, { passive: true });
+      art.addEventListener('pointerleave', () => {
+        if (patPointer?.art === art) patPointer = null;
+        art.style.setProperty('--pat-x', '0px');
+        art.style.setProperty('--pat-y', '0px');
+      });
+    }
     const srcs = $$('.sk-logos img', art).map(i => i.getAttribute('src'));
     if (!srcs.length) return;
     const texts = await Promise.all(srcs.map(readLogo));

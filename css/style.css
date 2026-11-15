@@ -379,8 +379,14 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-panel::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--bg);opacity:var(--dim,0);pointer-events:none;will-change:opacity}
 .sk-art{position:relative;display:grid;place-items:center;min-height:240px;overflow:hidden;border-radius:16px;border:1px solid color-mix(in srgb,var(--h) 26%,transparent);background:radial-gradient(70% 60% at 25% 18%,color-mix(in srgb,var(--h2) 12%,transparent),transparent 70%),linear-gradient(150deg,color-mix(in srgb,var(--h) 9%,var(--bg2)),color-mix(in srgb,var(--h) 3%,var(--bg2)))}
 .sk-art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--h) 34%,transparent) 1px,transparent 1.6px);background-size:16px 16px;-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%)}
-/* the card's own logos, tiled at a slant, drifting slightly as the card arrives; clearer at the edges than behind the drawing */
-.sk-art.has-pat::before{inset:-30%;background:var(--pat) 0 0/92px 92px;rotate:-14deg;opacity:var(--pat-o,.2);transform:translate3d(0,calc((1 - var(--in,1)) * -40px),0);-webkit-mask-image:radial-gradient(closest-side,rgba(0,0,0,.2) 30%,#000 80%);mask-image:radial-gradient(closest-side,rgba(0,0,0,.2) 30%,#000 80%);will-change:transform}
+/* Each card's own logos drift slowly under the artwork, then follow the pointer by a few pixels. */
+.sk-art.has-pat::before{inset:-30%;background:var(--pat) 0 0/92px 92px;rotate:-14deg;translate:var(--pat-x,0px) var(--pat-y,0px);transition:translate .32s cubic-bezier(.2,.75,.25,1);opacity:var(--pat-o,.2);transform:translate3d(0,calc((1 - var(--in,1)) * -40px),0);-webkit-mask-image:radial-gradient(closest-side,rgba(0,0,0,.2) 30%,#000 80%);mask-image:radial-gradient(closest-side,rgba(0,0,0,.2) 30%,#000 80%);animation:skillPatternDrift 48s linear infinite;will-change:background-position,translate}
+.sk-stack .sk-card:nth-child(2) .sk-art.has-pat::before{animation-duration:56s;animation-direction:reverse}
+.sk-stack .sk-card:nth-child(3) .sk-art.has-pat::before{animation-duration:43s;animation-delay:-17s}
+.sk-stack .sk-card:nth-child(4) .sk-art.has-pat::before{animation-duration:61s;animation-direction:reverse;animation-delay:-23s}
+.sk-stack .sk-card:nth-child(5) .sk-art.has-pat::before{animation-duration:52s;animation-delay:-31s}
+.sk-stack .sk-card:nth-child(6) .sk-art.has-pat::before{animation-duration:58s;animation-direction:reverse;animation-delay:-11s}
+@keyframes skillPatternDrift{to{background-position:92px 92px}}
 .sk-ai .sk-panel{background:radial-gradient(60% 80% at 100% 100%,color-mix(in srgb,var(--h2) 7%,transparent),transparent 70%),radial-gradient(50% 60% at 0% 0%,color-mix(in srgb,var(--h) 5%,transparent),transparent 70%),var(--pc)}
 .sk-ai .sk-art{min-height:300px}
 .sk-ai .sk-network{z-index:1;width:min(88%,390px);max-width:none;overflow:visible;stroke:none;transform:translate3d(0,calc((1 - var(--in,1)) * 22px),0) scale(calc(.94 + var(--in,1) * .06));opacity:calc(.45 + var(--in,1) * .55)}
