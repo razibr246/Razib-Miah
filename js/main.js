@@ -180,8 +180,8 @@
       originals.forEach(ch => {
         const c = ch.cloneNode(true);
         c.classList.add('clone');
+        // Keep visual copies out of the tab order, but let their visible links still respond to clicks.
         c.setAttribute('aria-hidden', 'true');
-        c.setAttribute('inert', '');
         c.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
         c.querySelectorAll('a, button').forEach(n => n.setAttribute('tabindex', '-1'));
         track.appendChild(c);
