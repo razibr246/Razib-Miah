@@ -290,14 +290,12 @@
   sizeStack();
   if (mqMotion.addEventListener) mqMotion.addEventListener('change', sizeStack);
 
-  // Behind most drawings, a faint tile of the card's own logos. The AI network stays clear so its connections
-  // read against the dark blue field. The logo files are folded into one small SVG for a single background image.
+  // Behind each drawing, a faint tile of that card's own logos. The logos are folded into one small SVG image.
   const logoText = {};
   const readLogo = src => logoText[src] || (logoText[src] = fetch(src).then(r => (r.ok ? r.text() : '')).catch(() => ''));
   const SLOTS = [[8, 8], [54, 22], [20, 54], [66, 68]];
   skCards.forEach(async card => {
     const art = card.querySelector('.sk-art');
-    if (card.classList.contains('sk-ai')) return;
     const srcs = $$('.sk-logos img', art).map(i => i.getAttribute('src'));
     if (!srcs.length) return;
     const texts = await Promise.all(srcs.map(readLogo));
