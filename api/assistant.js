@@ -19,6 +19,7 @@ const VOICE_PROFILES = {
   presentation: 'Polished professional presentation. Confident, articulate, precise and measured.',
   audiobook: 'Expressive British storytelling. Vary emphasis naturally and preserve a consistent narrator voice.'
 };
+const VOICE_NAMES = new Set(['Kore', 'Charon', 'Schedar', 'Sulafat', 'Aoede', 'Zephyr', 'Achernar', 'Enceladus']);
 
 function words(value) {
   return value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
@@ -65,7 +66,7 @@ function readText(result) {
     .map(part => part.text || '').join('').trim();
 }
 
-async function speak(text, profile, speed = 1) {
+async function speak(text, profile, speed = 1, voiceName) {
   const prompt = VOICE_PROFILES[profile] || VOICE_PROFILES.agent;
   const pace = speed < 0.92 ? 'Speak slightly slowly and leave comfortable pauses.' : speed > 1.08 ? 'Speak with a slightly brisk pace while keeping every word clear.' : 'Use a natural, measured speaking pace.';
   const result = await gemini.request({
@@ -79,14 +80,14 @@ async function speak(text, profile, speed = 1) {
       }]
     }]}],
     response_format: { type: 'audio' },
-    generation_config: { speech_config: [{ voice: process.env.GEMINI_TTS_VOICE || 'Kore', language: 'en-GB' }] },
+    generation_config: { speech_config: [{ voice: voiceName, language: 'en-GB' }] },
     store: false
   }, { kind: 'speech', timeoutMs: 15_000, deadline: Date.now() + 18_000 });
   const audio = result.data.steps?.filter(step => step.type === 'model_output')
     .flatMap(step => step.content || [])
     .find(item => item.type === 'audio' && item.data);
   if (!audio) throw new Error('empty_audio');
-  return { data: audio.data, mimeType: audio.mime_type || 'audio/wav' };
+  return { audio: { data: audio.data, mimeType: audio.mime_type || 'audio/wav' }, failover: result.keyIndex > 0 };
 }
 
 module.exports = async function assistant(req, res) {
@@ -114,11 +115,13 @@ module.exports = async function assistant(req, res) {
   if (!question.trim() || question.length > maxLength) return reply(res, 400, { error: 'invalid_question' });
   const profile = Object.hasOwn(VOICE_PROFILES, body?.profile) ? body.profile : 'agent';
   const speed = Number.isFinite(Number(body?.speed)) ? Math.max(0.8, Math.min(1.2, Number(body.speed))) : 1;
+  const voiceName = VOICE_NAMES.has(body?.voice) ? body.voice : (process.env.GEMINI_TTS_VOICE || 'Kore');
   if (mode !== 'chat') {
     if (!gemini.status().configured) return reply(res, 503, { error: 'assistant_not_configured' });
+    const started = Date.now();
     try {
-      const audio = await speak(question, profile, speed);
-      return reply(res, 200, { answer: question, sources: [], audio, mode, profile, voiceProvider: 'Gemini' });
+      const generated = await speak(question, profile, speed, voiceName);
+      return reply(res, 200, { answer: question, sources: [], audio: generated.audio, mode, profile, voice: voiceName, voiceProvider: 'Gemini', latencyMs: Date.now() - started, failover: generated.failover });
     } catch (error) {
       console.error('Gemini narration failed', error.code || error.name || 'Error');
       return reply(res, error.code === 'not_configured' ? 503 : 502, { error: error.code || 'voice_unavailable' });

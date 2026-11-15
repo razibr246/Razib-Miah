@@ -87,11 +87,12 @@ test('narration endpoint uses the selected voice profile and returns audio witho
       setHeader() { return this; },
       json(value) { body = value; return value; }
     };
-    await assistant({ method: 'POST', headers: { host: 'localhost' }, socket: {}, body: { mode: 'narrate', question: script, profile: 'podcast', speed: 0.95 } }, res);
+    await assistant({ method: 'POST', headers: { host: 'localhost' }, socket: {}, body: { mode: 'narrate', question: script, profile: 'podcast', voice: 'Sulafat', speed: 0.95 } }, res);
     assert.equal(res.code, 200);
     assert.equal(body.answer, script);
     assert.equal(body.audio.data, 'dGVzdA==');
     assert.equal(posted.model, 'gemini-3.8-flash-tts');
+    assert.equal(posted.generation_config.speech_config[0].voice, 'Sulafat');
     assert.equal(posted.generation_config.speech_config[0].language, 'en-GB');
     assert.match(posted.input[0].content[0].annotations[0].style, /podcast/i);
     assert.equal(posted.store, false);
@@ -137,6 +138,38 @@ test('portfolio answers return before an optional voice request and preserve rec
     assert.equal(calls, 1);
     assert.match(posted.input, /What is FieldShift 360\?/);
     assert.match(posted.input, /Tell me more about it/);
+  } finally {
+    global.fetch = oldFetch;
+    if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey;
+  }
+});
+
+test('Live transcription receives a single-use scoped token without returning a Gemini API key', async () => {
+  const oldKey = process.env.GEMINI_API_KEY;
+  const oldFetch = global.fetch;
+  process.env.GEMINI_API_KEY = 'server-only-test-key';
+  let posted;
+  global.fetch = async (_url, options) => {
+    posted = JSON.parse(options.body);
+    assert.equal(options.headers['x-goog-api-key'], 'server-only-test-key');
+    return response(200, { name: 'short-lived-test-token' });
+  };
+  try {
+    const liveToken = require('./live-token');
+    let body;
+    const res = {
+      status(code) { this.code = code; return this; },
+      setHeader() { return this; },
+      json(value) { body = value; return value; }
+    };
+    await liveToken({ method: 'POST', headers: { host: 'localhost', 'x-forwarded-for': 'test-live-token' }, socket: {} }, res);
+    assert.equal(res.code, 200);
+    assert.equal(body.token, 'short-lived-test-token');
+    assert.equal(body.model, 'models/gemini-3.5-transcribe-live');
+    assert.equal(posted.uses, 1);
+    assert.equal(posted.liveConnectConstraints.config.responseModalities[0], 'TEXT');
+    assert.equal(posted.liveConnectConstraints.config.inputAudioTranscription.languageCodes[0], 'en-GB');
+    assert.equal(JSON.stringify(body).includes('server-only-test-key'), false);
   } finally {
     global.fetch = oldFetch;
     if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey;

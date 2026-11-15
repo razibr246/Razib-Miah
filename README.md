@@ -48,15 +48,15 @@ python -m http.server 8000
 
 ### Portfolio assistant
 
-The movable voice orb calls the same-origin `/api/assistant` Vercel Function. Portfolio answers are grounded only in `api/portfolio-knowledge.js`; the portfolio chat has no web-search tools and does not store Gemini conversation history. A separate narration mode can speak supplied scripts without rewriting them.
+The movable voice orb calls the same-origin `/api/assistant` Vercel Function. Portfolio answers are grounded only in `api/portfolio-knowledge.js`; the portfolio chat has no web-search tools and does not store Gemini conversation history. Narration mode accepts scripts up to 20,000 characters, breaks them at sentence boundaries, and plays the chunks in sequence without changing the submitted wording.
 
 #### Provider compatibility matrix
 
 | Provider / capability | State | Configuration and limits |
 | --- | --- | --- |
 | Gemini Interactions (portfolio answers) | Implemented; requires fresh key and live verification | `GEMINI_API_KEYS` or `GEMINI_API_KEY`; rotates keys on quota, rate-limit, server and network failures. Conversation answers remain portfolio-grounded. |
+| Gemini Live transcription | Implemented; requires fresh key and live verification | Uses a server-minted, single-use, short-lived token for direct browser streaming with `gemini-3.5-transcribe-live`; browser speech recognition remains the fallback. |
 | Gemini text-to-speech | Implemented; requires fresh key and live verification | Uses Gemini Flash TTS for lower-latency speech, profile-specific delivery prompts and an `en-GB` speech language. Set `GEMINI_TTS_VOICE` to a British regional or designed voice name supported by Gemini for a more specific speaker; accent/style prompts alone cannot guarantee a particular voice. It may incur additional usage charges. |
-| Browser speech recognition | Available when the browser supports it | English (UK) recognition; runs in the browser and browser support/recognition quality vary. |
 | Browser speech synthesis | Local fallback | Selects an installed `en-GB` voice when available. Accent and voice quality depend on the visitor’s operating system and browser. |
 | Other hosted LLM, STT, or TTS providers | Not configured | The exposed values were all identified as Gemini by the owner. No second provider is configured, so Gemini key rotation is best-effort resilience within one provider, not cross-provider failover. |
 

@@ -3,6 +3,9 @@
   "functions": {
     "api/assistant.js": {
       "maxDuration": 45
+    },
+    "api/live-token.js": {
+      "maxDuration": 15
     }
   }
 }
