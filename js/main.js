@@ -316,6 +316,11 @@
         network.style.setProperty('--ml-rx', (py * 7).toFixed(1) + 'deg');
         network.style.setProperty('--ml-ry', (px * 9).toFixed(1) + 'deg');
       }
+      const sphere = point.art.querySelector('.sk-bloch');
+      if (sphere) {
+        sphere.style.setProperty('--bloch-rx', (py * 8).toFixed(1) + 'deg');
+        sphere.style.setProperty('--bloch-ry', (px * 10).toFixed(1) + 'deg');
+      }
     });
   };
   skCards.forEach(async card => {
@@ -333,6 +338,8 @@
           network.style.removeProperty('--ml-rx');
           network.style.removeProperty('--ml-ry');
         }
+        art.querySelector('.sk-bloch')?.style.removeProperty('--bloch-rx');
+        art.querySelector('.sk-bloch')?.style.removeProperty('--bloch-ry');
       });
     }
     const srcs = $$('.sk-logos img', art).map(i => i.getAttribute('src'));
