@@ -345,9 +345,8 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .tech b.logo{background:#fff;border-color:rgba(91,57,40,.14);box-shadow:0 1px 3px rgba(61,38,28,.12)}
 .tech b.logo img{display:block;width:20px;height:20px;object-fit:contain}
 /* skills timeline: folder cards that stick under the nav and stack as you scroll. Each card wears the colors of
-   its own tools: a main hue (--h) and an accent (--h2), lightly mixed into the cream card surface, caramel rim and text,
-   so the light and dark themes still follow along. Its drawing is two-tone and a faint pattern of its logos sits
-   behind it (main.js). Each tab sits a
+   its topic: a main hue (--h) and an accent (--h2), lightly mixed into the page surface and text. The artwork uses
+   its own dark, focused stage; tool logos sit in a tidy row at the lower left. Each tab sits a
    step further right, so the tabs of covered cards stay visible in a row. main.js gives every card the height of
    the tallest (so the stack leaves together), sets the sticky top, and fades covered cards (--dim) */
 .sk-tl{position:relative;margin-top:clamp(44px,6vw,72px);padding:clamp(20px,3vw,30px) clamp(12px,3vw,32px) clamp(24px,4vw,40px);border:1px solid var(--line-hi);border-radius:20px;background:var(--bg2)}
@@ -361,11 +360,12 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-card{--h:#087EA4;--h2:#61DAFB;--pc:color-mix(in srgb,var(--h) 7%,var(--bg3));--rim:color-mix(in srgb,var(--h) 20%,color-mix(in srgb,var(--a2) 38%,var(--bg3)));--hk:color-mix(in srgb,var(--h) 42%,var(--text));--h2k:color-mix(in srgb,var(--h2) 72%,var(--text));position:relative;padding-top:var(--tab-h);color:var(--text)}
 /* React blue · FastAPI teal with Python yellow · AWS orange with Docker blue · AI/ML indigo with a cyan signal
    · Qiskit purple with magenta · Slack pink with Slack blue */
-.sk-card:nth-child(2){--h:#009485;--h2:#FFD43B}
-.sk-card:nth-child(3){--h:#FF9900;--h2:#2496ED}
+.sk-card:nth-child(1){--h:#3B82F6;--h2:#58D8F5}
+.sk-card:nth-child(2){--h:#13A67A;--h2:#A3E635}
+.sk-card:nth-child(3){--h:#159DB4;--h2:#F6BD4A}
 .sk-card:nth-child(4){--h:#3157D5;--h2:#30D5C5}
-.sk-card:nth-child(5){--h:#6929C4;--h2:#D02670}
-.sk-card:nth-child(6){--h:#E01E5A;--h2:#36C5F0}
+.sk-card:nth-child(5){--h:#8B5CF6;--h2:#E879F9}
+.sk-card:nth-child(6){--h:#E85D79;--h2:#F5B544}
 .sk-ai{--pc:color-mix(in srgb,var(--h) 6%,var(--bg3));--rim:color-mix(in srgb,var(--h) 28%,var(--line-hi))}
 .sk-anim .sk-card{position:sticky;top:var(--sk-top,calc(var(--nav-h) + 14px))}
 .sk-tab{position:absolute;z-index:1;top:0;left:calc(18px + var(--i,0) * (var(--tab-w) + 6px));width:var(--tab-w);height:calc(var(--tab-h) + 1px);display:flex;align-items:center;justify-content:center;gap:8px;padding-inline:8px;border:1px solid var(--rim);border-bottom:0;border-radius:10px 10px 0 0;background:linear-gradient(90deg,var(--h),var(--h2)) top/100% 3px no-repeat,var(--pc);color:var(--hk);font:600 .62rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
@@ -375,15 +375,18 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-tab::before,.sk-tab::after{content:"";position:absolute;bottom:0;width:11px;height:11px}
 .sk-tab::before{right:calc(100% - 1px);background:radial-gradient(circle at 0 0,transparent 9.6px,var(--rim) 10px,var(--rim) 10.6px,var(--pc) 11px)}
 .sk-tab::after{left:calc(100% - 1px);background:radial-gradient(circle at 100% 0,transparent 9.6px,var(--rim) 10px,var(--rim) 10.6px,var(--pc) 11px)}
-.sk-panel{position:relative;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(18px,3vw,36px);min-height:var(--sk-h,0px);padding:clamp(16px,2.2vw,24px);border-radius:22px;background:radial-gradient(60% 80% at 100% 100%,color-mix(in srgb,var(--h2) 7%,transparent),transparent 70%),radial-gradient(50% 60% at 0% 0%,color-mix(in srgb,var(--a2) 9%,transparent),transparent 70%),var(--pc);box-shadow:inset 0 0 0 1px var(--rim),0 -6px 16px var(--sk-sh)}
+.sk-panel{position:relative;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(18px,3vw,36px);min-height:var(--sk-h,0px);padding:clamp(16px,2.2vw,24px);border-radius:22px;background:radial-gradient(60% 80% at 100% 100%,color-mix(in srgb,var(--h2) 7%,transparent),transparent 70%),radial-gradient(50% 60% at 0% 0%,color-mix(in srgb,var(--h) 5%,transparent),transparent 70%),var(--pc);box-shadow:inset 0 0 0 1px var(--rim),0 -6px 16px var(--sk-sh)}
 .sk-panel::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--bg);opacity:var(--dim,0);pointer-events:none;will-change:opacity}
-.sk-art{position:relative;display:grid;place-items:center;min-height:240px;overflow:hidden;border-radius:16px;border:1px solid color-mix(in srgb,var(--h) 26%,transparent);background:radial-gradient(70% 60% at 25% 18%,color-mix(in srgb,var(--h2) 12%,transparent),transparent 70%),linear-gradient(150deg,color-mix(in srgb,var(--h) 9%,var(--bg2)),color-mix(in srgb,var(--h) 3%,var(--bg2)))}
-.sk-art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--h) 34%,transparent) 1px,transparent 1.6px);background-size:16px 16px;-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%)}
-/* the card's own logos, tiled at a slant, drifting slightly as the card arrives; clearer at the edges than behind the drawing */
-.sk-art.has-pat::before{inset:-30%;background:var(--pat) 0 0/92px 92px;rotate:-14deg;opacity:var(--pat-o,.2);transform:translate3d(0,calc((1 - var(--in,1)) * -40px),0);-webkit-mask-image:radial-gradient(closest-side,rgba(0,0,0,.2) 30%,#000 80%);mask-image:radial-gradient(closest-side,rgba(0,0,0,.2) 30%,#000 80%);will-change:transform}
+.sk-art{position:relative;display:grid;place-items:center;min-height:240px;overflow:hidden;border-radius:16px;border:1px solid color-mix(in srgb,var(--h2) 44%,transparent);background:radial-gradient(70% 60% at 25% 18%,color-mix(in srgb,var(--h2) 12%,transparent),transparent 70%),linear-gradient(150deg,#101B3C,#172B59 56%,#12343F)}
+.sk-art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--h2) 18%,transparent) 1px,transparent 1.6px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 50%,#000 25%,transparent 78%)}
+.sk-art::after{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;background:linear-gradient(color-mix(in srgb,var(--h2) 5%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--h2) 5%,transparent) 1px,transparent 1px);background-size:32px 32px;-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 18%,transparent 82%);mask-image:radial-gradient(ellipse at 50% 45%,#000 18%,transparent 82%)}
+.sk-card:nth-child(1) .sk-art{background:radial-gradient(70% 65% at 72% 25%,rgba(59,130,246,.28),transparent 72%),linear-gradient(145deg,#0C1830,#102A4C 58%,#0D3546)}
+.sk-card:nth-child(2) .sk-art{background:radial-gradient(72% 65% at 78% 25%,rgba(19,166,122,.28),transparent 72%),linear-gradient(145deg,#0A1D1B,#103B35 58%,#123A43)}
+.sk-card:nth-child(3) .sk-art{background:radial-gradient(65% 60% at 78% 24%,rgba(21,157,180,.26),transparent 72%),radial-gradient(52% 52% at 18% 88%,rgba(246,189,74,.12),transparent 70%),linear-gradient(145deg,#0C1C2C,#103449 58%,#142E40)}
+.sk-card:nth-child(5) .sk-art{background:radial-gradient(70% 70% at 72% 28%,rgba(139,92,246,.3),transparent 72%),linear-gradient(145deg,#160E2E,#29164D 58%,#201C4A)}
+.sk-card:nth-child(6) .sk-art{background:radial-gradient(68% 62% at 75% 24%,rgba(232,93,121,.28),transparent 72%),linear-gradient(145deg,#241020,#471A34 58%,#332044)}
 .sk-ai .sk-panel{background:radial-gradient(60% 80% at 100% 100%,color-mix(in srgb,var(--h2) 7%,transparent),transparent 70%),radial-gradient(50% 60% at 0% 0%,color-mix(in srgb,var(--h) 5%,transparent),transparent 70%),var(--pc)}
 .sk-ai .sk-art{min-height:300px;background:radial-gradient(72% 72% at 50% 48%,rgba(48,213,197,.2),transparent 70%),linear-gradient(145deg,#101B3C 0%,#172B59 56%,#12343F 100%);border-color:rgba(89,180,227,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 16px 40px rgba(22,64,135,.2)}
-.sk-ai .sk-art::after{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;background:linear-gradient(color-mix(in srgb,var(--h2) 9%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--h2) 9%,transparent) 1px,transparent 1px);background-size:30px 30px;-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 18%,transparent 82%);mask-image:radial-gradient(ellipse at 50% 45%,#000 18%,transparent 82%)}
 .sk-ai .sk-network{z-index:1;width:min(88%,390px);max-width:none;overflow:visible;stroke:none;transform:translate3d(0,calc((1 - var(--in,1)) * 22px),0) scale(calc(.94 + var(--in,1) * .06));opacity:calc(.45 + var(--in,1) * .55)}
 .sk-network .ml-core-glow{stroke:none}
 .sk-network .ml-orbit{fill:none;stroke:color-mix(in srgb,var(--h2) 34%,transparent);stroke-width:1;stroke-dasharray:2 8}
@@ -392,6 +395,18 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-network .ml-nodes circle{fill:var(--pc);stroke:color-mix(in srgb,var(--bg3) 22%,var(--h2));stroke-width:3}
 .sk-network .ml-nodes .hot{fill:var(--h2);stroke:var(--bg3);stroke-width:2.5}
 .sk-network .ml-nodes .output{fill:var(--h);stroke:var(--h2);stroke-width:3}
+.sk-glyph{z-index:1}
+.sk-card:nth-child(1) .sk-glyph>path.a{transform-box:fill-box;transform-origin:center;animation:frontCursor 2.8s ease-in-out infinite}
+.sk-card:nth-child(2) .sk-glyph>path.a{transform-box:fill-box;transform-origin:center;animation:serverPulse 2.4s ease-in-out infinite}
+.sk-card:nth-child(3) .sk-glyph .dash{animation:dataFlow 1.8s linear infinite}
+.sk-card:nth-child(3) .sk-glyph path.a{transform-box:fill-box;transform-origin:center;animation:serverPulse 3s ease-in-out infinite}
+.sk-card:nth-child(6) .sk-glyph>path.a{transform-box:fill-box;transform-origin:center;animation:leaderSpark 3.4s ease-in-out infinite}
+.sk-card:nth-child(6) .sk-glyph>circle.a{transform-box:fill-box;transform-origin:center;animation:leaderTalk 1.2s ease-in-out infinite}
+@keyframes frontCursor{0%,100%{translate:0 0}48%{translate:4px -4px}}
+@keyframes serverPulse{0%,100%{opacity:.78;scale:1}50%{opacity:1;scale:1.08}}
+@keyframes dataFlow{to{stroke-dashoffset:-24}}
+@keyframes leaderSpark{0%,72%,100%{rotate:0deg;scale:1}82%{rotate:12deg;scale:1.15}}
+@keyframes leaderTalk{0%,100%{scale:1}50%{scale:1.35}}
 .sk-network .ml-spark{fill:none;stroke:var(--h2);stroke-width:1.4;stroke-dasharray:3 6;transform-box:fill-box;transform-origin:center;animation:ml-pulse 2.8s ease-in-out infinite}
 @keyframes ml-flow{to{stroke-dashoffset:-78}}
 @keyframes ml-pulse{50%{opacity:.48;scale:.9}}
@@ -405,8 +420,6 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-ai .sk-list li:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--h) 42%,var(--line-hi))}
 .sk-ai .sk-list li::before{content:"0" counter(ml-focus);left:12px;top:50%;width:21px;height:21px;display:grid;place-items:center;border-radius:7px;background:color-mix(in srgb,var(--h) 14%,var(--bg3));color:var(--hk);font:600 .54rem var(--f-mono);rotate:0;translate:0 -50%}
 .sk-ai .sk-tools{padding-top:14px;border-top:1px solid var(--line)}
-:root[data-theme="dark"] .sk-art.has-pat::before{--pat-o:.15}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sk-art.has-pat::before{--pat-o:.15}}
 /* the drawing settles into place as its card arrives (--in runs 0 to 1) */
 .sk-glyph{position:relative;width:min(78%,260px);height:auto;fill:none;stroke:var(--hk);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transform:translate3d(0,calc((1 - var(--in,1)) * 34px),0) scale(calc(.88 + var(--in,1) * .12));opacity:calc(.35 + var(--in,1) * .65);will-change:transform,opacity}
 .sk-glyph .f{fill:color-mix(in srgb,var(--h) 34%,transparent)}
@@ -466,6 +479,7 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
   .tool-chips li{padding:4px 9px;font-size:.72rem}
   .sk-glyph{width:auto;height:84%}
   .sk-logos{left:auto;right:10px;bottom:10px;gap:5px}
+  .sk-ai .sk-logos{left:10px;right:auto}
   .sk-logos b{width:28px;height:28px;border-radius:8px}
   .sk-logos img{width:16px;height:16px}
   .sk-ai .sk-art{height:176px;min-height:176px;border-radius:14px}
