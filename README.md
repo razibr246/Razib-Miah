@@ -21,6 +21,7 @@ razib-portfolio/
     ├── razib-avatar.webp         small photo in the chat window
     ├── diu-logo.webp             Education section logo
     ├── project-dlas.webp         DLAS project screenshot
+    ├── project-fieldshift.webp   FieldShift 360 project screenshot
     ├── hackathon-*.webp          Legal-Tech Hackathon photos (*-sm = small thumbnails)
     ├── agentx-*.webp             Agent X photos (*-sm = small thumbnails)
     ├── tech/*.svg                tool logos in the Skills strip (from Devicon and Simple Icons)
@@ -50,7 +51,7 @@ python -m http.server 8000
 All of these are in `index.html`:
 
 1. **Social links:** already set to LinkedIn (`linkedin.com/in/razibr246`), GitHub (`github.com/razibr246`) and Messenger (`m.me/razibr246`).
-2. **Projects:** card 01 (DLAS) is real. The other eight cards are samples. Replace their names, descriptions, tags and `example.com` links.
+2. **Projects:** the featured cards link to the DLAS, FieldShift 360, KormoPath AI and Kotha repositories. Update their details and links in `index.html` when the projects change.
 3. **Achievements and experience:** all real now (Legal-Tech Hackathon, Agent X, your learning journey and clubs).
 4. **Numbers:** the About stats come from your real wins (2 national prizes, Top 10 of 194 teams, 30th in Agent X). Update them when you win more.
 5. **Photo:** replace `assets/razib-portrait-light.webp` (light theme) and `assets/razib-portrait.webp` (dark theme) with any square photo. Keep the same file names, and make a 480px copy of each for phones, e.g. `cwebp -q 84 -resize 480 0 razib-portrait-light.webp -o razib-portrait-light-480.webp`.

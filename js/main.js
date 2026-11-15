@@ -195,16 +195,7 @@
   const applyLoops = () => loops.forEach(([r, s]) => setLoop(r, s));
   applyLoops();
   if (mqMotion.addEventListener) mqMotion.addEventListener('change', applyLoops);
-
-  const moreProj = $('#moreProj');
-  const row2 = $('#projRow2');
-  moreProj.addEventListener('click', () => {
-    const open = row2.hidden;
-    row2.hidden = !open;
-    moreProj.setAttribute('aria-expanded', String(open));
-    moreProj.querySelector('.lbl').textContent = open ? 'Show Less' : 'Show More Projects';
-    if (open) setLoop(row2, 60);
-  });
+  if (touchUI.addEventListener) touchUI.addEventListener('change', applyLoops);
 
   /* ---------- skills timeline: stacked cards ---------- */
   // Each card sticks under the nav and the next one slides over it. Every card gets the height of the tallest,
@@ -538,7 +529,7 @@
     who: { t: 'Razib Miah is a passionate full-stack engineer in Dhaka who also works in AI/ML and quantum machine learning (QML). He builds fast web products end to end, trains ML models, and is exploring how quantum computing can improve machine learning.', a: [['Read about him', 'about']] },
     skills: { t: 'Languages: TypeScript, Python, Go, C# and Rust. Web: React, Next.js and Node.js with PostgreSQL. Backend in Python: FastAPI, Django, Flask, Pydantic, SQLAlchemy and Celery. AI/ML: Python, PyTorch, TensorFlow, scikit-learn and Hugging Face. Quantum: Qiskit and PennyLane for quantum circuits and hybrid quantum-classical models.', a: [['See all skills', 'skills']] },
     quantum: { t: 'Razib loves quantum computing. He is exploring quantum machine learning: quantum circuits, variational algorithms and hybrid quantum-classical models. The About section shows a Bell-state circuit, the "hello world" of entanglement.', a: [['Show me', 'about'], ['Quantum skills', 'skills']] },
-    projects: { t: 'Highlights: DLAS (a voice-first Digital Legal Aid System for Bangladesh, live on Cloudflare), Ledgerline (offline bookkeeping for 12k shops), Tracewell (open-source tracer, 3.1k stars) and Routebox (live courier dispatch). Five more are under "Show More Projects".', a: [['Browse projects', 'projects']] },
+    projects: { t: 'Featured work includes DLAS, a Bangla voice-first legal aid platform; FieldShift 360, a crop-rotation tool using NASA Earth observations; KormoPath AI, a Bangladesh-first collection of web tools; and Kotha, a bilingual shop support agent.', a: [['Browse projects', 'projects']] },
     experience: { t: 'He is learning full-stack development (since 2025), learning AI/ML and building projects (since 2026), and exploring quantum computing and quantum machine learning (since 2026). He is an Executive Member of the Research Wing at the DIU AR/VR & Game Development Lab and was an Executive Member of Daffodil AI Club (Jan – Oct 2026). He is studying for a B.Sc. in Computer Science and Engineering at Daffodil International University (DIU), Jan 2025 – Dec 2028.', a: [['See the timeline', 'experience'], ['See education', 'education']] },
     wins: { t: '2nd Runner-up at the Legal-Tech Hackathon 2026 (UNDP Bangladesh, Top 10 of 194 teams) with Team Law Debuggers, and a prize winner at Agent X, the NetCom Learning × Microsoft AI prompting competition (30th of the Top 50 among 50,000+ participants).', a: [['See achievements', 'achievements']] },
     research: { t: "Razib's research interests are quantum machine learning (variational circuits, quantum kernels and hybrid quantum-classical models), applied AI for Bangladesh such as the DLAS voice agent, and AR/VR, where he is an Executive Member of the Research Wing at DIU's AR/VR & Game Development Lab. He's open to research collaborations.", a: [['See his research', 'research'], ['Contact him', 'contact']] },
@@ -551,7 +542,7 @@
     ['wins', /achiev|award|\bwin|\bwon|hackathon|certif|icpc|prize|runner|undp|debugger|agent ?x|netcom|prompt/],
     ['research', /research|paper|publication|journal|thesis|collaborat|research wing|\blab\b/],
     ['experience', /experience|career|learning|journey|company|history|worked|years|education|degree|university|study|studied|club|ar ?\/?vr|research wing/],
-    ['projects', /project|built|build|portfolio|\bapp|github|open.?source|dlas|legal.?aid|ledgerline|tracewell|routebox|bornomala|dorpon|kotha|shonkha|chhoto/],
+    ['projects', /project|built|build|portfolio|\bapp|github|open.?source|dlas|legal.?aid|fieldshift|kormopath|kotha/],
     ['quantum', /quantum|qml|qubit|qiskit|pennylane|circuit|entangle|superposition/],
     ['skills', /skill|stack|tech|language|framework|tool|react|golang|\bgo\b|c#|c sharp|csharp|\.net|rust|typescript|python|fastapi|django|flask|backend|node|postgres|aws|docker|\bai\b|\bml\b|machine learning|pytorch|tensorflow|llm/],
     ['where', /where|location|based|time ?zone|dhaka|bangladesh|remote/],
