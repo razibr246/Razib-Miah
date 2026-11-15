@@ -14,7 +14,7 @@ img{max-width:100%}
   --bg:#140D09; --bg2:#1B120D; --bg3:#231811; --bg4:#2F2118;
   --line:rgba(244,201,139,.09); --line-hi:rgba(244,201,139,.17);
   --text:#F6E9DC; --head:#F4DCC0; --sub:#C2AE9F; --dim:#8C7869; --nav-ink:#D9C4B2;
-  --a1:#C58B50; --a2:#E0AE6E; --a3:#E8735A; --blue:#5B93FF; --warn:#F2C14E; --ok:#3DD39C;
+  --a1:#C58B50; --a2:#E0AE6E; --a3:#E8735A; --blue:#5B93FF; --quantum-purple:#B794F4; --quantum-pink:#FF6FAE; --warn:#F2C14E; --ok:#3DD39C;
   --a1-ink:#F4C98B; --a2-ink:#EBC085; --a3-ink:#F29A84; --blue-ink:#8DB4FF;
   --a1-glow:rgba(197,139,80,.2); --a1-glow-hi:rgba(197,139,80,.36); --a2-glow:rgba(224,174,110,.24);
   --glass:rgba(20,13,9,.66); --card-glass:rgba(35,24,17,.66); --bot-bg:rgba(27,18,13,.96);
@@ -49,7 +49,7 @@ img{max-width:100%}
   --bg:#FFF1E2; --bg2:#F9E5D2; --bg3:#FFF8F0; --bg4:#F2DCC5;
   --line:rgba(197,139,80,.22); --line-hi:rgba(197,139,80,.4);
   --text:#3D2B22; --head:#70452F; --sub:#6F6158; --dim:#8C7A6E; --nav-ink:#664637;
-  --a1:#5B3928; --a2:#C58B50; --a3:#C4553D; --blue:#3478F6; --warn:#B7791F; --ok:#14874F;
+  --a1:#5B3928; --a2:#C58B50; --a3:#C4553D; --blue:#3478F6; --quantum-purple:#6929C4; --quantum-pink:#D02670; --warn:#B7791F; --ok:#14874F;
   --a1-ink:#5B3928; --a2-ink:#8A5A2B; --a3-ink:#A8402B; --blue-ink:#1F5FD6;
   --a1-glow:rgba(91,57,40,.16); --a1-glow-hi:rgba(91,57,40,.28); --a2-glow:rgba(197,139,80,.3);
   --glass:rgba(255,241,226,.74); --card-glass:rgba(255,248,240,.8); --bot-bg:rgba(255,248,240,.97);
@@ -73,7 +73,7 @@ img{max-width:100%}
   --bg:#FFF1E2; --bg2:#F9E5D2; --bg3:#FFF8F0; --bg4:#F2DCC5;
   --line:rgba(197,139,80,.22); --line-hi:rgba(197,139,80,.4);
   --text:#3D2B22; --head:#70452F; --sub:#6F6158; --dim:#8C7A6E; --nav-ink:#664637;
-  --a1:#5B3928; --a2:#C58B50; --a3:#C4553D; --blue:#3478F6; --warn:#B7791F; --ok:#14874F;
+  --a1:#5B3928; --a2:#C58B50; --a3:#C4553D; --blue:#3478F6; --quantum-purple:#6929C4; --quantum-pink:#D02670; --warn:#B7791F; --ok:#14874F;
   --a1-ink:#5B3928; --a2-ink:#8A5A2B; --a3-ink:#A8402B; --blue-ink:#1F5FD6;
   --a1-glow:rgba(91,57,40,.16); --a1-glow-hi:rgba(91,57,40,.28); --a2-glow:rgba(197,139,80,.3);
   --glass:rgba(255,241,226,.74); --card-glass:rgba(255,248,240,.8); --bot-bg:rgba(255,248,240,.97);
@@ -219,11 +219,11 @@ button{font:inherit;color:inherit}
 .sun-wrap{position:absolute;left:50%;bottom:-14%;width:100%;aspect-ratio:1;translate:-50% 0;animation:sunRise 1.8s cubic-bezier(.2,.7,.2,1) both}
 .sun-glow{position:absolute;inset:-42%;border-radius:50%;background:radial-gradient(circle,var(--sun-halo) 0%,transparent 60%);-webkit-mask-image:linear-gradient(180deg,#000 42%,transparent 68%);mask-image:linear-gradient(180deg,#000 42%,transparent 68%)}
 .sun{position:absolute;inset:0;border-radius:50%;background:var(--sun-fill);-webkit-mask-image:linear-gradient(180deg,#000 50%,transparent 84%);mask-image:linear-gradient(180deg,#000 50%,transparent 84%);animation:sunPulse 8s ease-in-out 1.8s infinite}
-.sun-ring{position:absolute;inset:-9%;border-radius:50%;border:1px dashed var(--line-hi);animation:spin 90s linear infinite}
+.sun-ring{position:absolute;inset:-9%;border-radius:50%;border:1px dashed color-mix(in srgb,var(--quantum-purple) 32%,var(--line-hi));animation:spin 34s linear infinite;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--quantum-purple) 14%,transparent))}
 .sun-ring::before,.sun-ring::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%}
-.sun-ring::before{top:50%;left:-5px;margin-top:-4.5px;background:var(--a2);box-shadow:0 0 14px var(--a2)}
-.sun-ring::after{top:14.64%;right:14.64%;translate:50% -50%;background:var(--blue);box-shadow:0 0 14px var(--blue)}
-.sun-sat{position:absolute;left:75%;top:93.3%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:var(--a3);box-shadow:0 0 14px var(--a3)}
+.sun-ring::before{top:50%;left:-5px;margin-top:-4.5px;background:var(--quantum-purple);box-shadow:0 0 5px 2px color-mix(in srgb,var(--quantum-purple) 54%,transparent),0 0 16px color-mix(in srgb,var(--quantum-purple) 76%,transparent);animation:orbitDotGlow 2.8s ease-in-out infinite}
+.sun-ring::after{top:14.64%;right:14.64%;translate:50% -50%;background:var(--quantum-pink);box-shadow:0 0 5px 2px color-mix(in srgb,var(--quantum-pink) 54%,transparent),0 0 16px color-mix(in srgb,var(--quantum-pink) 76%,transparent);animation:orbitDotGlow 2.8s ease-in-out -1s infinite}
+.sun-sat{position:absolute;left:75%;top:93.3%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:var(--a2);box-shadow:0 0 5px 2px color-mix(in srgb,var(--a2) 54%,transparent),0 0 16px color-mix(in srgb,var(--a2) 76%,transparent);animation:orbitDotGlow 2.8s ease-in-out -2s infinite}
 .hero-figure.is-portrait{align-items:center}
 .is-portrait .sun-wrap{top:50%;bottom:auto;width:min(84%,29.5rem,calc(var(--fig-h) - 56px));translate:-50% -50%;animation:none}
 .is-portrait .sun-glow{inset:-40%;-webkit-mask-image:none;mask-image:none}
@@ -1174,6 +1174,7 @@ html:has(.lb[open]) .cursor{opacity:0}
 @keyframes statusBlink{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes sunRise{from{translate:-50% 12%}to{translate:-50% 0}}
 @keyframes sunPulse{0%,100%{scale:1}50%{scale:1.025}}
+@keyframes orbitDotGlow{0%,100%{scale:.86;opacity:.78}50%{scale:1.28;opacity:1}}
 @keyframes qpulse{0%{transform:translateX(0);opacity:0}10%,88%{opacity:1}100%{transform:translateX(170px);opacity:0}}
 @keyframes portraitIn{from{scale:.92}to{scale:1}}
 @keyframes siriTurn{to{rotate:360deg}}
