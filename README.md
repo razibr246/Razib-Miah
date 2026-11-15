@@ -46,6 +46,10 @@ python -m http.server 8000
 - **Netlify:** drag the folder onto app.netlify.com/drop.
 - **GitHub Pages:** push the folder to a repo, then Settings → Pages → deploy from the main branch.
 
+### Portfolio assistant
+
+The movable voice orb calls the same-origin `/api/assistant` Vercel Function. It retrieves only from the curated portfolio facts in `api/portfolio-knowledge.js`; it has no web-search tools. Add `GEMINI_API_KEY` to the Vercel project’s Environment Variables, then redeploy. For local API work, put a Gemini API key in the ignored `.env.local` file and run `npx vercel dev`. Never put the key in HTML or JavaScript. Without the server key, the widget falls back to its built-in portfolio answers.
+
 ## Things to update before you share it
 
 All of these are in `index.html`:

@@ -574,7 +574,7 @@
   const log = $('#botLog');
   const bInput = $('#botInput');
   const A = {
-    intro: { t: "Hi! I'm a quick guide to Razib's portfolio. Pick a topic below or type a question.", a: [] },
+    intro: { t: "Hello! I’m Razib’s portfolio assistant. Ask me about his work, projects, skills or research. I use facts published on this portfolio only.", a: [] },
     who: { t: 'Razib Miah is a passionate full-stack engineer in Dhaka who also works in AI/ML and quantum machine learning (QML). He builds fast web products end to end, trains ML models, and is exploring how quantum computing can improve machine learning.', a: [['Read about him', 'about']] },
     skills: { t: 'Languages: TypeScript, Python, Go, C# and Rust. Web: React, Next.js and Node.js with PostgreSQL. Backend in Python: FastAPI, Django, Flask, Pydantic, SQLAlchemy and Celery. AI/ML: Python, PyTorch, TensorFlow, scikit-learn and Hugging Face. Quantum: Qiskit and PennyLane for quantum circuits and hybrid quantum-classical models.', a: [['See all skills', 'skills']] },
     quantum: { t: 'Razib loves quantum computing. He is exploring quantum machine learning: quantum circuits, variational algorithms and hybrid quantum-classical models. The About section shows a Bell-state circuit, the "hello world" of entanglement.', a: [['Show me', 'about'], ['Quantum skills', 'skills']] },
@@ -609,7 +609,7 @@
     if (matchMedia('(max-width: 600px)').matches) closeBot(false);
     goTo(target);
   }
-  function addMsg(who, text, actions) {
+  function addMsg(who, text, actions, sources) {
     const m = document.createElement('div');
     m.className = 'msg ' + who;
     const p = document.createElement('p');
@@ -627,6 +627,18 @@
       });
       m.appendChild(row);
     }
+    if (who === 'bot' && Array.isArray(sources) && sources.length) {
+      const cites = document.createElement('div');
+      cites.className = 'msg-sources';
+      sources.forEach(source => {
+        if (!source || typeof source.label !== 'string' || typeof source.href !== 'string' || !source.href.startsWith('#')) return;
+        const link = document.createElement('a');
+        link.href = source.href;
+        link.textContent = source.label;
+        cites.appendChild(link);
+      });
+      if (cites.childElementCount) m.appendChild(cites);
+    }
     log.appendChild(m);
     log.scrollTop = log.scrollHeight;
   }
@@ -641,29 +653,198 @@
     log.scrollTop = log.scrollHeight;
     setTimeout(() => { t.remove(); addMsg('bot', r.t, r.a); }, 800 + Math.random() * 600);
   }
-  function ask(text, key) {
-    addMsg('me', text);
-    botSay(key || route(text));
+  function showTyping() {
+    const t = document.createElement('div');
+    t.className = 'msg bot typing';
+    t.setAttribute('aria-hidden', 'true');
+    t.innerHTML = '<span></span><span></span><span></span>';
+    log.appendChild(t);
+    log.scrollTop = log.scrollHeight;
+    return t;
   }
+  let voiceReplies = false;
+  const voiceToggle = $('#botVoiceToggle');
+  function setVoiceReplies(enabled) {
+    voiceReplies = enabled;
+    voiceToggle.setAttribute('aria-pressed', String(enabled));
+    voiceToggle.setAttribute('aria-label', enabled ? 'Turn off British English voice replies' : 'Turn on British English voice replies');
+    if (!enabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+  function speakBritish(text) {
+    if (!voiceReplies || !('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-GB';
+    utterance.rate = .96;
+    utterance.pitch = 1;
+    const voices = window.speechSynthesis.getVoices();
+    utterance.voice = voices.find(voice => voice.lang.toLowerCase() === 'en-gb') || null;
+    window.speechSynthesis.speak(utterance);
+  }
+  async function ask(text, key, fromVoice = false) {
+    addMsg('me', text);
+    const typing = showTyping();
+    if (fromVoice) setVoiceReplies(true);
+    const fallbackKey = key || route(text);
+    try {
+      const response = await fetch('/api/assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: text })
+      });
+      if (!response.ok) throw new Error(String(response.status));
+      const data = await response.json();
+      typing.remove();
+      addMsg('bot', data.answer || A.fallback.t, [], data.sources || []);
+      speakBritish(data.answer || A.fallback.t);
+    } catch (error) {
+      typing.remove();
+      const fallback = A[fallbackKey] || A.fallback;
+      const note = error.message === '503'
+        ? ' The Gemini key is not configured on the server yet, so this reply comes from the portfolio’s built-in guide.'
+        : ' The live assistant is unavailable right now, so this reply comes from the portfolio’s built-in guide.';
+      addMsg('bot', fallback.t + note, fallback.a);
+      speakBritish(fallback.t + note);
+    }
+  }
+  const speechAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  if (speechAPI) {
+    recognition = new speechAPI();
+    recognition.lang = 'en-GB';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+  }
+  const micButton = $('#botMic');
+  const statusText = $('#botStatusText');
+  const statusRow = statusText.parentElement;
+  function setListening(listening, message) {
+    fab.dataset.listening = String(listening);
+    micButton.setAttribute('aria-pressed', String(listening));
+    statusRow.classList.toggle('is-listening', listening);
+    statusText.textContent = message || 'Grounded in portfolio facts · English (UK)';
+  }
+  if (recognition) {
+    recognition.onstart = () => setListening(true, 'Listening · English (UK)');
+    recognition.onresult = event => {
+      const transcript = event.results?.[0]?.[0]?.transcript?.trim();
+      if (!transcript) return;
+      bInput.value = transcript;
+      ask(transcript, null, true);
+    };
+    recognition.onerror = event => {
+      setListening(false, event.error === 'not-allowed' ? 'Microphone access was blocked' : 'Voice input stopped');
+    };
+    recognition.onend = () => setListening(false);
+  } else {
+    micButton.title = 'Voice input is not supported in this browser';
+  }
+
+  let botPosition = null;
+  const placeFab = (x, y, save = false) => {
+    const pad = 10;
+    const w = fab.offsetWidth || 72, h = fab.offsetHeight || 72;
+    const left = Math.max(pad, Math.min(innerWidth - w - pad, x));
+    const top = Math.max(pad, Math.min(innerHeight - h - pad, y));
+    fab.style.left = left + 'px'; fab.style.top = top + 'px';
+    fab.style.right = 'auto'; fab.style.bottom = 'auto';
+    botPosition = { x: left, y: top };
+    if (save) {
+      try { localStorage.setItem('rm-assistant-position', JSON.stringify(botPosition)); } catch {}
+    }
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem('rm-assistant-position') || 'null');
+    if (Number.isFinite(saved?.x) && Number.isFinite(saved?.y)) placeFab(saved.x, saved.y);
+  } catch {}
+  function positionPanel() {
+    if (panel.hidden) return;
+    const rect = fab.getBoundingClientRect();
+    const width = panel.offsetWidth || Math.min(370, innerWidth - 32);
+    const height = panel.offsetHeight || Math.min(520, innerHeight - 220);
+    const left = Math.max(16, Math.min(innerWidth - width - 16, rect.left + rect.width / 2 - width / 2));
+    let top = rect.top - height - 16;
+    if (top < 16) top = rect.bottom + 16;
+    top = Math.max(16, Math.min(innerHeight - height - 16, top));
+    panel.style.left = left + 'px'; panel.style.top = top + 'px';
+    panel.style.right = 'auto'; panel.style.bottom = 'auto';
+    panel.style.transformOrigin = `${Math.max(14, Math.min(width - 14, rect.left + rect.width / 2 - left))}px ${top < rect.top ? '100%' : '0%'}`;
+  }
+  let drag = null, didDrag = false, swallowClick = false;
+  fab.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    const rect = fab.getBoundingClientRect();
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: rect.left, top: rect.top };
+    didDrag = false;
+    fab.setPointerCapture(event.pointerId);
+  });
+  fab.addEventListener('pointermove', event => {
+    const rect = fab.getBoundingClientRect();
+    const px = (event.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+    const py = (event.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+    fab.style.setProperty('--orb-x', (px * 4).toFixed(1) + 'px');
+    fab.style.setProperty('--orb-y', (py * 4).toFixed(1) + 'px');
+    if (!drag || drag.id !== event.pointerId) return;
+    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+    if (!didDrag && Math.hypot(dx, dy) < 6) return;
+    didDrag = true;
+    placeFab(drag.left + dx, drag.top + dy);
+    positionPanel();
+  });
+  fab.addEventListener('pointerup', event => {
+    if (!drag || drag.id !== event.pointerId) return;
+    if (didDrag) {
+      placeFab(botPosition.x, botPosition.y, true);
+      swallowClick = true;
+      setTimeout(() => { swallowClick = false; }, 0);
+    }
+    drag = null;
+  });
+  fab.addEventListener('pointercancel', () => { drag = null; });
+  fab.addEventListener('pointerleave', () => { fab.style.setProperty('--orb-x', '0px'); fab.style.setProperty('--orb-y', '0px'); });
+  fab.addEventListener('keydown', event => {
+    if (!event.altKey || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    const rect = fab.getBoundingClientRect(), step = event.shiftKey ? 48 : 20;
+    const x = rect.left + (event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0);
+    const y = rect.top + (event.key === 'ArrowUp' ? -step : event.key === 'ArrowDown' ? step : 0);
+    placeFab(x, y, true);
+    positionPanel();
+  });
+  window.addEventListener('resize', () => {
+    if (botPosition) placeFab(botPosition.x, botPosition.y, true);
+    positionPanel();
+  });
   let greeted = false;
   function openBot() {
     panel.hidden = false;
+    positionPanel();
     fab.setAttribute('aria-expanded', 'true');
-    fab.setAttribute('aria-label', 'Close quick answers');
-    const badge = $('#botBadge');
-    if (badge) badge.remove();
+    fab.setAttribute('aria-label', 'Close Razib’s voice assistant');
     if (!greeted) { greeted = true; setTimeout(() => addMsg('bot', A.intro.t), motion() ? 300 : 0); }
     if (finePointer) setTimeout(() => bInput.focus(), motion() ? 420 : 0);
     else $('#botTitle').focus();
   }
   function closeBot(returnFocus = true) {
     if (panel.hidden) return;
+    if (recognition && fab.dataset.listening === 'true') recognition.stop();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     panel.hidden = true;
     fab.setAttribute('aria-expanded', 'false');
-    fab.setAttribute('aria-label', 'Open quick answers about Razib');
+    fab.setAttribute('aria-label', 'Open Razib’s voice assistant');
     if (returnFocus) fab.focus();
   }
-  fab.addEventListener('click', () => (panel.hidden ? openBot() : closeBot()));
+  fab.addEventListener('click', event => {
+    if (swallowClick) { event.preventDefault(); return; }
+    panel.hidden ? openBot() : closeBot();
+  });
+  voiceToggle.addEventListener('click', () => setVoiceReplies(!voiceReplies));
+  micButton.addEventListener('click', () => {
+    if (!recognition) { statusText.textContent = 'Voice input needs a browser with English (UK) speech recognition'; return; }
+    if (fab.dataset.listening === 'true') { recognition.stop(); return; }
+    try { recognition.start(); }
+    catch { setListening(false, 'Voice input is already active'); }
+  });
   $('#botClose').addEventListener('click', () => closeBot());
   $$('[data-open-bot]').forEach(b => b.addEventListener('click', openBot));
   $$('#botChips button').forEach(b => b.addEventListener('click', () => ask(b.textContent.trim(), b.dataset.k)));
@@ -687,6 +868,7 @@
     if (hit !== null) fab.classList.toggle('is-away', hit);
   }
   function fabHit() {
+    if (botPosition) return false;
     if (!rail) return null;
     if (!panel.hidden) return false;
     // Measured from the button's center, which its hide animation (a scale) doesn't move.

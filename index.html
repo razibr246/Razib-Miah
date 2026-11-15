@@ -833,12 +833,13 @@
   </footer>
 </div>
 
-<button class="bot-fab" id="botFab" type="button" aria-expanded="false" aria-controls="botPanel" aria-label="Open quick answers about Razib"><svg class="ic"><use href="#i-chat"/></svg><span class="bot-badge" id="botBadge" aria-hidden="true">1</span></button>
+<button class="bot-fab" id="botFab" type="button" aria-expanded="false" aria-controls="botPanel" aria-label="Open Razib's voice assistant" aria-description="Drag to move. Hold Alt and use the arrow keys to reposition."><span class="siri-orb" aria-hidden="true"><i></i><i></i><i></i></span></button>
 <section class="bot-panel" id="botPanel" role="dialog" aria-labelledby="botTitle" hidden>
   <div class="bot-head">
-    <span class="bot-av" aria-hidden="true"><img src="assets/razib-avatar.webp" alt="" width="80" height="80" loading="lazy" decoding="async"></span>
-    <div class="bot-meta"><strong id="botTitle" tabindex="-1">Ask about Razib</strong><span class="bot-status"><i></i>Instant answers from this page</span></div>
-    <button class="sq-btn" id="botClose" type="button" aria-label="Close quick answers"><svg class="ic"><use href="#i-x"/></svg></button>
+    <span class="bot-av" aria-hidden="true"><span class="siri-orb"><i></i><i></i><i></i></span></span>
+    <div class="bot-meta"><strong id="botTitle" tabindex="-1">Razib's portfolio assistant</strong><span class="bot-status"><i></i><span id="botStatusText">Grounded in portfolio facts · English (UK)</span></span></div>
+    <button class="bot-voice-toggle" id="botVoiceToggle" type="button" aria-label="Turn on British English voice replies" aria-pressed="false" title="British English voice replies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg></button>
+    <button class="sq-btn" id="botClose" type="button" aria-label="Close assistant"><svg class="ic"><use href="#i-x"/></svg></button>
   </div>
   <div class="bot-log" id="botLog" role="log" aria-live="polite"></div>
   <div class="bot-chips" id="botChips">
@@ -853,7 +854,8 @@
   </div>
   <form class="bot-form" id="botForm">
     <label class="sr-only" for="botInput">Your question</label>
-    <input id="botInput" type="text" placeholder="Ask about skills, projects, hiring…" autocomplete="off">
+    <input id="botInput" type="text" maxlength="400" placeholder="Ask Razib about his work…" autocomplete="off">
+    <button class="bot-mic" id="botMic" type="button" aria-label="Ask by voice in English (UK)" title="Ask by voice in English (UK)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></svg></button>
     <button class="bot-send" type="submit" aria-label="Send question"><svg class="ic"><use href="#i-send"/></svg></button>
   </form>
 </section>
