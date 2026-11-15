@@ -164,12 +164,12 @@
     $$('.reveal').forEach(el => io.observe(el));
   }
 
-  /* ---------- seamless loops: skill tickers and project rows ---------- */
+  /* ---------- seamless skill ticker loops ---------- */
   function setLoop(row, speed) {
     const track = row.querySelector('.track');
     $$(':scope > .clone', track).forEach(n => n.remove());
     row.classList.remove('looping');
-    if (!motion() || row.hidden || (row.classList.contains('proj-row') && touchUI.matches)) return;
+    if (!motion() || row.hidden) return;
     row.classList.add('looping');
     const originals = Array.from(track.children);
     const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -191,11 +191,50 @@
     track.style.setProperty('--dur', (setW / speed).toFixed(1) + 's');
   }
   const touchUI = matchMedia('(pointer: coarse), (max-width: 760px)');
-  const loops = [...$$('.ticker').map(r => [r, 38]), ...$$('.proj-row').map(r => [r, 60])];
+  const loops = $$('.ticker').map(r => [r, 38]);
   const applyLoops = () => loops.forEach(([r, s]) => setLoop(r, s));
   applyLoops();
   if (mqMotion.addEventListener) mqMotion.addEventListener('change', applyLoops);
-  if (touchUI.addEventListener) touchUI.addEventListener('change', applyLoops);
+
+  /* ---------- mouse dragging for the project strip ---------- */
+  const projectRow = $('#projRow1');
+  if (projectRow) {
+    let drag = null, dragged = false;
+    projectRow.addEventListener('pointerdown', e => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      drag = { id: e.pointerId, x: e.clientX, y: e.clientY, scroll: projectRow.scrollLeft };
+      dragged = false;
+    });
+    window.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x;
+      if (Math.abs(dx) > 5 && Math.abs(dx) > Math.abs(e.clientY - drag.y)) {
+        dragged = true;
+        projectRow.classList.add('dragging');
+      }
+      if (dragged) {
+        projectRow.scrollLeft = drag.scroll - dx;
+        e.preventDefault();
+      }
+    });
+    window.addEventListener('pointerup', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      drag = null;
+      projectRow.classList.remove('dragging');
+      setTimeout(() => { dragged = false; }, 0);
+    });
+    window.addEventListener('pointercancel', () => {
+      drag = null;
+      dragged = false;
+      projectRow.classList.remove('dragging');
+    });
+    projectRow.addEventListener('click', e => {
+      if (!dragged) return;
+      e.preventDefault();
+      e.stopPropagation();
+      dragged = false;
+    }, true);
+  }
 
   /* ---------- skills timeline: stacked cards ---------- */
   // Each card sticks under the nav and the next one slides over it. Every card gets the height of the tallest,
