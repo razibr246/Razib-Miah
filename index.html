@@ -867,20 +867,6 @@
         </div>
       </div>
     </div>
-    <details class="bot-settings">
-      <summary>Voice and narration settings</summary>
-      <div class="bot-studio" aria-label="Voice studio controls">
-        <label><span>Mode</span><select id="botMode"><option value="chat">Portfolio chat</option><option value="narrate">Narrate a script</option></select></label>
-        <label><span>Voice style</span><select id="botProfile"><option value="agent">Conversational agent</option><option value="youtube">YouTube narration</option><option value="podcast">Podcast</option><option value="documentary">Documentary</option><option value="educational">Educational</option><option value="presentation">Professional presentation</option><option value="audiobook">Audiobook</option></select></label>
-        <label><span>British voice</span><select id="botVoice"><option value="">Automatic · British English</option></select></label>
-        <label class="bot-speed"><span>Speaking speed <output id="botSpeedValue">1.0×</output></span><input id="botSpeed" type="range" min="0.8" max="1.2" step="0.05" value="1"></label>
-      </div>
-    </details>
-    <details class="bot-observability">
-      <summary>Service activity</summary>
-      <div class="bot-metrics" id="botMetrics" aria-live="polite"><span>Checking this server…</span></div>
-      <small>Counts are local to this server instance. Remaining quota is not available here.</small>
-    </details>
     <form class="bot-form" id="botForm">
       <label class="sr-only" for="botInput">Ask a question or enter a narration script</label>
       <textarea id="botInput" rows="1" maxlength="400" placeholder="Ask about Razib’s work…" autocomplete="off"></textarea>

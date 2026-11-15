@@ -693,15 +693,13 @@
   let voicePaused = false;
   const voiceToggle = $('#botVoiceToggle');
   const botPause = $('#botPause');
-  const botMode = $('#botMode');
-  const botProfile = $('#botProfile');
-  const botVoice = $('#botVoice');
-  const botSpeed = $('#botSpeed');
-  const botSpeedValue = $('#botSpeedValue');
+  const botMode = { value: 'chat' };
+  const botProfile = { value: 'agent', options: [{ text: 'Conversational agent' }], selectedIndex: 0 };
+  const botVoice = { value: '' };
+  const botSpeed = { value: '1' };
   const conversationHistory = [];
   let assistantStatus = 'Gemini · checking server setup';
   let assistantConfigured = false;
-  const metricsBox = $('#botMetrics');
   const botPresence = $('#botPresence');
   const botStateTitle = $('#botStateTitle');
   const botStateCopy = $('#botStateCopy');
@@ -733,31 +731,11 @@
     fab.dataset.paused = String(voicePaused);
     botPresence.dataset.paused = String(voicePaused);
   }
-  function renderMetrics(data) {
-    if (!metricsBox || !data) return;
-    metricsBox.replaceChildren();
-    [['Text', data.text], ['Speech', data.speech], ['Live', data.live]].forEach(([label, stats]) => {
-      const item = document.createElement('div');
-      item.className = 'bot-metric';
-      const title = document.createElement('strong');
-      title.textContent = label;
-      const detail = document.createElement('span');
-      const requests = Number(stats?.requests) || 0;
-      const successes = Number(stats?.successes) || 0;
-      const failures = Number(stats?.failures) || 0;
-      const failovers = Number(stats?.failovers) || 0;
-      const latency = Number(stats?.lastLatencyMs);
-      detail.textContent = `${successes}/${requests} succeeded · ${failures} failed · ${failovers} key switches${Number.isFinite(latency) ? ` · last ${latency} ms` : ''}`;
-      item.append(title, detail);
-      metricsBox.appendChild(item);
-    });
-  }
   function refreshAssistantStatus() {
     return fetch('/api/assistant', { headers: { Accept: 'application/json' } })
       .then(response => response.ok ? response.json() : null)
       .then(data => {
       if (!data) return;
-      renderMetrics(data);
       assistantStatus = !data.configured
         ? 'Gemini key needed · English (UK)'
         : data.text?.lastSuccessAt
@@ -766,27 +744,6 @@
             ? `Gemini · last call ${data.text.lastError} · English (UK)`
             : `Gemini · ${data.keyCount} key${data.keyCount === 1 ? '' : 's'} configured · not checked`;
       assistantConfigured = Boolean(data.configured);
-      if (assistantConfigured) {
-        fetch('/api/voices')
-          .then(response => response.ok ? response.json() : null)
-          .then(catalogue => {
-            if (!Array.isArray(catalogue?.voices) || !catalogue.voices.length) return;
-            const group = document.createElement('optgroup');
-            group.label = 'Gemini · British regional voices';
-            catalogue.voices.forEach(voice => {
-              if (typeof voice?.id !== 'string' || typeof voice?.displayName !== 'string') return;
-              const option = document.createElement('option');
-              option.value = voice.id;
-              option.textContent = `${voice.displayName} · ${voice.accent || 'British English'}`;
-              option.title = voice.description || 'English (UK) voice from Gemini’s British Voice Library';
-              group.appendChild(option);
-            });
-            if (group.childElementCount) {
-              botVoice.appendChild(group);
-              botVoice.value = group.querySelector('option')?.value || '';
-            }
-          }).catch(() => {});
-      }
       if (!fab.dataset.listening) statusText.textContent = assistantStatus;
       return data;
     }).catch(() => { assistantStatus = 'Gemini status unavailable · English (UK)'; });
@@ -816,14 +773,6 @@
     message.appendChild(row);
     log.scrollTop = log.scrollHeight;
   }
-  botMode.addEventListener('change', () => {
-    const narration = botMode.value === 'narrate';
-    bInput.maxLength = narration ? 20000 : 400;
-    bInput.placeholder = narration ? 'Paste a script to narrate (up to 20,000 characters)…' : 'Ask Razib about his work…';
-    $('#botChips').hidden = narration;
-    statusText.textContent = narration ? 'Narration studio · British voice when available' : assistantStatus;
-  });
-  botSpeed.addEventListener('input', () => { botSpeedValue.value = `${Number(botSpeed.value).toFixed(1)}×`; });
   function stopVoiceOutput() {
     const currentAudio = assistantAudio;
     if (finishVoicePlayback) { const finish = finishVoicePlayback; finishVoicePlayback = null; finish(); }

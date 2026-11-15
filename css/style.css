@@ -963,20 +963,6 @@ a.c-row:hover .c-arrow{transform:translate(3px,-3px);color:var(--a1-ink)}
 .bot-chips::-webkit-scrollbar{display:none}
 .bot-chips button{flex:none;padding:7px 12px;border-radius:100px;border:1px solid var(--line-hi);background:var(--bg3);font-size:.76rem;font-weight:600;cursor:pointer}
 .bot-chips button:hover{border-color:color-mix(in srgb,var(--a2) 75%,transparent)}
-.bot-studio{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--bg3) 68%,transparent)}
-.bot-studio label{display:grid;gap:4px;min-width:0;color:var(--sub);font-size:.68rem;font-weight:700;letter-spacing:.04em}
-.bot-studio select{width:100%;min-width:0;padding:8px 10px;border-radius:10px;border:1px solid var(--line-hi);background:var(--bg);color:var(--text);font:inherit;font-size:.78rem;letter-spacing:normal}
-.bot-studio .bot-speed{grid-column:1/-1;grid-template-columns:1fr auto;align-items:center}
-.bot-speed span{display:flex;justify-content:space-between;gap:8px}
-.bot-speed output{color:var(--a1-ink);font-variant-numeric:tabular-nums}
-.bot-speed input{grid-column:1/-1;width:100%;accent-color:var(--a1)}
-.bot-observability{padding:0 12px;border-top:1px solid var(--line);color:var(--sub);font-size:.72rem}
-.bot-observability summary{padding:8px 0;cursor:pointer;font-weight:700;color:var(--a1-ink)}
-.bot-metrics{display:grid;grid-template-columns:1fr;gap:5px;padding-bottom:6px}
-.bot-metric{display:flex;justify-content:space-between;gap:10px;line-height:1.4}
-.bot-metric strong{color:var(--text)}
-.bot-metric span{text-align:right;font-variant-numeric:tabular-nums}
-.bot-observability small{display:block;padding-bottom:8px;line-height:1.45}
 .voice-feedback{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:8px;color:var(--sub);font-size:.7rem}
 .voice-feedback button{padding:4px 8px;border:1px solid var(--line-hi);border-radius:100px;background:var(--bg);color:var(--a1-ink);font:inherit;cursor:pointer}
 .voice-feedback button:hover{background:color-mix(in srgb,var(--a2) 14%,var(--bg3))}
@@ -1065,14 +1051,6 @@ a.c-row:hover .c-arrow{transform:translate(3px,-3px);color:var(--a1-ink)}
 .msg.me{background:color-mix(in srgb,var(--bg4) 72%,var(--a2) 28%);color:var(--text);border:1px solid var(--line);border-bottom-right-radius:5px}
 .bot-chips{flex-wrap:wrap;overflow-x:visible;padding:12px 0 2px;border-top:1px solid var(--line)}
 .bot-chips button{padding:8px 12px;background:var(--bg3);color:var(--text);font-size:.74rem}
-.bot-settings,.bot-observability{padding:0 22px;border-top:1px solid var(--line);color:var(--sub);font-size:.74rem}
-.bot-settings summary,.bot-observability summary{padding:10px 0;cursor:pointer;font-weight:700;color:var(--a1-ink)}
-.bot-studio{padding:3px 0 14px;border-top:0;background:transparent}
-.bot-observability{padding-bottom:0}
-.bot-observability summary{padding:8px 0}
-.bot-metrics{grid-template-columns:repeat(3,minmax(0,1fr));padding-bottom:8px}
-.bot-metric{display:grid;gap:3px;padding:7px 9px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--bg3) 88%,var(--a2) 12%)}
-.bot-metric span{text-align:left;font-size:.65rem}
 .bot-form{gap:10px;align-items:center;padding:13px 22px max(16px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:color-mix(in srgb,var(--bg3) 92%,var(--a2) 8%)}
 .bot-form textarea{min-height:48px;max-height:140px;padding:13px 17px;border-radius:16px;background:var(--bg);resize:vertical}
 .bot-form .bot-mic{width:48px;height:48px;background:var(--bg3)}
@@ -1109,7 +1087,6 @@ body.assistant-open{overflow:hidden}
   .msg{max-width:92%;padding:11px 13px;font-size:.85rem}
   .bot-chips{gap:6px;padding-top:9px}
   .bot-chips button{padding:7px 10px;font-size:.7rem}
-  .bot-settings,.bot-observability{padding-left:14px;padding-right:14px}
   .bot-form{gap:7px;padding:9px 12px max(12px,env(safe-area-inset-bottom))}
   .bot-form textarea{min-height:44px;max-height:96px;padding:10px 12px;font-size:.86rem}
   .bot-form .bot-mic,.bot-send{width:44px;height:44px}
