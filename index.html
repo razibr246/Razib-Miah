@@ -299,14 +299,20 @@
                 <div class="sk-art" aria-hidden="true">
                   <svg class="sk-glyph sk-network" viewBox="0 0 360 260">
                     <defs>
-                      <linearGradient id="aiEdge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--h2)"/><stop offset=".55" stop-color="var(--h)"/><stop offset="1" stop-color="var(--h2)"/></linearGradient>
-                      <radialGradient id="aiCore"><stop offset="0" stop-color="var(--h2)" stop-opacity=".3"/><stop offset="1" stop-color="var(--h2)" stop-opacity="0"/></radialGradient>
+                      <linearGradient id="aiEdge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--h2)"/><stop offset=".52" stop-color="var(--h)"/><stop offset="1" stop-color="var(--h2)"/></linearGradient>
+                      <linearGradient id="aiNode" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="var(--bg3)"/><stop offset=".6" stop-color="var(--pc)"/><stop offset="1" stop-color="color-mix(in srgb,var(--h2) 18%,var(--bg3))"/></linearGradient>
+                      <radialGradient id="aiHot" cx="32%" cy="26%"><stop offset="0" stop-color="color-mix(in srgb,var(--h2) 42%,white)"/><stop offset=".55" stop-color="var(--h2)"/><stop offset="1" stop-color="color-mix(in srgb,var(--h2) 72%,var(--h))"/></radialGradient>
+                      <radialGradient id="aiOutput" cx="30%" cy="25%"><stop offset="0" stop-color="color-mix(in srgb,var(--h) 42%,white)"/><stop offset=".58" stop-color="var(--h)"/><stop offset="1" stop-color="color-mix(in srgb,var(--h) 72%,black)"/></radialGradient>
+                      <radialGradient id="aiCore"><stop offset="0" stop-color="var(--h2)" stop-opacity=".38"/><stop offset=".48" stop-color="var(--h2)" stop-opacity=".12"/><stop offset="1" stop-color="var(--h2)" stop-opacity="0"/></radialGradient>
                     </defs>
                     <circle class="ml-core-glow" cx="180" cy="132" r="100" fill="url(#aiCore)"/>
+                    <ellipse class="ml-depth-orbit" cx="180" cy="132" rx="146" ry="54" transform="rotate(-24 180 132)"/>
                     <ellipse class="ml-orbit" cx="180" cy="132" rx="146" ry="92"/>
                     <path class="ml-edge" d="M62 66L154 48M62 66L154 100M62 66L154 164M62 66L154 214M62 132L154 48M62 132L154 100M62 132L154 164M62 132L154 214M62 198L154 48M62 198L154 100M62 198L154 164M62 198L154 214M154 48L274 90M154 48L274 174M154 100L274 90M154 100L274 174M154 164L274 90M154 164L274 174M154 214L274 90M154 214L274 174"/>
+                    <path class="ml-edge-light" d="M62 66L154 48M62 132L154 100M62 198L154 164M154 48L274 90M154 100L274 90M154 164L274 174M154 214L274 174"/>
                     <path class="ml-signal" d="M62 132L154 100L274 90M62 198L154 164L274 174"/>
                     <g class="ml-nodes"><circle cx="62" cy="66" r="12"/><circle class="hot" cx="62" cy="132" r="12"/><circle cx="62" cy="198" r="12"/><circle cx="154" cy="48" r="12"/><circle class="hot" cx="154" cy="100" r="13"/><circle cx="154" cy="164" r="12"/><circle class="hot" cx="154" cy="214" r="12"/><circle class="output" cx="274" cy="90" r="15"/><circle cx="274" cy="174" r="15"/></g>
+                    <g class="ml-glints"><circle cx="58" cy="62" r="3.1"/><circle cx="150" cy="96" r="3.2"/><circle cx="269" cy="85" r="4"/><circle cx="269" cy="169" r="3.5"/></g>
                     <circle class="ml-spark" cx="274" cy="90" r="22"/>
                   </svg>
                   <span class="sk-logos"><b><img src="assets/tech/pytorch.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/tensorflow.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b><b><img src="assets/tech/huggingface.svg" alt="" width="20" height="20" decoding="async" loading="lazy"></b></span>

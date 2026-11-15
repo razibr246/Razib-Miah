@@ -309,6 +309,13 @@
       const py = (point.y - rect.top) / rect.height - .5;
       point.art.style.setProperty('--pat-x', (-px * 16).toFixed(1) + 'px');
       point.art.style.setProperty('--pat-y', (-py * 16).toFixed(1) + 'px');
+      const network = point.art.querySelector('.sk-network');
+      if (network) {
+        network.style.setProperty('--ml-x', (-px * 7).toFixed(1) + 'px');
+        network.style.setProperty('--ml-y', (-py * 6).toFixed(1) + 'px');
+        network.style.setProperty('--ml-rx', (py * 7).toFixed(1) + 'deg');
+        network.style.setProperty('--ml-ry', (px * 9).toFixed(1) + 'deg');
+      }
     });
   };
   skCards.forEach(async card => {
@@ -319,6 +326,13 @@
         if (patPointer?.art === art) patPointer = null;
         art.style.setProperty('--pat-x', '0px');
         art.style.setProperty('--pat-y', '0px');
+        const network = art.querySelector('.sk-network');
+        if (network) {
+          network.style.removeProperty('--ml-x');
+          network.style.removeProperty('--ml-y');
+          network.style.removeProperty('--ml-rx');
+          network.style.removeProperty('--ml-ry');
+        }
       });
     }
     const srcs = $$('.sk-logos img', art).map(i => i.getAttribute('src'));
