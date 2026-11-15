@@ -1306,6 +1306,10 @@
   let greeted = false;
   function openBot() {
     panel.hidden = false;
+    panel.classList.remove('is-expanded');
+    $('#botExpand').setAttribute('aria-pressed', 'false');
+    $('#botExpand').setAttribute('aria-label', 'Expand assistant');
+    $('#botExpand').title = 'Expand assistant';
     positionPanel();
     document.body.classList.add('assistant-open');
     setAssistantState('idle');
@@ -1320,6 +1324,7 @@
     if (recognition && fab.dataset.listening === 'true') recognition.stop();
     stopVoiceOutput();
     panel.hidden = true;
+    panel.classList.remove('is-expanded');
     document.body.classList.remove('assistant-open');
     fab.setAttribute('aria-expanded', 'false');
     fab.setAttribute('aria-label', 'Open Razib’s AI guide');
@@ -1331,6 +1336,12 @@
   });
   panel.addEventListener('click', event => { if (event.target === panel) closeBot(); });
   voiceToggle.addEventListener('click', () => setVoiceReplies(!voiceReplies));
+  $('#botExpand').addEventListener('click', event => {
+    const expanded = panel.classList.toggle('is-expanded');
+    event.currentTarget.setAttribute('aria-pressed', String(expanded));
+    event.currentTarget.setAttribute('aria-label', expanded ? 'Restore assistant size' : 'Expand assistant');
+    event.currentTarget.title = expanded ? 'Restore assistant size' : 'Expand assistant';
+  });
   botPause.addEventListener('click', () => {
     voicePaused = !voicePaused;
     if (assistantAudio) {
