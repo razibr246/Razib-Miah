@@ -413,6 +413,14 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .sk-glyph .as{stroke:var(--h2k)}
 .sk-glyph .node.a{fill:var(--h2)}
 .sk-glyph text{fill:var(--hk);stroke:none;font:500 13px var(--f-mono)}
+/* A small interaction loop brings the frontend browser sketch to life: the React mark turns, the pointer taps,
+   and the loading bar answers with a soft pulse. */
+.sk-card:first-child .sk-glyph .as{transform-box:fill-box;transform-origin:center;animation:frontAtom 24s linear infinite}
+.sk-card:first-child .sk-glyph>path.a{transform-box:fill-box;transform-origin:center;animation:frontCursor 4.8s ease-in-out infinite}
+.sk-card:first-child .sk-glyph>rect.f{animation:frontProgress 3.2s ease-in-out infinite}
+@keyframes frontAtom{to{rotate:360deg}}
+@keyframes frontCursor{0%,18%,100%{translate:0 0;scale:1}32%,40%{translate:4px -7px;scale:.94}58%{translate:0 0;scale:1}}
+@keyframes frontProgress{0%,100%{opacity:.58}48%{opacity:1}}
 /* quantum card: a turning wireframe Bloch sphere inside two orbits, with its three axes and a qubit riding the
    outer orbit (main.js turns it while the card is on screen) */
 .sk-bloch{width:min(94%,330px);stroke-width:1}
