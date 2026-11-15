@@ -88,7 +88,7 @@
     const LINK = 'a, button, [role="tab"], summary, select';
     const FIELD = 'input, textarea, [contenteditable="true"], .lb';
     const tints = ['var(--trail-1)', 'var(--trail-2)', 'var(--trail-3)'];
-    let lastTrail = 0, px = 0, py = 0, raf = 0, mode = '';
+    let lastTrail = 0, px = 0, py = 0, prevX = 0, prevY = 0, raf = 0, mode = '';
     const trail = (x, y) => {
       const s = 4 + Math.random() * 7;
       const d = document.createElement('span');
@@ -111,8 +111,13 @@
       if (m) cur.classList.add('is-' + m);
     };
     document.addEventListener('mousemove', e => {
+      const dx = e.clientX - prevX;
+      const dy = e.clientY - prevY;
       px = e.clientX;
       py = e.clientY;
+      prevX = px;
+      prevY = py;
+      cur.style.setProperty('--cursor-tilt', Math.max(-18, Math.min(18, dx * .45 + dy * .15)) + 'deg');
       if (!raf) raf = requestAnimationFrame(place);
       cur.classList.add('on');
       const t = e.target instanceof Element ? e.target : null;
@@ -123,6 +128,8 @@
     }, { passive: true });
     document.addEventListener('mousedown', e => {
       cur.classList.add('down');
+      cur.classList.add('spark');
+      setTimeout(() => cur.classList.remove('spark'), 420);
       if (mode === 'field') return;
       const r = document.createElement('span');
       r.className = 'click-ring';

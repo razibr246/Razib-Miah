@@ -1124,8 +1124,9 @@ html.has-cursor .lb button,html.has-cursor .lb a{cursor:pointer!important}
 html:has(.lb[open]) .cursor{opacity:0}
 .cursor{position:fixed;left:0;top:0;z-index:700;width:0;height:0;pointer-events:none;opacity:0;will-change:transform;transition:opacity .2s ease}
 .cursor.on{opacity:1}
-.cursor-tip{position:absolute;left:0;top:0;width:24px;height:24px;display:grid;place-items:center;padding:2px 0 0 2px;border-radius:2px 50% 50% 50%;background:var(--grad-btn);color:var(--on-grad);box-shadow:0 4px 14px var(--a1-glow-hi),inset 0 0 0 1px rgba(255,255,255,.3);transform-origin:0 0;backface-visibility:hidden;transition:width .28s cubic-bezier(.3,1.5,.5,1),height .28s cubic-bezier(.3,1.5,.5,1),left .28s ease,top .28s ease,border-radius .28s ease,opacity .2s ease,scale .3s cubic-bezier(.3,1.6,.5,1),rotate .3s ease,box-shadow .3s ease}
-.cursor-r{font:400 13px/1 var(--f-display);-webkit-font-smoothing:antialiased;transition:opacity .15s ease,scale .25s ease}
+.cursor-tip{position:absolute;left:0;top:0;width:24px;height:24px;display:grid;place-items:center;padding:2px 0 0 2px;border-radius:2px 50% 50% 50%;background:var(--grad-btn);color:var(--on-grad);box-shadow:0 4px 14px var(--a1-glow-hi),inset 0 0 0 1px rgba(255,255,255,.3);transform-origin:0 0;rotate:var(--cursor-tilt,0deg);backface-visibility:hidden;transition:width .28s cubic-bezier(.3,1.5,.5,1),height .28s cubic-bezier(.3,1.5,.5,1),left .28s ease,top .28s ease,border-radius .28s ease,opacity .2s ease,scale .3s cubic-bezier(.3,1.6,.5,1),rotate .16s ease,box-shadow .3s ease}
+.cursor-r{font:400 13px/1 var(--f-display);-webkit-font-smoothing:antialiased;transition:opacity .15s ease,scale .25s ease;animation:cursorLife 3s ease-in-out infinite}
+.cursor.spark .cursor-tip{animation:cursorSpark .42s cubic-bezier(.2,.8,.2,1)}
 .cursor.is-link .cursor-tip{scale:1.25;rotate:-10deg;animation:curPulse 1.6s ease-in-out infinite}
 .cursor.is-text .cursor-tip{width:10px;height:10px;left:-5px;top:-5px;padding:0;border-radius:50%;opacity:.75;box-shadow:0 0 10px var(--a1-glow-hi)}
 .cursor.is-text .cursor-r{opacity:0;scale:.3}
@@ -1133,6 +1134,8 @@ html:has(.lb[open]) .cursor{opacity:0}
 .cursor.down .cursor-tip{scale:.82;transition-duration:.12s}
 .cursor.is-link.down .cursor-tip{scale:1.05}
 @keyframes curPulse{0%,100%{box-shadow:0 4px 14px var(--a1-glow-hi),0 0 0 0 color-mix(in srgb,var(--a1) 40%,transparent),inset 0 0 0 1px rgba(255,255,255,.3)}50%{box-shadow:0 6px 20px var(--a1-glow-hi),0 0 0 7px color-mix(in srgb,var(--a1) 0%,transparent),inset 0 0 0 1px rgba(255,255,255,.3)}}
+@keyframes cursorLife{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1px) scale(1.08)}}
+@keyframes cursorSpark{50%{scale:1.42;box-shadow:0 0 0 7px color-mix(in srgb,var(--a2) 28%,transparent),0 8px 24px var(--a1-glow-hi)}}
 .click-ring{position:fixed;left:0;top:0;z-index:399;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:2px solid var(--a1);pointer-events:none}
 .trail{position:fixed;left:0;top:0;z-index:399;border-radius:50%;pointer-events:none}
 
