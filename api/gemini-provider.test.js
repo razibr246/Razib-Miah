@@ -103,6 +103,36 @@ test('narration endpoint uses the selected voice profile and returns audio witho
   }
 });
 
+test('short spoken replies use the faster Gemini Flash-Lite speech model', async () => {
+  const oldKey = process.env.GEMINI_API_KEY;
+  const oldFastModel = process.env.GEMINI_TTS_FAST_MODEL;
+  const oldFetch = global.fetch;
+  process.env.GEMINI_API_KEY = 'test-key';
+  delete process.env.GEMINI_TTS_FAST_MODEL;
+  let posted;
+  global.fetch = async (_url, options) => {
+    posted = JSON.parse(options.body);
+    return response(200, { steps: [{ type: 'model_output', content: [{ type: 'audio', data: 'dGVzdA==', mime_type: 'audio/wav' }] }] });
+  };
+  try {
+    const assistant = require('./assistant');
+    let body;
+    const res = {
+      status(code) { this.code = code; return this; },
+      setHeader() { return this; },
+      json(value) { body = value; return value; }
+    };
+    await assistant({ method: 'POST', headers: { host: 'localhost' }, socket: {}, body: { mode: 'speech', question: 'Hello there.', voice: 'voice_british_test' } }, res);
+    assert.equal(res.code, 200);
+    assert.equal(posted.model, 'gemini-3.8-flash-lite-tts');
+    assert.equal(body.voice, 'voice_british_test');
+  } finally {
+    global.fetch = oldFetch;
+    if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey;
+    if (oldFastModel === undefined) delete process.env.GEMINI_TTS_FAST_MODEL; else process.env.GEMINI_TTS_FAST_MODEL = oldFastModel;
+  }
+});
+
 test('portfolio answers return before an optional voice request and preserve recent context', async () => {
   const oldKey = process.env.GEMINI_API_KEY;
   const oldFetch = global.fetch;

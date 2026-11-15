@@ -67,11 +67,13 @@ function readText(result) {
     .map(part => part.text || '').join('').trim();
 }
 
-async function speak(text, profile, speed = 1, voiceName) {
+async function speak(text, profile, speed = 1, voiceName, mode = 'narrate') {
   const prompt = VOICE_PROFILES[profile] || VOICE_PROFILES.agent;
   const pace = speed < 0.92 ? 'Speak slightly slowly and leave comfortable pauses.' : speed > 1.08 ? 'Speak with a slightly brisk pace while keeping every word clear.' : 'Use a natural, measured speaking pace.';
   const result = await gemini.request({
-    model: process.env.GEMINI_TTS_MODEL || 'gemini-3.8-flash-tts',
+    model: mode === 'speech'
+      ? process.env.GEMINI_TTS_FAST_MODEL || 'gemini-3.8-flash-lite-tts'
+      : process.env.GEMINI_TTS_MODEL || 'gemini-3.8-flash-tts',
     input: [{ type: 'user_input', content: [{
       type: 'text',
       text,
@@ -121,7 +123,7 @@ module.exports = async function assistant(req, res) {
     if (!gemini.status().configured) return reply(res, 503, { error: 'assistant_not_configured' });
     const started = Date.now();
     try {
-      const generated = await speak(question, profile, speed, voiceName);
+      const generated = await speak(question, profile, speed, voiceName, mode);
       return reply(res, 200, { answer: question, sources: [], audio: generated.audio, mode, profile, voice: voiceName, voiceProvider: 'Gemini', latencyMs: Date.now() - started, failover: generated.failover });
     } catch (error) {
       console.error('Gemini narration failed', error.code || error.name || 'Error');

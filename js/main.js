@@ -748,7 +748,10 @@
               option.title = voice.description || 'English (UK) voice from Gemini’s British Voice Library';
               group.appendChild(option);
             });
-            if (group.childElementCount) botVoice.appendChild(group);
+            if (group.childElementCount) {
+              botVoice.appendChild(group);
+              botVoice.value = group.querySelector('option')?.value || '';
+            }
           }).catch(() => {});
       }
       if (!fab.dataset.listening) statusText.textContent = assistantStatus;
