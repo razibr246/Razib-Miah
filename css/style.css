@@ -421,6 +421,17 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 @keyframes frontAtom{to{rotate:360deg}}
 @keyframes frontCursor{0%,18%,100%{translate:0 0;scale:1}32%,40%{translate:4px -7px;scale:.94}58%{translate:0 0;scale:1}}
 @keyframes frontProgress{0%,100%{opacity:.58}48%{opacity:1}}
+/* Backend servers pass a live signal through the highlighted service while each health light checks in. */
+.sk-card:nth-child(2) .sk-glyph>circle.a{transform-box:fill-box;transform-origin:center;animation:backendStatus 2.7s ease-in-out infinite}
+.sk-card:nth-child(2) .sk-glyph>circle.a:nth-of-type(2){animation-delay:.3s}
+.sk-card:nth-child(2) .sk-glyph>circle.a:nth-of-type(3){animation-delay:.6s}
+.sk-card:nth-child(2) .sk-glyph>rect.f{transform-box:fill-box;transform-origin:center;animation:backendService 3.4s ease-in-out infinite}
+.sk-card:nth-child(2) .sk-glyph .backend-flow{fill:none;stroke:var(--h2);stroke-width:3;stroke-linecap:round;stroke-dasharray:2 7;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--h2) 55%,transparent));animation:backendData 1.25s linear infinite}
+.sk-card:nth-child(2) .sk-glyph>path.a{transform-box:fill-box;transform-origin:center;animation:backendBolt 2.8s ease-in-out infinite}
+@keyframes backendStatus{0%,100%{opacity:.72;scale:1}48%{opacity:1;scale:1.18}}
+@keyframes backendService{0%,100%{scale:1}45%,60%{scale:1.018}}
+@keyframes backendData{to{stroke-dashoffset:-18}}
+@keyframes backendBolt{0%,100%{scale:1;rotate:0deg}42%,58%{scale:1.1;rotate:4deg}}
 /* quantum card: a turning wireframe Bloch sphere inside two orbits, with its three axes and a qubit riding the
    outer orbit (main.js turns it while the card is on screen) */
 .sk-bloch{width:min(94%,330px);stroke-width:1}
