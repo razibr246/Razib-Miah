@@ -599,7 +599,7 @@
   const log = $('#botLog');
   const bInput = $('#botInput');
   const A = {
-    intro: { t: "Hello! I’m Razib’s portfolio assistant. Ask me about his work, projects, skills or research. I use facts published on this portfolio only.", a: [] },
+    intro: { t: "Hi — I’m Razib’s portfolio guide. Ask me about his projects, research, skills, or experience.", a: [] },
     who: { t: 'Razib Miah is a passionate full-stack engineer in Dhaka who also works in AI/ML and quantum machine learning (QML). He builds fast web products end to end, trains ML models, and is exploring how quantum computing can improve machine learning.', a: [['Read about him', 'about']] },
     skills: { t: 'Languages: TypeScript, Python, Go, C# and Rust. Web: React, Next.js and Node.js with PostgreSQL. Backend in Python: FastAPI, Django, Flask, Pydantic, SQLAlchemy and Celery. AI/ML: Python, PyTorch, TensorFlow, scikit-learn and Hugging Face. Quantum: Qiskit and PennyLane for quantum circuits and hybrid quantum-classical models.', a: [['See all skills', 'skills']] },
     quantum: { t: 'Razib loves quantum computing. He is exploring quantum machine learning: quantum circuits, variational algorithms and hybrid quantum-classical models. The About section shows a Bell-state circuit, the "hello world" of entanglement.', a: [['Show me', 'about'], ['Quantum skills', 'skills']] },
@@ -690,7 +690,9 @@
   let voiceReplies = false;
   let assistantAudio = null;
   let finishVoicePlayback = null;
+  let voicePaused = false;
   const voiceToggle = $('#botVoiceToggle');
+  const botPause = $('#botPause');
   const botMode = $('#botMode');
   const botProfile = $('#botProfile');
   const botVoice = $('#botVoice');
@@ -700,6 +702,37 @@
   let assistantStatus = 'Gemini · checking server setup';
   let assistantConfigured = false;
   const metricsBox = $('#botMetrics');
+  const botPresence = $('#botPresence');
+  const botStateTitle = $('#botStateTitle');
+  const botStateCopy = $('#botStateCopy');
+  const ASSISTANT_STATES = {
+    idle: ['Ready when you are', 'Ask about projects, research, skills, or experience.'],
+    listening: ['I’m listening', 'Speak naturally. I’ll catch the details that matter.'],
+    processing: ['Putting that together', 'I’m using details from Razib’s portfolio.'],
+    searching: ['Finding the right details', 'Checking the portfolio for a useful answer.'],
+    speaking: ['Here’s your answer', 'You can interrupt whenever you like.'],
+    switching: ['Switching to a backup key', 'Your question and conversation context stay in place.'],
+    error: ['Gemini is unavailable', 'A built-in portfolio guide is ready, or you can try again.']
+  };
+  function setAssistantState(state, copy) {
+    const content = ASSISTANT_STATES[state] || ASSISTANT_STATES.idle;
+    botPresence.dataset.state = state;
+    botStateTitle.textContent = content[0];
+    botStateCopy.textContent = copy || content[1];
+    botPause.hidden = state !== 'speaking';
+    if (state !== 'speaking') {
+      voicePaused = false;
+      fab.dataset.paused = 'false';
+    }
+  }
+  function syncPauseControl() {
+    const label = voicePaused ? 'Resume voice playback' : 'Pause voice playback';
+    botPause.setAttribute('aria-label', label);
+    botPause.title = label;
+    botPause.firstElementChild.textContent = voicePaused ? '▶' : 'Ⅱ';
+    fab.dataset.paused = String(voicePaused);
+    botPresence.dataset.paused = String(voicePaused);
+  }
   function renderMetrics(data) {
     if (!metricsBox || !data) return;
     metricsBox.replaceChildren();
@@ -788,7 +821,7 @@
     bInput.maxLength = narration ? 20000 : 400;
     bInput.placeholder = narration ? 'Paste a script to narrate (up to 20,000 characters)…' : 'Ask Razib about his work…';
     $('#botChips').hidden = narration;
-    statusText.textContent = narration ? 'Gemini speech studio · British English' : assistantStatus;
+    statusText.textContent = narration ? 'Narration studio · British voice when available' : assistantStatus;
   });
   botSpeed.addEventListener('input', () => { botSpeedValue.value = `${Number(botSpeed.value).toFixed(1)}×`; });
   function stopVoiceOutput() {
@@ -798,11 +831,14 @@
     if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; }
     assistantAudio = null;
     fab.dataset.speaking = 'false';
+    voicePaused = false;
+    syncPauseControl();
+    if (!panel.hidden) setAssistantState('idle');
   }
   function setVoiceReplies(enabled) {
     voiceReplies = enabled;
     voiceToggle.setAttribute('aria-pressed', String(enabled));
-    voiceToggle.setAttribute('aria-label', enabled ? 'Turn off British English voice replies' : 'Turn on British English voice replies');
+    voiceToggle.setAttribute('aria-label', enabled ? 'Turn off voice replies' : 'Turn on voice replies');
     if (!enabled) stopVoiceOutput();
   }
   function speakBritish(text) {
@@ -813,10 +849,13 @@
     utterance.rate = Number(botSpeed.value) * .96;
     utterance.pitch = 1;
     const voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices.find(voice => voice.lang.toLowerCase() === 'en-gb') || null;
+    const ukVoice = voices.find(voice => voice.lang.toLowerCase() === 'en-gb');
+    utterance.voice = ukVoice || null;
+    statusText.textContent = ukVoice ? `Browser voice · ${ukVoice.name} · English (UK)` : 'This device has no confirmed British voice';
     fab.dataset.speaking = 'true';
+    if (!panel.hidden) setAssistantState('speaking', 'Speaking with your device’s voice.');
     return new Promise(resolve => {
-      const finish = () => { if (finishVoicePlayback === finish) finishVoicePlayback = null; fab.dataset.speaking = 'false'; resolve(); };
+      const finish = () => { if (finishVoicePlayback === finish) finishVoicePlayback = null; fab.dataset.speaking = 'false'; if (!panel.hidden) setAssistantState('idle'); resolve(); };
       finishVoicePlayback = finish;
       utterance.onend = finish;
       utterance.onerror = finish;
@@ -831,8 +870,9 @@
     const player = new Audio(`data:${mimeType};base64,${audio.data}`);
     assistantAudio = player;
     fab.dataset.speaking = 'true';
+    if (!panel.hidden) setAssistantState('speaking');
     return new Promise(resolve => {
-      const finish = () => { if (finishVoicePlayback === finish) finishVoicePlayback = null; assistantAudio = null; fab.dataset.speaking = 'false'; resolve(); };
+      const finish = () => { if (finishVoicePlayback === finish) finishVoicePlayback = null; assistantAudio = null; fab.dataset.speaking = 'false'; if (!panel.hidden) setAssistantState('idle'); resolve(); };
       finishVoicePlayback = finish;
       player.onended = finish;
       player.onerror = () => { if (finishVoicePlayback === finish) finishVoicePlayback = null; assistantAudio = null; speakBritish(fallbackText).then(resolve); };
@@ -842,6 +882,7 @@
   async function synthesize(text, mode) {
     if (!voiceReplies) return;
     statusText.textContent = 'Gemini · preparing British English speech';
+    if (!panel.hidden) setAssistantState('processing', 'Preparing a spoken version of the answer.');
     try {
       const response = await fetch('/api/assistant', {
         method: 'POST',
@@ -894,7 +935,8 @@
     let stopped = false;
     for (let index = 0; index < chunks.length; index += 1) {
       if (!voiceReplies) { stopped = true; break; }
-        statusText.textContent = `Gemini · narrating section ${index + 1} of ${chunks.length}`;
+      statusText.textContent = `Narrating section ${index + 1} of ${chunks.length}`;
+      setAssistantState('processing', `Preparing narration section ${index + 1} of ${chunks.length}.`);
       try {
         const response = await fetch('/api/assistant', {
           method: 'POST',
@@ -903,7 +945,10 @@
         });
         if (!response.ok) throw new Error(String(response.status));
         const data = await response.json();
-        if (data.failover) statusText.textContent = `Gemini · section ${index + 1} used key failover · ${data.latencyMs} ms`;
+        if (data.failover) {
+          statusText.textContent = `Backup Gemini key · section ${index + 1}`;
+          setAssistantState('switching');
+        }
         if (index === chunks.length - 1) offerVoiceFeedback('Gemini voice');
         await playBritishAudio(data.audio, chunks[index]);
       } catch {
@@ -914,8 +959,9 @@
     }
     typing.remove();
     if (stopped) addMsg('bot', 'Narration stopped.');
-    else addMsg('bot', fallback ? 'Narration finished with your browser’s installed English (UK) voice.' : `Narration finished · ${chunks.length} sections · ${botProfile.options[botProfile.selectedIndex].text}.`);
-    statusText.textContent = fallback ? 'Using your browser’s English (UK) voice' : assistantStatus;
+    else addMsg('bot', fallback ? 'Narration finished with the available browser voice.' : `Narration finished · ${chunks.length} sections · ${botProfile.options[botProfile.selectedIndex].text}.`);
+    statusText.textContent = fallback ? 'Narration used your browser voice' : assistantStatus;
+    setAssistantState('idle', fallback ? 'Narration is complete. The browser voice was used for the remaining sections.' : 'Your narration is ready.');
     refreshAssistantStatus();
   }
   async function ask(text, key, fromVoice = false) {
@@ -929,6 +975,8 @@
       await narrateScript(text, typing);
       return;
     }
+    setAssistantState('searching');
+    statusText.textContent = 'Checking Razib’s portfolio…';
     const fallbackKey = key || route(text);
     try {
       const response = await fetch('/api/assistant', {
@@ -947,15 +995,20 @@
       if (mode === 'chat' && data.latencyMs) {
         statusText.textContent = `${data.provider || 'Gemini'} · ${data.latencyMs} ms${data.failover ? ' · key failover used' : ''} · English (UK)`;
       }
+      if (data.failover) {
+        setAssistantState('switching');
+        setTimeout(() => { if (botPresence.dataset.state === 'switching') setAssistantState('idle', 'Your answer is ready.'); }, 900);
+      } else setAssistantState('idle', data.sources?.length ? 'Answer grounded in the portfolio details shown here.' : 'No matching portfolio detail was found.');
       refreshAssistantStatus();
       if (voiceReplies && data.answer) synthesize(data.answer, 'speech');
     } catch (error) {
       typing.remove();
       const fallback = A[fallbackKey] || A.fallback;
       const note = error.message === '503'
-        ? ' The Gemini key is not configured on the server yet, so this reply comes from the portfolio’s built-in guide.'
-        : ' The live assistant is unavailable right now, so this reply comes from the portfolio’s built-in guide.';
+        ? ' Gemini is not connected on the server, so this reply comes from the built-in portfolio guide.'
+        : ' I could not reach Gemini just now, so this reply comes from the built-in portfolio guide.';
       addMsg('bot', fallback.t + note, fallback.a);
+      setAssistantState('error', error.message === '503' ? 'Connect Gemini on the server to enable live answers.' : 'The built-in guide is available. You can try Gemini again shortly.');
       refreshAssistantStatus();
       speakBritish(fallback.t + note);
     }
@@ -974,13 +1027,15 @@
   function setListening(listening, message) {
     fab.dataset.listening = String(listening);
     micButton.setAttribute('aria-pressed', String(listening));
-    micButton.setAttribute('aria-label', listening ? 'Stop voice input' : 'Ask by voice in English (UK)');
-    micButton.title = listening ? 'Stop voice input' : 'Ask by voice in English (UK)';
+    micButton.setAttribute('aria-label', listening ? 'Stop listening' : 'Speak your question');
+    micButton.title = listening ? 'Stop listening' : 'Speak your question';
     statusRow.classList.toggle('is-listening', listening);
     statusText.textContent = message || assistantStatus;
+    if (listening) setAssistantState('listening');
+    else if (botPresence.dataset.state === 'listening') setAssistantState('idle');
   }
   if (recognition) {
-    recognition.onstart = () => setListening(true, 'Listening · English (UK)');
+    recognition.onstart = () => setListening(true, 'Listening · browser speech');
     recognition.onresult = event => {
       let interim = '';
       let finalText = '';
@@ -1000,9 +1055,11 @@
       }
     };
     recognition.onerror = event => {
-      setListening(false, event.error === 'not-allowed' ? 'Microphone access was blocked' : 'Voice input stopped');
+      const blocked = event.error === 'not-allowed';
+      setListening(false, blocked ? 'Microphone access was blocked' : 'Voice input stopped');
+      if (blocked) setAssistantState('error', 'Allow microphone access in your browser, then try again.');
     };
-    recognition.onend = () => setListening(false);
+    recognition.onend = () => { if (botPresence.dataset.state === 'listening') setListening(false); };
   } else {
     micButton.title = 'Voice input is not supported in this browser';
   }
@@ -1043,6 +1100,7 @@
     if (liveSilence) { liveSilence.disconnect(); liveSilence = null; }
     if (liveStream) { liveStream.getTracks().forEach(track => track.stop()); liveStream = null; }
     if (liveContext) { liveContext.close().catch(() => {}); liveContext = null; }
+    botPresence.style.setProperty('--voice-level', '0');
   }
   function finishLiveTurn() {
     if (liveFinishTimer) clearTimeout(liveFinishTimer);
@@ -1069,6 +1127,7 @@
     liveFinal = '';
     liveInterim = '';
     liveFinishing = false;
+    setAssistantState('processing', 'Opening a secure microphone connection.');
     statusText.textContent = 'Connecting securely to Gemini Live…';
     try {
       liveStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
@@ -1111,7 +1170,12 @@
               liveSilence.gain.value = 0;
               liveProcessor.onaudioprocess = audioEvent => {
                 if (liveSocket?.readyState !== WebSocket.OPEN || liveFinishing) return;
-                const data = pcmChunk(audioEvent.inputBuffer.getChannelData(0), liveContext.sampleRate);
+                const samples = audioEvent.inputBuffer.getChannelData(0);
+                let energy = 0;
+                for (let index = 0; index < samples.length; index += 8) energy += samples[index] * samples[index];
+                const level = Math.min(1, Math.sqrt(energy / Math.max(1, Math.ceil(samples.length / 8))) * 3.2);
+                botPresence.style.setProperty('--voice-level', level.toFixed(3));
+                const data = pcmChunk(samples, liveContext.sampleRate);
                 liveSocket.send(JSON.stringify({ realtimeInput: { audio: { data, mimeType: 'audio/pcm;rate=16000' } } }));
               };
               liveSource.connect(liveProcessor);
@@ -1153,6 +1217,7 @@
       }
       stopLiveCapture();
       statusText.textContent = 'Gemini Live unavailable · trying browser speech';
+      setAssistantState('error', 'Gemini Live is unavailable. Trying your browser’s speech recognition.');
       return false;
     }
   }
@@ -1187,16 +1252,11 @@
   } catch {}
   function positionPanel() {
     if (panel.hidden) return;
-    const rect = fab.getBoundingClientRect();
-    const width = panel.offsetWidth || Math.min(370, innerWidth - 32);
-    const height = panel.offsetHeight || Math.min(520, innerHeight - 220);
-    const left = Math.max(16, Math.min(innerWidth - width - 16, rect.left + rect.width / 2 - width / 2));
-    let top = rect.top - height - 16;
-    if (top < 16) top = rect.bottom + 16;
-    top = Math.max(16, Math.min(innerHeight - height - 16, top));
-    panel.style.left = left + 'px'; panel.style.top = top + 'px';
-    panel.style.right = 'auto'; panel.style.bottom = 'auto';
-    panel.style.transformOrigin = `${Math.max(14, Math.min(width - 14, rect.left + rect.width / 2 - left))}px ${top < rect.top ? '100%' : '0%'}`;
+    panel.style.removeProperty('left');
+    panel.style.removeProperty('top');
+    panel.style.removeProperty('right');
+    panel.style.removeProperty('bottom');
+    panel.style.removeProperty('transform-origin');
   }
   let drag = null, didDrag = false, swallowClick = false;
   fab.addEventListener('pointerdown', event => {
@@ -1247,8 +1307,10 @@
   function openBot() {
     panel.hidden = false;
     positionPanel();
+    document.body.classList.add('assistant-open');
+    setAssistantState('idle');
     fab.setAttribute('aria-expanded', 'true');
-    fab.setAttribute('aria-label', 'Close Razib’s voice assistant');
+    fab.setAttribute('aria-label', 'Close Razib’s AI guide');
     if (!greeted) { greeted = true; setTimeout(() => addMsg('bot', A.intro.t), motion() ? 300 : 0); }
     if (finePointer) setTimeout(() => bInput.focus(), motion() ? 420 : 0);
     else $('#botTitle').focus();
@@ -1258,15 +1320,29 @@
     if (recognition && fab.dataset.listening === 'true') recognition.stop();
     stopVoiceOutput();
     panel.hidden = true;
+    document.body.classList.remove('assistant-open');
     fab.setAttribute('aria-expanded', 'false');
-    fab.setAttribute('aria-label', 'Open Razib’s voice assistant');
+    fab.setAttribute('aria-label', 'Open Razib’s AI guide');
     if (returnFocus) fab.focus();
   }
   fab.addEventListener('click', event => {
     if (swallowClick) { event.preventDefault(); return; }
     panel.hidden ? openBot() : closeBot();
   });
+  panel.addEventListener('click', event => { if (event.target === panel) closeBot(); });
   voiceToggle.addEventListener('click', () => setVoiceReplies(!voiceReplies));
+  botPause.addEventListener('click', () => {
+    voicePaused = !voicePaused;
+    if (assistantAudio) {
+      if (voicePaused) assistantAudio.pause();
+      else assistantAudio.play().catch(() => {});
+    } else if ('speechSynthesis' in window) {
+      if (voicePaused) window.speechSynthesis.pause();
+      else window.speechSynthesis.resume();
+    }
+    syncPauseControl();
+    statusText.textContent = voicePaused ? 'Voice paused · press play to continue' : 'Voice resumed';
+  });
   micButton.addEventListener('click', async () => {
     if (liveSocket) { stopGeminiLive(); return; }
     if (liveConnecting) return;
@@ -1279,7 +1355,11 @@
       micButton.disabled = false;
       if (started) return;
     }
-    if (!recognition) { statusText.textContent = 'Voice input is unavailable. Allow microphone access and try again.'; return; }
+    if (!recognition) {
+      statusText.textContent = 'Voice input is unavailable in this browser. Type your question instead.';
+      setAssistantState('error', 'Your browser does not offer speech recognition here. You can still type.');
+      return;
+    }
     try { recognition.start(); }
     catch { setListening(false, 'Voice input is already active'); }
   });
@@ -1300,8 +1380,15 @@
     }
   });
   document.addEventListener('keydown', e => {
+    if (!panel.hidden && e.key === 'Escape') closeBot();
+    if (!panel.hidden && e.key === 'Tab') {
+      const focusable = [...panel.querySelectorAll('button:not([disabled]):not([hidden]),a[href],select:not([disabled]),textarea:not([disabled]),input:not([disabled]),summary')]
+        .filter(el => el.getClientRects().length);
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+    }
     if (e.key !== 'Escape') return;
-    if (!panel.hidden) closeBot();
     if (nav.classList.contains('open')) { setMenu(false); menuBtn.focus(); }
   });
 
