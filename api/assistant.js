@@ -28,7 +28,7 @@ function rankSources(question) {
 
 function rateLimited(req) {
   const now = Date.now();
-  const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
+  const ip = String(req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
   const store = globalThis.__razibAssistantRateLimit || (globalThis.__razibAssistantRateLimit = new Map());
   const entry = store.get(ip);
   if (!entry || now - entry.start >= WINDOW_MS) {
@@ -51,6 +51,12 @@ module.exports = async function assistant(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return reply(res, 405, { error: 'method_not_allowed' });
+  }
+  const origin = req.headers.origin;
+  if (origin) {
+    try {
+      if (new URL(origin).host !== req.headers.host) return reply(res, 403, { error: 'origin_not_allowed' });
+    } catch { return reply(res, 403, { error: 'origin_not_allowed' }); }
   }
   if (rateLimited(req)) return reply(res, 429, { error: 'rate_limited' });
 
@@ -99,9 +105,49 @@ module.exports = async function assistant(req, res) {
       .filter(part => part.type === 'text')
       .map(part => part.text || '').join('').trim();
     if (!answer) return reply(res, 502, { error: 'empty_assistant_reply' });
+    let audio = null;
+    if (body?.speak === true) {
+      const voiceController = new AbortController();
+      const voiceTimer = setTimeout(() => voiceController.abort(), 18000);
+      try {
+        const spokenText = answer.slice(0, 1200);
+        const voiceResponse = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+          signal: voiceController.signal,
+          body: JSON.stringify({
+            model: process.env.GEMINI_TTS_MODEL || 'gemini-3.8-flash-tts',
+            input: [{
+              type: 'user_input',
+              content: [{
+                type: 'text', text: spokenText,
+                annotations: [{ type: 'speech_metadata', style: 'Speak these words verbatim in a warm, polished British English accent as heard in England. Use clear, natural pronunciation and a measured, friendly assistant cadence.' }]
+              }]
+            }],
+            response_format: { type: 'audio' },
+            generation_config: { speech_config: [{ voice: 'Kore' }] },
+            store: false
+          })
+        });
+        if (voiceResponse.ok) {
+          const voiceResult = await voiceResponse.json();
+          const part = voiceResult.steps?.filter(step => step.type === 'model_output')
+            .flatMap(step => step.content || [])
+            .find(item => item.type === 'audio' && item.data);
+          if (part) audio = { data: part.data, mimeType: part.mime_type || 'audio/wav' };
+        } else {
+          console.error('Gemini voice request failed with status', voiceResponse.status);
+        }
+      } catch (error) {
+        console.error('Gemini voice request failed', error.name || 'Error');
+      } finally {
+        clearTimeout(voiceTimer);
+      }
+    }
     return reply(res, 200, {
       answer: answer.slice(0, 1800),
-      sources: sources.map(({ label, href }) => ({ label, href }))
+      sources: sources.map(({ label, href }) => ({ label, href })),
+      audio
     });
   } catch (error) {
     console.error('Gemini assistant request failed', error.name || 'Error');

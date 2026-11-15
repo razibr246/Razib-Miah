@@ -48,7 +48,7 @@ python -m http.server 8000
 
 ### Portfolio assistant
 
-The movable voice orb calls the same-origin `/api/assistant` Vercel Function. It retrieves only from the curated portfolio facts in `api/portfolio-knowledge.js`; it has no web-search tools. Add `GEMINI_API_KEY` to the Vercel project’s Environment Variables, then redeploy. For local API work, put a Gemini API key in the ignored `.env.local` file and run `npx vercel dev`. Never put the key in HTML or JavaScript. Without the server key, the widget falls back to its built-in portfolio answers.
+The movable voice orb calls the same-origin `/api/assistant` Vercel Function. It retrieves only from the curated portfolio facts in `api/portfolio-knowledge.js`; it has no web-search tools and does not store Gemini conversation history. Voice input uses English (UK) browser speech recognition. When voice replies are enabled, Gemini TTS is prompted for a British English accent; if TTS is unavailable, the browser’s installed `en-GB` voice is used. Add `GEMINI_API_KEY` to the Vercel project’s Environment Variables, then redeploy. For local API work, put a Gemini API key in the ignored `.env.local` file and run `npx vercel dev`. Never put the key in HTML or JavaScript. Voice replies make an additional Gemini TTS request and may incur usage charges. Without the server key, the widget falls back to its built-in portfolio answers.
 
 ## Things to update before you share it
 

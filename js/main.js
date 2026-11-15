@@ -663,26 +663,48 @@
     return t;
   }
   let voiceReplies = false;
+  let assistantAudio = null;
   const voiceToggle = $('#botVoiceToggle');
+  function stopVoiceOutput() {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (assistantAudio) { assistantAudio.pause(); assistantAudio = null; }
+    fab.dataset.speaking = 'false';
+  }
   function setVoiceReplies(enabled) {
     voiceReplies = enabled;
     voiceToggle.setAttribute('aria-pressed', String(enabled));
     voiceToggle.setAttribute('aria-label', enabled ? 'Turn off British English voice replies' : 'Turn on British English voice replies');
-    if (!enabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (!enabled) stopVoiceOutput();
   }
   function speakBritish(text) {
     if (!voiceReplies || !('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return;
-    window.speechSynthesis.cancel();
+    stopVoiceOutput();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-GB';
     utterance.rate = .96;
     utterance.pitch = 1;
     const voices = window.speechSynthesis.getVoices();
     utterance.voice = voices.find(voice => voice.lang.toLowerCase() === 'en-gb') || null;
+    fab.dataset.speaking = 'true';
+    utterance.onend = () => { fab.dataset.speaking = 'false'; };
+    utterance.onerror = () => { fab.dataset.speaking = 'false'; };
     window.speechSynthesis.speak(utterance);
+  }
+  function playBritishAudio(audio, fallbackText) {
+    if (!voiceReplies) return;
+    if (!audio?.data) { speakBritish(fallbackText); return; }
+    stopVoiceOutput();
+    const mimeType = typeof audio.mimeType === 'string' && audio.mimeType.startsWith('audio/') ? audio.mimeType : 'audio/wav';
+    const player = new Audio(`data:${mimeType};base64,${audio.data}`);
+    assistantAudio = player;
+    fab.dataset.speaking = 'true';
+    player.onended = () => { assistantAudio = null; fab.dataset.speaking = 'false'; };
+    player.onerror = () => { assistantAudio = null; speakBritish(fallbackText); };
+    player.play().catch(() => { assistantAudio = null; speakBritish(fallbackText); });
   }
   async function ask(text, key, fromVoice = false) {
     addMsg('me', text);
+    stopVoiceOutput();
     const typing = showTyping();
     if (fromVoice) setVoiceReplies(true);
     const fallbackKey = key || route(text);
@@ -690,13 +712,13 @@
       const response = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: text })
+        body: JSON.stringify({ question: text, speak: voiceReplies })
       });
       if (!response.ok) throw new Error(String(response.status));
       const data = await response.json();
       typing.remove();
       addMsg('bot', data.answer || A.fallback.t, [], data.sources || []);
-      speakBritish(data.answer || A.fallback.t);
+      playBritishAudio(data.audio, data.answer || A.fallback.t);
     } catch (error) {
       typing.remove();
       const fallback = A[fallbackKey] || A.fallback;
@@ -828,7 +850,7 @@
   function closeBot(returnFocus = true) {
     if (panel.hidden) return;
     if (recognition && fab.dataset.listening === 'true') recognition.stop();
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    stopVoiceOutput();
     panel.hidden = true;
     fab.setAttribute('aria-expanded', 'false');
     fab.setAttribute('aria-label', 'Open Razib’s voice assistant');
