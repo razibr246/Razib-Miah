@@ -432,6 +432,28 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 @keyframes backendService{0%,100%{scale:1}45%,60%{scale:1.018}}
 @keyframes backendData{to{stroke-dashoffset:-18}}
 @keyframes backendBolt{0%,100%{scale:1;rotate:0deg}42%,58%{scale:1.1;rotate:4deg}}
+/* Data moves from storage through cloud services to the small infrastructure nodes. */
+.sk-card:nth-child(3) .sk-glyph>ellipse.f{transform-box:fill-box;transform-origin:center;animation:infraStorage 4.2s ease-in-out infinite}
+.sk-card:nth-child(3) .sk-glyph>path.a{transform-box:fill-box;transform-origin:center;animation:infraCloud 3.6s ease-in-out infinite}
+.sk-card:nth-child(3) .sk-glyph .infra-flow{fill:none;stroke:var(--h2);stroke-width:2.8;stroke-linecap:round;stroke-dasharray:1 9;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--h2) 58%,transparent));animation:infraTransfer 1.35s linear infinite}
+.sk-card:nth-child(3) .sk-glyph>rect.f{transform-box:fill-box;transform-origin:center;animation:infraNode 2.8s ease-in-out infinite}
+.sk-card:nth-child(3) .sk-glyph>rect.f:nth-of-type(2){animation-delay:.45s}
+.sk-card:nth-child(3) .sk-glyph>rect.a{transform-box:fill-box;transform-origin:center;animation:infraNode 2.8s ease-in-out infinite;animation-delay:.9s}
+@keyframes infraStorage{0%,100%{opacity:.8;scale:1}50%{opacity:1;scale:1.035}}
+@keyframes infraCloud{0%,100%{scale:1}50%{scale:1.035}}
+@keyframes infraTransfer{to{stroke-dashoffset:-20}}
+@keyframes infraNode{0%,15%,100%{opacity:.72;scale:1}35%,55%{opacity:1;scale:1.16}}
+/* The lead and team breathe together; the speech dots arrive one after another. */
+.sk-card:nth-child(6) .sk-glyph>circle.f{transform-box:fill-box;transform-origin:center;animation:leadPresence 3.2s ease-in-out infinite}
+.sk-card:nth-child(6) .sk-glyph>path.as{transform-box:fill-box;transform-origin:center;animation:leadConversation 4.4s ease-in-out infinite}
+.sk-card:nth-child(6) .sk-glyph>path.a{transform-box:fill-box;transform-origin:center;animation:leadSparkle 5s ease-in-out infinite}
+.sk-card:nth-child(6) .sk-glyph>circle.a{transform-box:fill-box;transform-origin:center;animation:leadWords 1.8s ease-in-out infinite}
+.sk-card:nth-child(6) .sk-glyph>circle.a:nth-of-type(5){animation-delay:.2s}
+.sk-card:nth-child(6) .sk-glyph>circle.a:nth-of-type(6){animation-delay:.4s}
+@keyframes leadPresence{0%,100%{scale:1}50%{scale:1.06}}
+@keyframes leadConversation{0%,12%,100%{translate:0 0}24%,36%{translate:0 -3px}}
+@keyframes leadSparkle{0%,70%,100%{rotate:0deg;scale:1}82%{rotate:12deg;scale:1.16}}
+@keyframes leadWords{0%,100%{opacity:.58;scale:.9}50%{opacity:1;scale:1.28}}
 /* quantum card: a turning wireframe Bloch sphere inside two orbits, with its three axes and a qubit riding the
    outer orbit (main.js turns it while the card is on screen) */
 .sk-bloch{width:min(94%,330px);stroke-width:1}
