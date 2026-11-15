@@ -1417,7 +1417,7 @@
   /* ---------- smooth wheel scrolling ---------- */
   // Mouse wheels and trackpads glide to rest instead of stepping. Keyboard, scrollbar and touch stay native,
   // and so do zoom gestures, sideways scrolling and any panel that scrolls on its own.
-  const glide = { on: false, y: 0, to: 0, set: 0, t: 0, raf: 0, tau: 110 };
+  const glide = { on: false, y: 0, to: 0, set: 0, t: 0, raf: 0, tau: 64 };
   function glideStop() { cancelAnimationFrame(glide.raf); glide.on = false; }
   function glideStep(now) {
     // someone else moved the page (scrollbar, keys, find-in-page): let them have it
@@ -1440,11 +1440,12 @@
     return false;
   }
   addEventListener('wheel', e => {
-    if (!motion() || e.ctrlKey || e.defaultPrevented || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    if (!motion() || !finePointer || e.ctrlKey || e.defaultPrevented || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
     if (document.querySelector('dialog[open]') || scrollsInside(e.target, e.deltaY)) return;
-    e.preventDefault();
     const d = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1);
-    glide.tau = Math.abs(d) >= 50 ? 120 : 70;
+    if (!d) return;
+    e.preventDefault();
+    glide.tau = Math.abs(d) >= 50 ? 68 : 48;
     if (!glide.on) {
       glide.y = glide.to = glide.set = scrollY;
       glide.t = performance.now();
