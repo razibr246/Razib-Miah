@@ -319,10 +319,15 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .cv-badge b{display:block;font:400 1.05rem/1.15 var(--f-display);color:var(--text)}
 .cv-badge small{display:block;margin-top:3px;font:600 .6rem var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--a2-ink)}
 .focus-chips{display:flex;flex-wrap:wrap;gap:8px}
-.focus-chips li{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:100px;border:1px solid var(--line-hi);background:color-mix(in srgb,var(--bg3) 70%,transparent);font-size:.84rem;font-weight:600}
-.focus-chips .ic{width:16px;height:16px;color:var(--a1-ink)}
-.focus-chips li:nth-child(2) .ic{color:var(--blue-ink)}
-.focus-chips li:nth-child(3) .ic{color:var(--a2-ink)}
+.focus-chips li{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:100px;border:1px solid var(--line-hi);background:color-mix(in srgb,var(--bg3) 70%,transparent);font-size:.84rem;font-weight:600;transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s}
+.focus-chips li:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--a2) 70%,var(--line-hi));box-shadow:0 8px 20px color-mix(in srgb,var(--a1) 15%,transparent)}
+.focus-chips .ic{width:16px;height:16px;color:var(--a1-ink);transform-origin:center;animation:focusCode 2.8s ease-in-out infinite;transition:transform .3s,filter .3s}
+.focus-chips li:nth-child(2) .ic{color:var(--blue-ink);animation:focusSpark 3s ease-in-out infinite}
+.focus-chips li:nth-child(3) .ic{color:var(--a2-ink);animation:focusAtom 9s linear infinite}
+.focus-chips li:hover .ic{transform:scale(1.2);filter:drop-shadow(0 0 4px currentColor)}
+@keyframes focusCode{0%,100%{translate:0 0}50%{translate:1px 0;scale:1.12}}
+@keyframes focusSpark{0%,100%{rotate:0deg;scale:.94;opacity:.75}50%{rotate:14deg;scale:1.14;opacity:1}}
+@keyframes focusAtom{to{rotate:360deg}}
 .qstrip{grid-column:1/-1;position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(20px,4vw,48px);align-items:center;margin:clamp(4px,1.5vw,12px) 0 0;padding:clamp(22px,4vw,36px);border-radius:20px;border:1px solid var(--line-hi);background:radial-gradient(70% 120% at 0% 0%,color-mix(in srgb,var(--a1) 12%,transparent),transparent 60%),radial-gradient(60% 120% at 100% 100%,color-mix(in srgb,var(--blue) 10%,transparent),transparent 60%),var(--bg2)}
 .q-copy{display:flex;flex-direction:column;gap:12px;min-width:0}
 .q-eyebrow{font:500 .66rem var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--blue-ink)}
