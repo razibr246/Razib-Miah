@@ -833,12 +833,15 @@
   </footer>
 </div>
 
-<button class="bot-fab" id="botFab" type="button" aria-expanded="false" aria-controls="botPanel" aria-label="Open Razib's AI guide" aria-description="Drag to move. Hold Alt and use the arrow keys to reposition."><span class="siri-orb" aria-hidden="true"><i></i><i></i><i></i></span></button>
+<div class="bot-launcher" aria-label="Qubiq assistant launcher">
+  <button class="bot-fab" id="botFab" type="button" aria-expanded="false" aria-controls="botPanel" aria-label="Open Qubiq, Razib’s quantum AI guide" aria-description="Drag to move. Hold Alt and use the arrow keys to reposition."><span class="siri-orb" aria-hidden="true"><i></i><i></i><i></i></span><span class="bot-fab-label"><strong>Qubiq</strong><small>Quantum · AI · ML</small></span></button>
+  <button class="bot-quick-mic" id="botQuickMic" type="button" aria-label="Start a voice conversation with Qubiq" title="Start voice conversation"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></svg></button>
+</div>
 <section class="bot-panel" id="botPanel" role="dialog" aria-modal="true" aria-labelledby="botTitle" hidden>
   <div class="bot-shell">
     <header class="bot-head">
       <span class="bot-av" aria-hidden="true"><span class="siri-orb"><i></i><i></i><i></i></span></span>
-      <div class="bot-meta"><strong id="botTitle" tabindex="-1">Razib’s AI guide</strong><span class="bot-status"><i></i><span id="botStatusText">Ready · grounded in portfolio details</span></span></div>
+      <div class="bot-meta"><strong id="botTitle" tabindex="-1">Qubiq</strong><span class="bot-status"><i></i><span id="botStatusText">Quantum · AI · ML · grounded in portfolio details</span></span></div>
       <button class="bot-pause" id="botPause" type="button" aria-label="Pause voice playback" title="Pause voice playback" hidden><span aria-hidden="true">Ⅱ</span></button>
       <button class="bot-voice-toggle" id="botVoiceToggle" type="button" aria-label="Turn on voice replies" aria-pressed="false" title="Voice replies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a9 9 0 0 1 0 11"/></svg></button>
       <button class="bot-expand" id="botExpand" type="button" aria-label="Expand assistant" aria-pressed="false" title="Expand assistant"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H4v4m12-4h4v4M4 16v4h4m12-4v4h-4M4 8l6-6m10 6-6-6M4 16l6 6m10-6-6 6"/></svg></button>
