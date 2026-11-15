@@ -466,6 +466,7 @@
   }
   if (finePointer && motion()) {
     $$('.tl-block').forEach(b => tilt(b, 5, 1.02));
+    $$('.q-visual').forEach(b => tilt(b, 2, 1.008));
   }
 
   /* ---------- show / hide details ---------- */

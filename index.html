@@ -166,6 +166,10 @@
             <div class="q-visual">
               <div class="code-bar"><span class="dots" aria-hidden="true"><b></b><b></b><b></b></span><span class="code-tab">bell_state.py</span><span class="code-lang">1,024 shots · simulator</span></div>
               <svg class="qc" viewBox="0 0 300 104" role="img" aria-label="Circuit: qubit 0 passes through a Hadamard gate, then a CNOT links it to qubit 1, then both are measured.">
+                <defs>
+                  <linearGradient id="qGateFace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="color-mix(in srgb,var(--bg3) 88%,white)"/><stop offset="1" stop-color="color-mix(in srgb,var(--a2) 24%,var(--bg3))"/></linearGradient>
+                  <linearGradient id="qMeterFace" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="color-mix(in srgb,var(--blue) 20%,var(--bg3))"/><stop offset="1" stop-color="color-mix(in srgb,var(--blue) 7%,var(--bg3))"/></linearGradient>
+                </defs>
                 <text class="lbl" x="4" y="34">q0 |0⟩</text>
                 <text class="lbl" x="4" y="84">q1 |0⟩</text>
                 <line class="wire" x1="58" y1="30" x2="296" y2="30"/>
@@ -175,6 +179,7 @@
                 <rect class="gate" x="86" y="16" width="28" height="28" rx="6"/>
                 <text class="gtxt" x="100" y="35" text-anchor="middle">H</text>
                 <line class="cline" x1="160" y1="30" x2="160" y2="80"/>
+                <circle class="entangle-ring" cx="160" cy="55" r="17"/>
                 <circle class="ctrl" cx="160" cy="30" r="5"/>
                 <circle class="targ" cx="160" cy="80" r="11"/>
                 <path class="targ" d="M149 80h22M160 69v22"/>
