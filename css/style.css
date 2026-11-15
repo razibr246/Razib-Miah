@@ -927,6 +927,16 @@ a.c-row:hover .c-arrow{transform:translate(3px,-3px);color:var(--a1-ink)}
 .bot-speed span{display:flex;justify-content:space-between;gap:8px}
 .bot-speed output{color:var(--a1-ink);font-variant-numeric:tabular-nums}
 .bot-speed input{grid-column:1/-1;width:100%;accent-color:var(--a1)}
+.bot-observability{padding:0 12px;border-top:1px solid var(--line);color:var(--sub);font-size:.72rem}
+.bot-observability summary{padding:8px 0;cursor:pointer;font-weight:700;color:var(--a1-ink)}
+.bot-metrics{display:grid;grid-template-columns:1fr;gap:5px;padding-bottom:6px}
+.bot-metric{display:flex;justify-content:space-between;gap:10px;line-height:1.4}
+.bot-metric strong{color:var(--text)}
+.bot-metric span{text-align:right;font-variant-numeric:tabular-nums}
+.bot-observability small{display:block;padding-bottom:8px;line-height:1.45}
+.voice-feedback{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:8px;color:var(--sub);font-size:.7rem}
+.voice-feedback button{padding:4px 8px;border:1px solid var(--line-hi);border-radius:100px;background:var(--bg);color:var(--a1-ink);font:inherit;cursor:pointer}
+.voice-feedback button:hover{background:color-mix(in srgb,var(--a2) 14%,var(--bg3))}
 .bot-form textarea{flex:1;min-width:0;max-height:112px;resize:vertical;padding:10px 14px;border-radius:15px;border:1px solid var(--line-hi);background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;line-height:1.4}
 .bot-form textarea:focus{outline:none;border-color:var(--a1)}
 .bot-form{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--line)}
