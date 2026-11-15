@@ -20,6 +20,7 @@ const VOICE_PROFILES = {
   audiobook: 'Expressive British storytelling. Vary emphasis naturally and preserve a consistent narrator voice.'
 };
 const VOICE_NAMES = new Set(['Kore', 'Charon', 'Schedar', 'Sulafat', 'Aoede', 'Zephyr', 'Achernar', 'Enceladus']);
+const isVoiceId = value => typeof value === 'string' && /^voice(?:key)?_[A-Za-z0-9_-]{1,120}$/.test(value);
 
 function words(value) {
   return value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
@@ -115,7 +116,7 @@ module.exports = async function assistant(req, res) {
   if (!question.trim() || question.length > maxLength) return reply(res, 400, { error: 'invalid_question' });
   const profile = Object.hasOwn(VOICE_PROFILES, body?.profile) ? body.profile : 'agent';
   const speed = Number.isFinite(Number(body?.speed)) ? Math.max(0.8, Math.min(1.2, Number(body.speed))) : 1;
-  const voiceName = VOICE_NAMES.has(body?.voice) ? body.voice : (process.env.GEMINI_TTS_VOICE || 'Kore');
+  const voiceName = VOICE_NAMES.has(body?.voice) || isVoiceId(body?.voice) ? body.voice : (process.env.GEMINI_TTS_VOICE || 'Kore');
   if (mode !== 'chat') {
     if (!gemini.status().configured) return reply(res, 503, { error: 'assistant_not_configured' });
     const started = Date.now();

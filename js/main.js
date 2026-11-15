@@ -711,6 +711,24 @@
             ? `Gemini · last call ${data.text.lastError} · English (UK)`
             : `Gemini · ${data.keyCount} key${data.keyCount === 1 ? '' : 's'} configured · not checked`;
       assistantConfigured = Boolean(data.configured);
+      if (assistantConfigured) {
+        fetch('/api/voices')
+          .then(response => response.ok ? response.json() : null)
+          .then(catalogue => {
+            if (!Array.isArray(catalogue?.voices) || !catalogue.voices.length) return;
+            const group = document.createElement('optgroup');
+            group.label = 'Gemini · British regional voices';
+            catalogue.voices.forEach(voice => {
+              if (typeof voice?.id !== 'string' || typeof voice?.displayName !== 'string') return;
+              const option = document.createElement('option');
+              option.value = voice.id;
+              option.textContent = `${voice.displayName} · ${voice.accent || 'British English'}`;
+              option.title = voice.description || 'English (UK) voice from Gemini’s British Voice Library';
+              group.appendChild(option);
+            });
+            if (group.childElementCount) botVoice.appendChild(group);
+          }).catch(() => {});
+      }
       if (!fab.dataset.listening) statusText.textContent = assistantStatus;
     }).catch(() => { assistantStatus = 'Gemini status unavailable · English (UK)'; });
   botMode.addEventListener('change', () => {

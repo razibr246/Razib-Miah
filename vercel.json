@@ -6,6 +6,9 @@
     },
     "api/live-token.js": {
       "maxDuration": 15
+    },
+    "api/voices.js": {
+      "maxDuration": 15
     }
   }
 }

@@ -32,7 +32,7 @@ function status() {
   };
 }
 
-async function request(payload, { kind = 'text', timeoutMs = 9000, deadline = Date.now() + 24_000, url = endpoint } = {}) {
+async function request(payload, { kind = 'text', timeoutMs = 9000, deadline = Date.now() + 24_000, url = endpoint, method = 'POST' } = {}) {
   const available = keys();
   if (!available.length) {
     const error = new Error('not_configured');
@@ -65,10 +65,10 @@ async function request(payload, { kind = 'text', timeoutMs = 9000, deadline = Da
     stats.requests += 1;
     try {
       const response = await fetch(url, {
-        method: 'POST',
+        method,
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
         signal: controller.signal,
-        body: JSON.stringify(payload)
+        ...(method === 'GET' ? {} : { body: JSON.stringify(payload) })
       });
       stats.lastLatencyMs = Date.now() - started;
       if (!response.ok) {

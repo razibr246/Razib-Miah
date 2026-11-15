@@ -87,12 +87,12 @@ test('narration endpoint uses the selected voice profile and returns audio witho
       setHeader() { return this; },
       json(value) { body = value; return value; }
     };
-    await assistant({ method: 'POST', headers: { host: 'localhost' }, socket: {}, body: { mode: 'narrate', question: script, profile: 'podcast', voice: 'Sulafat', speed: 0.95 } }, res);
+    await assistant({ method: 'POST', headers: { host: 'localhost' }, socket: {}, body: { mode: 'narrate', question: script, profile: 'podcast', voice: 'voice_british_test', speed: 0.95 } }, res);
     assert.equal(res.code, 200);
     assert.equal(body.answer, script);
     assert.equal(body.audio.data, 'dGVzdA==');
     assert.equal(posted.model, 'gemini-3.8-flash-tts');
-    assert.equal(posted.generation_config.speech_config[0].voice, 'Sulafat');
+    assert.equal(posted.generation_config.speech_config[0].voice, 'voice_british_test');
     assert.equal(posted.generation_config.speech_config[0].language, 'en-GB');
     assert.match(posted.input[0].content[0].annotations[0].style, /podcast/i);
     assert.equal(posted.store, false);
@@ -170,6 +170,38 @@ test('Live transcription receives a single-use scoped token without returning a 
     assert.equal(posted.liveConnectConstraints.config.responseModalities[0], 'TEXT');
     assert.equal(posted.liveConnectConstraints.config.inputAudioTranscription.languageCodes[0], 'en-GB');
     assert.equal(JSON.stringify(body).includes('server-only-test-key'), false);
+  } finally {
+    global.fetch = oldFetch;
+    if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey;
+  }
+});
+
+test('voice catalogue exposes only British English voice options from Gemini', async () => {
+  const oldKey = process.env.GEMINI_API_KEY;
+  const oldFetch = global.fetch;
+  process.env.GEMINI_API_KEY = 'voice-list-test-key';
+  global.fetch = async (url, options) => {
+    assert.match(url, /language_code=en-GB/);
+    assert.match(url, /type=prebuilt/);
+    assert.equal(options.method, 'GET');
+    return response(200, { voices: [
+      { id: 'voice_british_test', display_name: 'British Narrator', language_code: ['en-GB'], accent: ['British'], region_code: ['GB'], description: 'A measured UK narrator.' },
+      { id: 'voice_us_test', display_name: 'US Voice', language_code: ['en-US'], accent: ['American'], region_code: ['US'] }
+    ] });
+  };
+  try {
+    const voices = require('./voices');
+    let body;
+    const res = {
+      status(code) { this.code = code; return this; },
+      setHeader() { return this; },
+      json(value) { body = value; return value; }
+    };
+    await voices({ method: 'GET', headers: { host: 'localhost' }, socket: {} }, res);
+    assert.equal(res.code, 200);
+    assert.equal(body.voices.length, 1);
+    assert.equal(body.voices[0].id, 'voice_british_test');
+    assert.equal(JSON.stringify(body).includes('voice-list-test-key'), false);
   } finally {
     global.fetch = oldFetch;
     if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey;
