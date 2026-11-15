@@ -191,8 +191,11 @@ button{font:inherit;color:inherit}
 .roles b{display:none}
 .roles span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:5px 11px;border-radius:100px;border:1px solid color-mix(in srgb,var(--a2) 45%,transparent);background:color-mix(in srgb,var(--bg3) 70%,transparent);box-shadow:0 5px 14px color-mix(in srgb,var(--a1) 9%,transparent);animation:roleFloat 4.8s ease-in-out infinite;transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s,background-color .25s}
 .role-mark{width:17px;height:17px;flex:none;fill:none;stroke:var(--a1-ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transform-origin:center;transition:transform .35s cubic-bezier(.2,.8,.2,1),color .25s,filter .25s}
+.role-mark-code{animation:codeLive 2.8s ease-in-out infinite}
 .role-mark-ai{stroke:#3777e8;animation:markGlow 3.2s ease-in-out infinite}
-.role-mark-quantum{stroke:var(--a1);animation:markOrbit 12s linear infinite}
+.role-mark-quantum{stroke:var(--a1);animation:markOrbit 8s linear infinite}
+.role-mark-quantum circle{transform-box:fill-box;transform-origin:center;animation:quantumCore 1.8s ease-in-out infinite}
+.role-mark-ai path{stroke-dasharray:42;stroke-dashoffset:0;animation:sparkTrace 4.8s ease-in-out infinite}
 .roles span:hover .role-mark-code{transform:translateX(2px) scale(1.08)}
 .roles span:hover .role-mark-ai{transform:rotate(18deg) scale(1.14);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--blue) 55%,transparent))}
 .roles span:hover .role-mark-quantum{transform:rotate(35deg) scale(1.12)}
@@ -203,6 +206,9 @@ button{font:inherit;color:inherit}
 @keyframes roleFloat{0%,100%{translate:0 0}50%{translate:0 -3px}}
 @keyframes markGlow{0%,100%{opacity:.76;scale:.95}50%{opacity:1;scale:1.08}}
 @keyframes markOrbit{to{rotate:360deg}}
+@keyframes codeLive{0%,100%{transform:translateX(0) scale(1)}50%{transform:translateX(1px) scale(1.08)}}
+@keyframes quantumCore{0%,100%{scale:.72;opacity:.65}50%{scale:1.3;opacity:1}}
+@keyframes sparkTrace{0%,18%,100%{stroke-dashoffset:0}8%{stroke-dashoffset:42}}
 .typed-line{font:600 clamp(1.05rem,1.4vw,1.25rem)/1.35 var(--f-body);min-height:2.7em}
 #typed{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
 .caret{display:inline-block;width:2px;height:1.05em;margin-left:3px;vertical-align:-.15em;background:var(--a1-ink);animation:blink 1s step-end infinite}
