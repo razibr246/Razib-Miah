@@ -343,9 +343,17 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .qc .cline,.qc .targ{stroke:var(--a1);stroke-width:2;fill:none}
 .qc .meter{fill:color-mix(in srgb,var(--blue) 14%,var(--bg3));stroke:var(--blue);stroke-width:1.5}
 .qc .needle{fill:none;stroke:var(--blue-ink);stroke-width:1.5;stroke-linecap:round}
-.qc .pulse{fill:var(--blue);animation:qpulse 3.6s linear infinite}
-.qc .pulse.p2{animation-delay:1.8s}
+.qc .pulse{fill:var(--blue);animation:qpulse 5.4s cubic-bezier(.3,.7,.25,1) infinite}
+.qc .pulse.p2{animation-delay:2.1s}
+.qc .gate{transform-box:fill-box;transform-origin:center;animation:gateCompute 5.4s ease-in-out infinite}
+.qc .gtxt{animation:gateLabel 5.4s ease-in-out infinite}
+.qc .cline{stroke-dasharray:50;stroke-dashoffset:50;animation:cnotLink 5.4s ease-in-out infinite}
+.qc .ctrl,.qc .targ{transform-box:fill-box;transform-origin:center;animation:cnotFire 5.4s ease-in-out infinite}
+.qc .entangle-ring{fill:none;stroke:var(--blue-ink);stroke-width:1.2;stroke-dasharray:2 3;opacity:0;transform-box:fill-box;transform-origin:center;animation:entangle 5.4s ease-out infinite}
+.qc .meter{transform-box:fill-box;transform-origin:center;animation:meterRead 5.4s ease-in-out infinite}
+.qc .needle{transform-box:fill-box;transform-origin:50% 100%;animation:needleRead 5.4s ease-in-out infinite}
 .qc-hist{display:flex;flex-direction:column;gap:8px;padding:6px 18px 18px}
+.qc-hist .bar i{transform:scaleX(0);transform-origin:left;animation:histReveal 1.5s cubic-bezier(.16,1,.3,1) .8s both}
 .qh{display:grid;grid-template-columns:44px minmax(0,1fr) 40px;align-items:center;gap:10px;font:500 .78rem var(--f-mono);font-variant-numeric:tabular-nums}
 .qh .k{color:var(--sub)}
 .qh .bar{height:10px;border-radius:6px;background:var(--bg2);overflow:hidden}
@@ -1185,7 +1193,15 @@ html:has(.lb[open]) .cursor{opacity:0}
 @keyframes statusBlink{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes sunRise{from{translate:-50% 12%}to{translate:-50% 0}}
 @keyframes sunPulse{0%,100%{scale:1}50%{scale:1.025}}
-@keyframes qpulse{0%{transform:translateX(0);opacity:0}10%,88%{opacity:1}100%{transform:translateX(170px);opacity:0}}
+@keyframes qpulse{0%,5%{transform:translateX(0);opacity:0}12%,58%{opacity:1}69%{transform:translateX(170px);opacity:0}100%{transform:translateX(170px);opacity:0}}
+@keyframes gateCompute{0%,11%,19%,100%{filter:none;scale:1}14%,17%{filter:drop-shadow(0 0 7px color-mix(in srgb,var(--a2) 75%,transparent));scale:1.08}}
+@keyframes gateLabel{0%,12%,18%,100%{fill:var(--a1-ink)}14%,17%{fill:var(--text)}}
+@keyframes cnotLink{0%,38%,48%,100%{stroke-dashoffset:50;opacity:.45}42%,46%{stroke-dashoffset:0;opacity:1}}
+@keyframes cnotFire{0%,39%,48%,100%{scale:1}42%,46%{scale:1.22}}
+@keyframes entangle{0%,39%,49%,100%{opacity:0;scale:.55}42%,47%{opacity:.9;scale:1.25}}
+@keyframes meterRead{0%,70%,100%{filter:none}77%,90%{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--blue) 60%,transparent))}}
+@keyframes needleRead{0%,76%,88%,100%{rotate:0deg}80%,85%{rotate:18deg}}
+@keyframes histReveal{to{transform:scaleX(1)}}
 @keyframes portraitIn{from{scale:.92}to{scale:1}}
 @keyframes siriTurn{to{rotate:360deg}}
 @keyframes siriBreathe{0%,100%{scale:.97}50%{scale:1.04}}
