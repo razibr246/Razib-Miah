@@ -197,8 +197,7 @@
   if (mqMotion.addEventListener) mqMotion.addEventListener('change', applyLoops);
 
   /* ---------- mouse dragging for the project strip ---------- */
-  const projectRow = $('#projRow1');
-  if (projectRow) {
+  $$('.proj-row').forEach(projectRow => {
     let drag = null, dragged = false;
     projectRow.addEventListener('pointerdown', e => {
       if (e.pointerType !== 'mouse' || e.button !== 0) return;
@@ -234,6 +233,18 @@
       e.stopPropagation();
       dragged = false;
     }, true);
+  });
+
+  const moreProjects = $('#moreProj');
+  const conceptRow = $('#projRow2');
+  if (moreProjects && conceptRow) {
+    moreProjects.addEventListener('click', () => {
+      const opening = conceptRow.hidden;
+      conceptRow.hidden = !opening;
+      moreProjects.setAttribute('aria-expanded', String(opening));
+      $('.lbl', moreProjects).textContent = opening ? 'Show Fewer Projects' : 'Show More Projects';
+      if (opening) conceptRow.classList.add('in');
+    });
   }
 
   /* ---------- skills timeline: stacked cards ---------- */

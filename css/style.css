@@ -501,6 +501,7 @@ h2 em,h3 em{font-style:normal;background:var(--grad-text);-webkit-background-cli
 .pc-body{display:flex;flex-direction:column;gap:12px;padding:18px 22px 24px}
 .pc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .pc-num{font:500 .8rem var(--f-mono);color:var(--a2-ink)}
+.pc-concept{flex:none;border:1px solid color-mix(in srgb,var(--a2) 48%,transparent);border-radius:100px;padding:4px 8px;color:var(--a1-ink);background:color-mix(in srgb,var(--a2) 10%,var(--bg3));font:500 .58rem/1.2 var(--f-mono);letter-spacing:.04em;text-transform:uppercase}
 .pc-actions{display:flex;align-items:center;gap:8px}
 .pc-ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;border:1px solid var(--line-hi);color:var(--text);transition:border-color .2s,color .2s}
 .pc-ico:hover{border-color:var(--a2);color:var(--a1-ink)}

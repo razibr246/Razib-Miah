@@ -51,7 +51,7 @@ python -m http.server 8000
 All of these are in `index.html`:
 
 1. **Social links:** already set to LinkedIn (`linkedin.com/in/razibr246`), GitHub (`github.com/razibr246`) and Messenger (`m.me/razibr246`).
-2. **Projects:** the featured cards link to the DLAS, FieldShift 360, KormoPath AI and Kotha repositories. Update their details and links in `index.html` when the projects change.
+2. **Projects:** the four featured cards link to the DLAS, FieldShift 360, KormoPath AI and Kotha repositories. The “Show More Projects” row contains seven clearly labeled portfolio concepts with illustrative data and no external links. Update project details and links in `index.html` when the projects change.
 3. **Achievements and experience:** all real now (Legal-Tech Hackathon, Agent X, your learning journey and clubs).
 4. **Numbers:** the About stats come from your real wins (2 national prizes, Top 10 of 194 teams, 30th in Agent X). Update them when you win more.
 5. **Photo:** replace `assets/razib-portrait-light.webp` (light theme) and `assets/razib-portrait.webp` (dark theme) with any square photo. Keep the same file names, and make a 480px copy of each for phones, e.g. `cwebp -q 84 -resize 480 0 razib-portrait-light.webp -o razib-portrait-light-480.webp`.
