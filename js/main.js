@@ -599,7 +599,7 @@
   const log = $('#botLog');
   const bInput = $('#botInput');
   const A = {
-    intro: { t: "Hi — I’m Qubiq, Razib’s quantum, AI, and machine-learning guide. Ask me about his projects, research, skills, or experience.", a: [] },
+    intro: { t: "Hi — I’m Qubiq, Razib’s portfolio guide. Ask me about his projects, research, skills, or experience.", a: [] },
     who: { t: 'Razib Miah is a passionate full-stack engineer in Dhaka who also works in AI/ML and quantum machine learning (QML). He builds fast web products end to end, trains ML models, and is exploring how quantum computing can improve machine learning.', a: [['Read about him', 'about']] },
     skills: { t: 'Languages: TypeScript, Python, Go, C# and Rust. Web: React, Next.js and Node.js with PostgreSQL. Backend in Python: FastAPI, Django, Flask, Pydantic, SQLAlchemy and Celery. AI/ML: Python, PyTorch, TensorFlow, scikit-learn and Hugging Face. Quantum: Qiskit and PennyLane for quantum circuits and hybrid quantum-classical models.', a: [['See all skills', 'skills']] },
     quantum: { t: 'Razib loves quantum computing. He is exploring quantum machine learning: quantum circuits, variational algorithms and hybrid quantum-classical models. The About section shows a Bell-state circuit, the "hello world" of entanglement.', a: [['Show me', 'about'], ['Quantum skills', 'skills']] },
@@ -1327,16 +1327,12 @@
     panel.classList.remove('is-expanded');
     document.body.classList.remove('assistant-open');
     fab.setAttribute('aria-expanded', 'false');
-    fab.setAttribute('aria-label', 'Open Qubiq, Razib’s quantum AI guide');
+    fab.setAttribute('aria-label', 'Open Qubiq');
     if (returnFocus) fab.focus();
   }
   fab.addEventListener('click', event => {
     if (swallowClick) { event.preventDefault(); return; }
     panel.hidden ? openBot() : closeBot();
-  });
-  $('#botQuickMic').addEventListener('click', () => {
-    if (panel.hidden) openBot();
-    setTimeout(() => micButton.click(), finePointer ? 440 : 120);
   });
   panel.addEventListener('click', event => { if (event.target === panel) closeBot(); });
   voiceToggle.addEventListener('click', () => setVoiceReplies(!voiceReplies));
