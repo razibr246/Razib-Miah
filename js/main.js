@@ -678,10 +678,16 @@
       const cites = document.createElement('div');
       cites.className = 'msg-sources';
       sources.forEach(source => {
-        if (!source || typeof source.label !== 'string' || typeof source.href !== 'string' || !source.href.startsWith('#')) return;
+        if (!source || typeof source.label !== 'string' || typeof source.href !== 'string') return;
+        let external = false;
+        if (!source.href.startsWith('#')) {
+          try { external = new URL(source.href).protocol === 'https:'; } catch { return; }
+          if (!external) return;
+        }
         const link = document.createElement('a');
         link.href = source.href;
         link.textContent = source.label;
+        if (external) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
         cites.appendChild(link);
       });
       if (cites.childElementCount) m.appendChild(cites);
@@ -722,6 +728,10 @@
   const conversationHistory = [];
   let assistantStatus = 'Gemini · checking server setup';
   let assistantConfigured = false;
+  let assistantRequestFailure = '';
+  const statusText = $('#botStatusText');
+  const statusRow = statusText.parentElement;
+  statusRow.hidden = true;
   const botPresence = $('#botPresence');
   const botStateTitle = $('#botStateTitle');
   const botStateCopy = $('#botStateCopy');
@@ -739,6 +749,8 @@
     botPresence.dataset.state = state;
     botStateTitle.textContent = content[0];
     botStateCopy.textContent = copy || content[1];
+    statusRow.hidden = state === 'idle' && assistantConfigured && !assistantRequestFailure;
+    statusRow.classList.toggle('is-unavailable', state === 'error' || !assistantConfigured);
     botPause.hidden = state !== 'speaking';
     if (state !== 'speaking') {
       voicePaused = false;
@@ -758,17 +770,25 @@
       .then(response => response.ok ? response.json() : null)
       .then(data => {
       if (!data) return;
-      assistantStatus = !data.configured
-        ? 'Gemini key needed · English (UK)'
-        : data.text?.lastSuccessAt
-          ? `Gemini · last response ${data.text.lastLatencyMs} ms · English (UK)`
-          : data.text?.lastError
-            ? `Gemini · last call ${data.text.lastError} · English (UK)`
-            : `Gemini · ${data.keyCount} key${data.keyCount === 1 ? '' : 's'} configured · not checked`;
       assistantConfigured = Boolean(data.configured);
-      if (!fab.dataset.listening) statusText.textContent = assistantStatus;
+      assistantStatus = !assistantConfigured
+        ? 'Gemini key needed · English (UK)'
+        : assistantRequestFailure || data.text?.lastError
+          ? `Gemini unavailable · ${assistantRequestFailure || data.text.lastError} · English (UK)`
+          : '';
+      statusRow.hidden = assistantConfigured && !assistantStatus && botPresence.dataset.state === 'idle';
+      if (assistantStatus && !fab.dataset.listening) statusText.textContent = assistantStatus;
+      if (!assistantConfigured || assistantStatus) {
+        statusRow.hidden = false;
+        if (botPresence.dataset.state === 'idle') setAssistantState('error', assistantConfigured ? 'The live service is unavailable. Try again shortly.' : 'Connect Gemini on the server to enable live answers.');
+      }
       return data;
-    }).catch(() => { assistantStatus = 'Gemini status unavailable · English (UK)'; });
+    }).catch(() => {
+      assistantStatus = 'Gemini status unavailable · English (UK)';
+      statusText.textContent = assistantStatus;
+      statusRow.hidden = false;
+      if (botPresence.dataset.state === 'idle') setAssistantState('error', 'The live service could not be reached. The built-in guide remains available.');
+    });
   }
   refreshAssistantStatus();
   function offerVoiceFeedback(provider) {
@@ -957,6 +977,8 @@
       });
       if (!response.ok) throw new Error(String(response.status));
       const data = await response.json();
+      assistantRequestFailure = '';
+      assistantStatus = '';
       typing.remove();
       addMsg('bot', data.answer || A.fallback.t, [], data.sources || []);
       if (mode === 'chat') {
@@ -974,6 +996,10 @@
       if (voiceReplies && data.answer) synthesize(data.answer, 'speech');
     } catch (error) {
       typing.remove();
+      assistantRequestFailure = error.message === '503' ? 'key needed' : 'connection failed';
+      assistantStatus = error.message === '503' ? 'Gemini key needed · English (UK)' : 'Gemini unavailable · English (UK)';
+      statusText.textContent = assistantStatus;
+      statusRow.hidden = false;
       const fallback = A[fallbackKey] || A.fallback;
       const note = error.message === '503'
         ? ' Gemini is not connected on the server, so this reply comes from the built-in portfolio guide.'
@@ -993,8 +1019,6 @@
     recognition.maxAlternatives = 1;
   }
   const micButton = $('#botMic');
-  const statusText = $('#botStatusText');
-  const statusRow = statusText.parentElement;
   function setListening(listening, message) {
     fab.dataset.listening = String(listening);
     micButton.setAttribute('aria-pressed', String(listening));

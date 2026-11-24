@@ -1,4 +1,4 @@
-const endpoint = 'https://generativelanguage.googleapis.com/v1beta/interactions';
+const endpoint = 'https://generativelanguage.googleapis.com/v1/interactions';
 const circuits = new Map();
 const observations = { text: blankStats(), speech: blankStats(), live: blankStats() };
 const COOLDOWN_MS = 45_000;
@@ -66,7 +66,7 @@ async function request(payload, { kind = 'text', timeoutMs = 9000, deadline = Da
     try {
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key, 'Api-Revision': '2026-05-20' },
         signal: controller.signal,
         ...(method === 'GET' ? {} : { body: JSON.stringify(payload) })
       });

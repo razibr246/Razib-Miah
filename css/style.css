@@ -967,7 +967,9 @@ a.c-row:hover .c-arrow{transform:translate(3px,-3px);color:var(--a1-ink)}
 .bot-meta strong{display:block;font-size:.95rem}
 .bot-meta strong:focus{outline:none}
 .bot-status{display:flex;align-items:center;gap:6px;font-size:.74rem;color:var(--sub)}
+.bot-status[hidden]{display:none}
 .bot-status i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:statusBlink 2.8s ease-in-out infinite}
+.bot-status.is-unavailable i{background:var(--a3);box-shadow:0 0 0 3px color-mix(in srgb,var(--a3) 15%,transparent);animation:none}
 .bot-status.is-listening i{background:var(--a3);animation:statusBlink .8s ease-in-out infinite}
 .bot-voice-toggle,.bot-mic{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line-hi);background:var(--bg3);color:var(--text);cursor:pointer;transition:background .2s,border-color .2s,scale .2s}
 .bot-voice-toggle svg,.bot-mic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
