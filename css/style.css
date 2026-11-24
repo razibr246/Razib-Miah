@@ -244,19 +244,20 @@ button{font:inherit;color:inherit}
 .rail-btn .ic{width:17px;height:17px}
 @media (max-width:900px){
   .hero-stage{display:flex;flex-direction:column;align-items:center;gap:22px;margin-top:10px}
-  .hero-left{align-items:center;text-align:center;padding-top:0;max-width:520px}
+  .hero-left{align-items:center;text-align:center;padding-top:0;width:min(100%,34rem);max-width:520px}
   .roles{justify-content:center}
   .typed-line{min-height:1.4em}
+  .hero-copy{max-width:36ch}
   .follow-rail{order:2;flex-direction:row;padding-top:0}
   .follow-label{writing-mode:horizontal-tb}
   .follow-line{width:34px;height:1px;background:linear-gradient(90deg,var(--line-hi),var(--a2))}
-  /* photo first on phones and tablets, so it shows on the first screen */
-  .hero-figure{order:-1;width:min(76vw,360px,60svh);height:auto;aspect-ratio:1;margin-block:6px}
+  /* Keep the portrait visible without letting it crowd the name and introduction on short screens. */
+  .hero-figure{order:-1;width:min(68vw,300px,48svh);height:auto;aspect-ratio:1;margin-block:4px}
   .is-portrait .sun-wrap,.portrait-ring{width:92%}
   .portrait-ring{padding:9px}
   .portrait-light{inset:9px;width:calc(100% - 18px);height:calc(100% - 18px)}
 }
-@media (max-width:900px) and (orientation:landscape){.hero-figure{width:min(46vw,300px,62svh)}}
+@media (max-width:900px) and (orientation:landscape){.hero-figure{width:min(42vw,260px,52svh)}}
 
 /* ---------- section heads ---------- */
 .sec{padding-block:clamp(44px,6vw,80px);scroll-margin-top:calc(var(--nav-h) - 8px)}
