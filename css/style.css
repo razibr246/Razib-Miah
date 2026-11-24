@@ -238,10 +238,15 @@ button{font:inherit;color:inherit}
 .portrait-light{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px);opacity:var(--portrait-light);transition:opacity .6s ease;object-position:50% 38%;filter:contrast(1.04) saturate(1.06)}
 .follow-rail{grid-column:3;grid-row:1;justify-self:end;align-self:center;display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;z-index:3}
 .follow-label{writing-mode:vertical-rl;font:500 .64rem var(--f-mono);letter-spacing:.32em;text-transform:uppercase;color:var(--sub)}
-.follow-line{width:1px;height:30px;background:linear-gradient(var(--line-hi),var(--a2))}
-.rail-btn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line-hi);background:color-mix(in srgb,var(--bg3) 70%,transparent);color:var(--text);transition:border-color .25s,color .25s,transform .25s}
-.rail-btn:hover{border-color:var(--a2);color:var(--a1-ink);transform:translateY(-3px)}
-.rail-btn .ic{width:17px;height:17px}
+.follow-line{width:1px;height:30px;background:linear-gradient(var(--line-hi),var(--a2),var(--line-hi));background-size:100% 220%;animation:followFlow 3s ease-in-out infinite alternate}
+.rail-btn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line-hi);background:color-mix(in srgb,var(--bg3) 70%,transparent);color:var(--text);transform-style:preserve-3d;transition:border-color .25s,color .25s,transform .25s,filter .25s;animation:railHalo 6s ease-in-out infinite}
+.rail-btn:nth-of-type(2){animation-delay:-2s}.rail-btn:nth-of-type(3){animation-delay:-4s}
+.rail-btn:hover,.rail-btn:focus-visible{animation:none;border-color:var(--a2);color:var(--a1-ink);transform:translateY(-3px) rotateX(7deg);filter:drop-shadow(0 5px 9px color-mix(in srgb,var(--a2) 28%,transparent))}
+.rail-btn .ic{width:17px;height:17px;transition:transform .3s cubic-bezier(.2,.8,.2,1),filter .3s}
+.rail-btn:hover .ic,.rail-btn:focus-visible .ic{transform:translateZ(5px) scale(1.12) rotate(-5deg);filter:drop-shadow(0 2px 3px var(--a1-glow-hi))}
+@keyframes followFlow{to{background-position:50% 100%}}
+@keyframes followFlowSideways{to{background-position:100% 50%}}
+@keyframes railHalo{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 4px 9px color-mix(in srgb,var(--a2) 20%,transparent))}}
 @media (max-width:900px){
   .hero-stage{display:flex;flex-direction:column;align-items:center;gap:22px;margin-top:10px}
   .hero-left{align-items:center;text-align:center;padding-top:0;width:min(100%,34rem);max-width:520px}
@@ -250,7 +255,7 @@ button{font:inherit;color:inherit}
   .hero-copy{max-width:36ch}
   .follow-rail{order:2;flex-direction:row;padding-top:0}
   .follow-label{writing-mode:horizontal-tb}
-  .follow-line{width:34px;height:1px;background:linear-gradient(90deg,var(--line-hi),var(--a2))}
+  .follow-line{width:34px;height:1px;background:linear-gradient(90deg,var(--line-hi),var(--a2),var(--line-hi));background-size:220% 100%;animation:followFlowSideways 3s ease-in-out infinite alternate}
   /* Keep the portrait visible without letting it crowd the name and introduction on short screens. */
   .hero-figure{order:-1;width:min(68vw,300px,48svh);height:auto;aspect-ratio:1;margin-block:4px}
   .is-portrait .sun-wrap,.portrait-ring{width:92%}
