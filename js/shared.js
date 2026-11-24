@@ -9,7 +9,14 @@
 
   /* ---------- theme: light by default (set in each page's <head>), the button switches and remembers ---------- */
   // Where supported, the new theme spreads out in a circle from the button.
-  $('#themeBtn').addEventListener('click', e => {
+  const themeButton = $('#themeBtn');
+  const syncThemeButton = () => {
+    const dark = root.getAttribute('data-theme') === 'dark';
+    themeButton.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    themeButton.setAttribute('aria-pressed', String(dark));
+  };
+  syncThemeButton();
+  themeButton.addEventListener('click', e => {
     const btn = e.currentTarget;
     const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     const apply = () => {
@@ -17,7 +24,14 @@
       const meta = $('meta[name="theme-color"]');
       if (meta) meta.content = next === 'dark' ? '#140D09' : '#FFF1E2';
       try { localStorage.setItem('rm-theme', next); } catch (err) {}
+      syncThemeButton();
     };
+    if (motion()) {
+      btn.classList.remove('theme-changing');
+      void btn.offsetWidth;
+      btn.classList.add('theme-changing');
+      setTimeout(() => btn.classList.remove('theme-changing'), 760);
+    }
     if (!document.startViewTransition || !motion()) { apply(); return; }
     const r = btn.getBoundingClientRect();
     const x = r.left + r.width / 2, y = r.top + r.height / 2;

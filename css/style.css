@@ -139,6 +139,18 @@ button{font:inherit;color:inherit}
 .sq-btn{width:40px;height:40px;flex:none;border-radius:11px;border:1px solid var(--line-hi);background:color-mix(in srgb,var(--bg3) 70%,transparent);display:grid;place-items:center;cursor:pointer;color:var(--text);transition:border-color .2s}
 .sq-btn:hover{border-color:color-mix(in srgb,var(--a2) 75%,transparent)}
 .i-sun{display:var(--sun)} .i-moon{display:var(--moon)}
+#themeBtn{width:44px;height:44px;border-radius:50%;border-color:color-mix(in srgb,var(--a2) 42%,var(--line-hi));background-color:color-mix(in srgb,var(--bg3) 82%,var(--a2) 8%);box-shadow:0 5px 18px color-mix(in srgb,var(--a1) 12%,transparent),inset 0 1px 0 rgba(255,255,255,.72);transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s,background-color .35s,box-shadow .35s}
+#themeBtn .ic{width:20px;height:20px;transform-origin:50% 50%;transition:transform .5s cubic-bezier(.2,.8,.2,1),color .35s,filter .35s}
+#themeBtn .i-moon{color:var(--a1-ink);filter:drop-shadow(0 2px 3px var(--a1-glow));animation:moonSway 7s ease-in-out infinite}
+#themeBtn .i-sun{color:var(--a2-ink);filter:drop-shadow(0 2px 4px var(--a2-glow));animation:sunTurn 24s linear infinite}
+#themeBtn:hover{transform:translateY(-2px) scale(1.045);border-color:color-mix(in srgb,var(--a2) 78%,var(--line-hi));box-shadow:0 9px 24px var(--a1-glow),inset 0 1px 0 rgba(255,255,255,.78)}
+#themeBtn:hover .i-moon{transform:rotate(-18deg) scale(1.12)}
+#themeBtn:hover .i-sun{transform:rotate(35deg) scale(1.1)}
+#themeBtn:active{transform:scale(.94)}
+#themeBtn.theme-changing .ic{animation:themeIconTurn .72s cubic-bezier(.2,.75,.25,1)}
+@keyframes moonSway{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-1.5px) rotate(3deg)}}
+@keyframes sunTurn{to{rotate:360deg}}
+@keyframes themeIconTurn{0%{rotate:0deg;scale:1}45%{rotate:150deg;scale:.72}100%{rotate:360deg;scale:1}}
 .dot-live{display:inline-block;width:8px;height:8px;flex:none;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
 
 /* ---------- nav ---------- */
