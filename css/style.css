@@ -1409,7 +1409,12 @@ html:has(.lb[open]) .cursor{opacity:0}
 .brand{padding:4px 14px 4px 4px;border-radius:14px}
 .nav .sq-btn{width:44px;height:44px;border-radius:50%}
 /* Hire Me: a cream capsule with chocolate text and a caramel rim */
-.hire{padding:11px 18px;border-radius:100px;color:var(--a1-ink);background-color:color-mix(in srgb,var(--bg3) 72%,var(--lg-tint));border-color:color-mix(in srgb,var(--a2) 62%,var(--lg-rim-low))}
+.hire{padding:11px 18px;border-radius:100px;color:var(--a1-ink);background-color:color-mix(in srgb,var(--bg3) 72%,var(--lg-tint));border-color:color-mix(in srgb,var(--a2) 62%,var(--lg-rim-low));box-shadow:0 5px 16px color-mix(in srgb,var(--a1) 10%,transparent);animation:hireBreath 6.8s ease-in-out infinite}
+.hire span{display:inline-block;color:var(--a2-ink);transition:transform .32s cubic-bezier(.2,.8,.2,1),color .25s}
+.hire:hover,.hire:focus-visible{transform:translateY(-2px) scale(1.025);border-color:color-mix(in srgb,var(--a2) 82%,var(--lg-rim-low));box-shadow:0 10px 26px var(--a1-glow-hi);animation-play-state:paused}
+.hire:hover span,.hire:focus-visible span{transform:translate(3px,-1px) rotate(-5deg);color:var(--on-grad)}
+.hire:active{transform:translateY(0) scale(.97)}
+@keyframes hireBreath{0%,100%{box-shadow:0 5px 16px color-mix(in srgb,var(--a1) 10%,transparent)}50%{box-shadow:0 8px 22px color-mix(in srgb,var(--a2) 18%,transparent)}}
 .nav .sq-btn:hover,.brand:hover,.rail-btn:hover,.dp-bar .sq-btn:hover{background-color:color-mix(in srgb,var(--lg-tint) 60%,rgba(255,255,255,.28))}
 .hire:hover,.dp-back:hover{background-color:color-mix(in srgb,var(--a2) 18%,var(--bg3))}
 .hire.is-current,.hire.is-current:hover{color:var(--on-grad);border-color:transparent;background-color:transparent;background-image:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),var(--grad-btn);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px var(--a1-glow)}
