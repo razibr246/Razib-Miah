@@ -135,7 +135,10 @@
       if (!raf) raf = requestAnimationFrame(place);
       cur.classList.add('on');
       const t = e.target instanceof Element ? e.target : null;
-      const m = !t ? '' : t.closest(FIELD) ? 'field' : t.closest(LINK) ? 'link' : t.closest(TEXT) ? 'text' : '';
+      const link = t && !t.closest(FIELD) ? t.closest(LINK) : null;
+      // Over a small text link (breadcrumbs, links inside a sentence) the full "R" would sit on top of the very
+      // word being pointed at, so it becomes a small dot instead; big buttons keep the "R".
+      const m = !t ? '' : t.closest(FIELD) ? 'field' : link ? (link.getBoundingClientRect().height < 26 ? 'inline' : 'link') : t.closest(TEXT) ? 'text' : '';
       setMode(m);
       const now = performance.now();
       if (!m && now - lastTrail > 45) { lastTrail = now; trail(px, py); }
@@ -154,6 +157,52 @@
     document.addEventListener('mouseup', () => cur.classList.remove('down'));
     document.addEventListener('mouseout', e => { if (!e.relatedTarget) cur.classList.remove('on'); });
     addEventListener('blur', () => cur.classList.remove('on'));
+  }
+
+  /* ---------- page-to-page transitions (styles in style.css, "page-to-page") ---------- */
+  // Just before the browser leaves for an achievement page, give the clicked card's photo the same
+  // view-transition name as that page's hero, so the photo flies into place instead of the page cutting.
+  addEventListener('pageswap', e => {
+    if (!e.viewTransition) return;
+    const to = e.activation && e.activation.entry && e.activation.entry.url;
+    if (!to) return;
+    const btn = $$('.ach-btn[href]').find(a => a.href === to);
+    const work = $$('a.bx-work[href]').find(a => a.href === to);   // a Creative lab card
+    const img = btn ? $('.ach-photo img', btn.closest('.ach')) : work ? $('.bx-work-shot img', work) : null;
+    if (img) img.style.viewTransitionName = 'ach-hero';
+  });
+  // Coming back (including from the back/forward cache) the name must be gone again, or the next
+  // transition would find two elements with it.
+  addEventListener('pagereveal', () => { $$('.ach-photo img, .bx-work-shot img').forEach(img => { img.style.viewTransitionName = ''; }); });
+
+  /* ---------- detail pages: parts rise in, in reading order, as they come into view ---------- */
+  // The hero photo is left out: it is the element a page transition flies into, so it must be visible at once.
+  if (document.body.classList.contains('dp') && motion() && 'IntersectionObserver' in window) {
+    const groups = [
+      ['.dp-crumbs, .dp-head > *', 70],
+      ['.dp-text > *', 55],
+      ['.dp-facts', 0],
+      ['.dp-gal > h2', 0],
+      ['.dp-gallery li', 0],
+      ['.cr-h2, .bx-how > *', 90],
+      ['.dp-end', 0]
+    ];
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('in');
+        io.unobserve(en.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+    groups.forEach(([sel, step]) => $$(sel).forEach((el, i) => {
+      // a cascade inside the first screen, but never a long wait for things further down
+      // gallery: the first photo spans the row, then they come in pairs; the right-hand one follows its partner
+      const d = sel === '.dp-gallery li' ? (i && i % 2 === 0 ? 110 : 0) : Math.min(i, 6) * step;
+      el.style.setProperty('--d', d + 'ms');
+      el.classList.add('dp-rv');
+      io.observe(el);
+    }));
+    $$('.dp-facts dl > div').forEach((el, i) => el.style.setProperty('--fi', i));
   }
 
   /* ---------- photo gallery lightbox ---------- */
@@ -176,7 +225,11 @@
       a.textContent = linkText;
       lbCap.replaceChildren(text.slice(0, i), a, text.slice(i + linkText.length));
     };
-    const show = i => {
+    const EASE = 'cubic-bezier(.2,.8,.2,1)';
+    // Run `run` once the new photo has decoded, so an animation never plays on a blank frame.
+    const whenReady = run => (lbImg.decode ? lbImg.decode() : Promise.resolve()).then(run, run);
+    // dir: -1 / 1 slides the new photo in from that side (prev / next); 0 just sets it.
+    const show = (i, dir = 0) => {
       at = (i + shots.length) % shots.length;
       const s = shots[at];
       lbImg.src = s.dataset.full;
@@ -184,19 +237,48 @@
       caption(s);
       $('#lbCount').textContent = (at + 1) + ' / ' + shots.length;
       new Image().src = shots[(at + 1) % shots.length].dataset.full;
+      if (dir && motion()) whenReady(() => {
+        lbImg.animate([{ opacity: 0, transform: 'translateX(' + dir * 48 + 'px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: EASE });
+        lbCap.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 360, delay: 80, easing: 'ease-out', fill: 'backwards' });
+      });
+    };
+    // Opening: the photo grows out of the thumbnail that was clicked (same aspect, so it is scaled, never stretched).
+    const growFrom = thumb => {
+      const r0 = (thumb.querySelector('img') || thumb).getBoundingClientRect();
+      whenReady(() => {
+        const r1 = lbImg.getBoundingClientRect();
+        if (!r0.width || !r1.width) return;
+        const dx = (r0.left + r0.width / 2) - (r1.left + r1.width / 2);
+        const dy = (r0.top + r0.height / 2) - (r1.top + r1.height / 2);
+        lbImg.animate([
+          { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + Math.max(r0.width / r1.width, r0.height / r1.height) + ')', opacity: .35 },
+          { transform: 'none', opacity: 1 }
+        ], { duration: 560, easing: 'cubic-bezier(.16,1,.3,1)' });
+      });
+    };
+    // Closing fades and settles the viewer instead of cutting it away.
+    let closing = false;
+    const close = () => {
+      if (!lb.open || closing) return;
+      if (!motion()) { lb.close(); return; }
+      closing = true;
+      lbImg.animate([{ transform: 'none' }, { transform: 'scale(.94)' }], { duration: 220, easing: 'ease-in' });
+      lb.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-in' }).onfinish = () => { closing = false; lb.close(); };
     };
     $$('[data-gallery]').forEach(b => b.addEventListener('click', () => {
       shots = $$('[data-full]', b.closest('[data-set]') || document);
       show(+b.dataset.gallery);
       lb.showModal();
+      if (motion()) growFrom(b);
     }));
-    $('#lbPrev').addEventListener('click', () => show(at - 1));
-    $('#lbNext').addEventListener('click', () => show(at + 1));
-    $('#lbClose').addEventListener('click', () => lb.close());
-    lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('lb-fig')) lb.close(); });
+    $('#lbPrev').addEventListener('click', () => show(at - 1, -1));
+    $('#lbNext').addEventListener('click', () => show(at + 1, 1));
+    $('#lbClose').addEventListener('click', close);
+    lb.addEventListener('cancel', e => { e.preventDefault(); close(); });   // Esc key
+    lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('lb-fig')) close(); });
     lb.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft') show(at - 1);
-      else if (e.key === 'ArrowRight') show(at + 1);
+      if (e.key === 'ArrowLeft') show(at - 1, -1);
+      else if (e.key === 'ArrowRight') show(at + 1, 1);
     });
     let startX = null;
     lbImg.addEventListener('pointerdown', e => { startX = e.clientX; });
@@ -204,7 +286,7 @@
       if (startX === null) return;
       const dx = e.clientX - startX;
       startX = null;
-      if (Math.abs(dx) > 40) show(at + (dx < 0 ? 1 : -1));
+      if (Math.abs(dx) > 40) show(at + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
     });
   }
 })();

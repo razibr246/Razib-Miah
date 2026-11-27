@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Infinite Science Universe | Razib Miah</title>
+<meta name="description" content="Ten interactive science worlds by Razib Miah: gravity and orbits, hydrogen orbitals, the Mandelbrot set, Platonic solids and a tesseract, DNA, the double-slit experiment, starlight, sorting algorithms, Earth’s climate and car suspension, each built on the real formulas.">
+<meta name="theme-color" content="#FFF1E2">
+<script>
+/* Light theme first for every visitor; a saved choice from the theme button wins. */
+(function(){var t='light';try{if(localStorage.getItem('rm-theme')==='dark')t='dark'}catch(e){}document.documentElement.setAttribute('data-theme',t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#140D09':'#FFF1E2'})();
+</script>
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Infinite Science Universe | Razib Miah">
+<meta property="og:image" content="../assets/creation-science.webp">
+<link rel="icon" href="../assets/favicon.svg?v=5" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dp">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="dp-bar">
+  <a class="brand" href="../index.html"><span class="brand-mark"><span>R</span></span><span class="brand-name grad">Razib Miah</span></a>
+  <a class="dp-back" href="../index.html#beyond"><svg class="ic"><use href="#i-arrow-r"/></svg>Back to Portfolio</a>
+  <button class="sq-btn" id="themeBtn" type="button" aria-label="Change color theme"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg></button>
+</header>
+
+<main id="main" class="dp-main sci">
+  <nav class="dp-crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../index.html#beyond">Beyond the Code</a><span aria-hidden="true">/</span><span aria-current="page">The Infinite Science Universe</span></nav>
+
+  <header class="dp-head">
+    <span class="eyebrow">Creative lab</span>
+    <h1>The Infinite <em>Science</em> Universe</h1>
+    <div class="ach-meta dp-meta"><span class="ach-badge">10 interactive worlds</span><span class="ach-badge dp-badge-alt">Real formulas · Canvas</span></div>
+    <p class="cr-lead">Explore everything. Understand anything. Ten small universes, each a working simulation built on the real science: launch a planet, look inside an atom, zoom into infinity, turn a shape through the fourth dimension, unzip DNA, fire particles through two slits, read a star’s temperature from its colour, race sorting algorithms, balance Earth’s climate and tune a car’s suspension.</p>
+  </header>
+
+  <figure class="sci-intro" data-world="intro">
+    <canvas role="img" aria-label="A journey through the powers of ten: an atom, a living cell, Earth, the solar system and a galaxy"></canvas>
+    <figcaption class="sci-intro-cap">
+      <span class="sci-kicker">Powers of ten</span>
+      <strong data-scene>An atom</strong>
+      <span class="sci-scale" data-scale>10<sup>-10</sup> m</span>
+    </figcaption>
+  </figure>
+
+  <nav class="sci-nav" aria-label="Worlds">
+    <a href="#physics" style="--w:#F4C98B"><b>01</b>Physics</a>
+    <a href="#chemistry" style="--w:#92A0FF"><b>02</b>Chemistry</a>
+    <a href="#maths" style="--w:#C4A6FF"><b>03</b>Mathematics</a>
+    <a href="#geometry" style="--w:#E0AE6E"><b>04</b>Geometry</a>
+    <a href="#biology" style="--w:#FFB096"><b>05</b>Biology</a>
+    <a href="#quantum" style="--w:#B794F4"><b>06</b>Quantum</a>
+    <a href="#astronomy" style="--w:#FFD27A"><b>07</b>Astronomy</a>
+    <a href="#cs" style="--w:#9AE6FF"><b>08</b>Computer Science</a>
+    <a href="#earth" style="--w:#7FD3A8"><b>09</b>Earth</a>
+    <a href="#engineering" style="--w:#FFB37A"><b>10</b>Engineering</a>
+  </nav>
+
+  <section class="sci-world" id="physics" data-world="physics" style="--w:#F4C98B" aria-labelledby="h-physics">
+    <header class="sci-head"><span class="sci-num">01 · Physics</span><h2 id="h-physics">The Universe of <em>Forces</em></h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="A planet orbiting a star under Newtonian gravity, leaving a trail"></canvas><span class="sci-hint">Tap to relaunch</span></div>
+    <div class="sci-controls">
+      <label class="sci-range">Launch speed <input type="range" min="60" max="150" value="85" data-speed></label>
+      <label class="sci-range">Star mass <input type="range" min="50" max="200" value="100" data-mass></label>
+      <button class="sci-btn" type="button" data-relaunch>Relaunch</button>
+    </div>
+    <p class="sci-out" data-out aria-live="polite"></p>
+    <p class="sci-explain">Every step, the planet is pulled toward the star by Newton's law of gravitation, a = GM/r². Launch it at exactly the circular speed √(GM/r) and it circles; slower, and it falls into an ellipse; at √2 times that speed its energy reaches zero and it escapes for good. For every closed orbit, the period squared grows with the orbit's size cubed: Kepler's third law. The dipping grid is only a picture of the pull.</p>
+  </section>
+
+  <section class="sci-world" id="chemistry" data-world="chemistry" style="--w:#92A0FF" aria-labelledby="h-chemistry">
+    <header class="sci-head"><span class="sci-num">02 · Chemistry</span><h2 id="h-chemistry">The <em>Molecular</em> World</h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="A cloud of dots showing where a hydrogen atom's electron is likely to be found"></canvas><span class="sci-hint">Drag to turn</span></div>
+    <div class="sci-controls" role="group" aria-label="Orbital">
+      <button class="sci-btn" type="button" data-orbital="1s" aria-pressed="false">1s</button>
+      <button class="sci-btn" type="button" data-orbital="2s" aria-pressed="false">2s</button>
+      <button class="sci-btn" type="button" data-orbital="2p" aria-pressed="true">2p</button>
+      <button class="sci-btn" type="button" data-orbital="3d" aria-pressed="false">3d</button>
+    </div>
+    <p class="sci-out" data-out aria-live="polite"></p>
+    <p class="sci-explain">These are the real shapes of the hydrogen atom's electron. Each dot is one place the electron could be found, drawn with probability |ψ|² from the exact wavefunction; gold and periwinkle show where ψ is positive or negative. Where the colours meet, ψ is zero: a node, where the electron is never found.</p>
+  </section>
+
+  <section class="sci-world" id="maths" data-world="maths" style="--w:#C4A6FF" aria-labelledby="h-maths">
+    <header class="sci-head"><span class="sci-num">03 · Mathematics</span><h2 id="h-maths">The Infinite <em>Dimension</em></h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="The Mandelbrot set, a fractal that can be zoomed into without end"></canvas><span class="sci-hint">Click to zoom in ×4</span></div>
+    <div class="sci-controls">
+      <button class="sci-btn" type="button" data-zoomout>Zoom out</button>
+      <button class="sci-btn" type="button" data-reset>Reset</button>
+    </div>
+    <p class="sci-out" data-out aria-live="polite"></p>
+    <p class="sci-explain">Take a number c, start at z = 0 and repeat z → z² + c. If z stays small forever, c belongs to the Mandelbrot set (the dark shape); the colours show how quickly every other point escapes. Its edge never runs out of detail: click anywhere to zoom in, and familiar shapes keep returning at every scale.</p>
+  </section>
+
+  <section class="sci-world" id="geometry" data-world="geometry" style="--w:#E0AE6E" aria-labelledby="h-geometry">
+    <header class="sci-head"><span class="sci-num">04 · Geometry</span><h2 id="h-geometry">The Architecture of <em>Reality</em></h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="A rotating three-dimensional solid drawn as glowing edges and vertices"></canvas><span class="sci-hint">Drag to turn</span></div>
+    <div class="sci-controls" role="group" aria-label="Shape">
+      <button class="sci-btn" type="button" data-solid="tetra" aria-pressed="false">Tetrahedron</button>
+      <button class="sci-btn" type="button" data-solid="cube" aria-pressed="false">Cube</button>
+      <button class="sci-btn" type="button" data-solid="octa" aria-pressed="false">Octahedron</button>
+      <button class="sci-btn" type="button" data-solid="dodeca" aria-pressed="true">Dodecahedron</button>
+      <button class="sci-btn" type="button" data-solid="icosa" aria-pressed="false">Icosahedron</button>
+      <button class="sci-btn" type="button" data-solid="tess" aria-pressed="false">Tesseract (4D)</button>
+    </div>
+    <p class="sci-out" data-out aria-live="polite"></p>
+    <p class="sci-explain">There are exactly five convex solids whose faces are identical regular polygons, known since ancient Greece. For every one of them, vertices − edges + faces = 2: Euler's formula. The tesseract is the cube's four-dimensional cousin. It turns through a fourth axis and we see its shadow in 3D, which is why the inner cube seems to turn inside out.</p>
+  </section>
+
+  <section class="sci-world" id="biology" data-world="biology" style="--w:#FFB096" aria-labelledby="h-biology">
+    <header class="sci-head"><span class="sci-num">05 · Biology</span><h2 id="h-biology">The <em>Living</em> Universe</h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="A turning DNA double helix with coloured base pairs"></canvas></div>
+    <div class="sci-controls">
+      <button class="sci-btn" type="button" data-unzip aria-pressed="false">Unzip (replication fork)</button>
+    </div>
+    <p class="sci-out sci-seq" data-out aria-live="off"></p>
+    <p class="sci-explain">DNA's two strands wind around each other about once every 10.5 base pairs, or 3.4 nm. A always pairs with T through two hydrogen bonds, and G with C through three, so each strand holds the full instructions for the other. Unzip it to watch the strands part as they do at a replication fork, where each becomes the template for a new partner.</p>
+  </section>
+
+  <section class="sci-world" id="quantum" data-world="quantum" style="--w:#B794F4" aria-labelledby="h-quantum">
+    <header class="sci-head"><span class="sci-num">06 · Quantum</span><h2 id="h-quantum">Beyond <em>Reality</em></h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="The double-slit experiment: particles pass two slits one at a time and build up bands on a screen"></canvas></div>
+    <div class="sci-controls">
+      <label class="sci-range">Wavelength <input type="range" min="400" max="700" value="550" data-lambda></label>
+      <label class="sci-range">Slit gap <input type="range" min="10" max="50" value="25" data-sep></label>
+      <button class="sci-btn" type="button" data-which aria-pressed="false">Detector off</button>
+      <button class="sci-btn" type="button" data-clearq>Clear screen</button>
+    </div>
+    <p class="sci-out" data-out aria-live="polite"></p>
+    <p class="sci-explain">Particles leave the source one at a time, yet together they build bands, an interference pattern, as if each passed through both slits as a wave. The bands are spaced Δy = λL/d (here the screen is 1 m away). Switch on a detector to learn which slit each particle used, and the bands vanish. The ripples drawn here picture the probability wave; they are not literal water waves.</p>
+  </section>
+
+  <section class="sci-world" id="astronomy" data-world="astronomy" style="--w:#FFD27A" aria-labelledby="h-astronomy">
+    <header class="sci-head"><span class="sci-num">07 · Astronomy &amp; Cosmology</span><h2 id="h-astronomy">Beyond the <em>Stars</em></h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="A glowing star whose colour follows its temperature, next to its light spectrum"></canvas></div>
+    <div class="sci-controls">
+      <label class="sci-range">Surface temperature <input type="range" min="0" max="1000" value="400" data-temp></label>
+      <button class="sci-btn" type="button" data-star="3600" aria-pressed="false">Betelgeuse</button>
+      <button class="sci-btn" type="button" data-star="5772" aria-pressed="true">The Sun</button>
+      <button class="sci-btn" type="button" data-star="9940" aria-pressed="false">Sirius</button>
+      <button class="sci-btn" type="button" data-star="12100" aria-pressed="false">Rigel</button>
+    </div>
+    <p class="sci-out" data-out aria-live="polite"></p>
+    <p class="sci-explain">A star's colour is a thermometer. Every hot body glows with a spectrum set only by its temperature (Planck's law), and the peak of that glow moves to shorter waves as it heats up: λ = b/T, Wien's law. Cool stars like Betelgeuse glow orange-red, the Sun peaks in green-blue yet looks white, and hot stars like Rigel burn blue-white, putting most of their light into the ultraviolet. Astronomers sort stars into classes O, B, A, F, G, K and M by exactly this.</p>
+  </section>
+
+  <section class="sci-world" id="cs" data-world="cs" style="--w:#9AE6FF" aria-labelledby="h-cs">
+    <header class="sci-head"><span class="sci-num">08 · Computer Science &amp; AI</span><h2 id="h-cs">The Living <em>Digital</em> World</h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="Bars of different heights being sorted step by step by an algorithm"></canvas></div>
+    <div class="sci-controls" role="group" aria-label="Algorithm">
+      <button class="sci-btn" type="button" data-algo="bubble" aria-pressed="false">Bubble</button>
+      <button class="sci-btn" type="button" data-algo="insertion" aria-pressed="false">Insertion</button>
+      <button class="sci-btn" type="button" data-algo="merge" aria-pressed="false">Merge</button>
+      <button class="sci-btn" type="button" data-algo="quick" aria-pressed="true">Quicksort</button>
+      <button class="sci-btn" type="button" data-shuffle>Shuffle</button>
+    </div>
+    <p class="sci-out" data-out aria-live="off"></p>
+    <p class="sci-explain">Every algorithm is a recipe a computer follows exactly. Here four real recipes sort the same kind of shuffled list, and you can watch every comparison (the bright bars) as it happens. Bubble and insertion sort compare almost every pair, so their work grows with the square of the list, O(n²); merge sort and quicksort split the problem in halves and need only about n log n steps. For a million items, that is the difference between a trillion steps and twenty million.</p>
+  </section>
+
+  <section class="sci-world" id="earth" data-world="earth" style="--w:#7FD3A8" aria-labelledby="h-earth">
+    <header class="sci-head"><span class="sci-num">09 · Earth &amp; Environment</span><h2 id="h-earth">Our Climate in <em>One Equation</em></h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="Earth taking in sunlight and giving off heat, with ice caps that grow or melt with temperature"></canvas></div>
+    <div class="sci-controls">
+      <label class="sci-range">Reflectivity (albedo) <input type="range" min="15" max="50" value="30" data-albedo></label>
+      <label class="sci-range">Greenhouse effect <input type="range" min="0" max="50" value="39" data-green></label>
+    </div>
+    <p class="sci-out" data-out aria-live="polite"></p>
+    <p class="sci-explain">Earth warms until the heat it gives off balances the sunlight it absorbs: T = [S(1 − α) / 4εσ]^¼. With no greenhouse effect the planet would average about −18 °C; greenhouse gases send part of the outgoing heat back down and lift it to about 15 °C. Brighter ice reflects more sunlight, which is why melting ice speeds warming. This one-number model leaves out oceans, clouds and feedbacks, but it gets Earth's temperature right from first principles.</p>
+  </section>
+
+  <section class="sci-world" id="engineering" data-world="engineering" style="--w:#FFB37A" aria-labelledby="h-engineering">
+    <header class="sci-head"><span class="sci-num">10 · Engineering &amp; Technology</span><h2 id="h-engineering">The Physics of a <em>Smooth Ride</em></h2></header>
+    <div class="sci-stage"><canvas role="img" aria-label="A car body on a spring and damper bouncing over a bump, with a trace of its motion"></canvas></div>
+    <div class="sci-controls">
+      <label class="sci-range">Spring stiffness <input type="range" min="5" max="60" value="20" data-stiff></label>
+      <label class="sci-range">Damping <input type="range" min="0" max="160" value="30" data-damp></label>
+      <button class="sci-btn" type="button" data-bump>Hit a bump</button>
+    </div>
+    <p class="sci-out" data-out aria-live="polite"></p>
+    <p class="sci-explain">A car's suspension is a spring that stores the bump's energy and a damper that turns it into heat: m x″ + c x′ + k x = 0. One number, the damping ratio ζ, decides the ride. Below 1 the car bounces; above 1 it creeps back slowly and feels harsh; at exactly 1 (critical damping) it settles fastest without a single bounce. Engineers tune real cars a little below 1, trading a soft first bounce for comfort.</p>
+  </section>
+
+  <div class="dp-end">
+    <a class="btn btn-grad" href="../index.html#beyond"><svg class="ic dp-flip"><use href="#i-arrow-r"/></svg>Back to Beyond the Code</a>
+    <a class="btn btn-line" href="heartbeat.html">See Heartbeat</a>
+  </div>
+</main>
+
+<nav class="dp-float" aria-label="Quick links">
+  <a href="../index.html">Home</a>
+  <a href="../index.html#beyond">Back to Beyond the Code</a>
+</nav>
+
+<script src="../js/shared.js"></script>
+<script src="../js/science.js" defer></script>
+</body>
+</html>

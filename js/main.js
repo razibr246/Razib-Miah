@@ -399,8 +399,44 @@
   const bloch = $('.sk-bloch');
   if (bloch) {
     const front = $('.bl-front', bloch), back = $('.bl-back', bloch), qubit = $('.bl-qubit', bloch), halo = $('.bl-halo', bloch);
+    const vec = $('.bl-vec', bloch), trail = $('.bl-trail', bloch), flash = $('.bl-flash', bloch), gate = $('.bl-gate', bloch), prob = $('.bl-prob', bloch);
+    const axes = { x: $('.bl-x', bloch), y: $('.bl-y', bloch), z: $('.bl-z', bloch) };
     const mesh = blochMesh(3);
-    const ORB = { cx: 100, cy: 82, rx: 94, ry: 24, c: Math.cos(-12 * Math.PI / 180), s: Math.sin(-12 * Math.PI / 180) };
+    // The qubit's story is real physics, not decoration: |0⟩ → H gate → phase (precession about z) → measurement,
+    // which collapses it to |0⟩ or |1⟩ with probability P(0) = (1 + z) / 2 → an X gate resets it. Bloch vector (x, y, z):
+    // z points to |0⟩. Every point is projected with the wireframe's own camera, so the vector turns with the sphere.
+    const R2 = Math.SQRT1_2;
+    const rotate = (v, k, a) => {                       // Rodrigues: rotate v about the unit axis k by angle a
+      const c = Math.cos(a), s = Math.sin(a), d = (k[0] * v[0] + k[1] * v[1] + k[2] * v[2]) * (1 - c);
+      return [v[0] * c + (k[1] * v[2] - k[2] * v[1]) * s + k[0] * d, v[1] * c + (k[2] * v[0] - k[0] * v[2]) * s + k[1] * d, v[2] * c + (k[0] * v[1] - k[1] * v[0]) * s + k[2] * d];
+    };
+    const smooth = k => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+    const STEPS = [['ready', 900], ['H', 1400], ['phase', 2600], ['measure', 650], ['result', 1000], ['reset', 1200]];
+    let step = 0, stepAt = performance.now(), v = [0, 0, 1], outcome = 0, from = [0, 0, 1];
+    const hist = [];
+    const stateAt = now => {
+      let k = (now - stepAt) / STEPS[step][1];
+      while (k >= 1) {                                    // finish this step, start the next
+        if (STEPS[step][0] === 'H') v = [1, 0, 0];
+        if (STEPS[step][0] === 'phase') v = rotate([1, 0, 0], [0, 0, 1], Math.PI * 2.5);
+        stepAt += STEPS[step][1]; step = (step + 1) % STEPS.length; from = v.slice();
+        if (STEPS[step][0] === 'measure') outcome = Math.random() < (1 + v[2]) / 2 ? 0 : 1;   // Born rule
+        if (STEPS[step][0] === 'ready') { hist.length = 0; v = [0, 0, 1]; }
+        k = (now - stepAt) / STEPS[step][1];
+      }
+      const name = STEPS[step][0];
+      if (name === 'ready') v = [0, 0, 1];
+      else if (name === 'H') v = rotate([0, 0, 1], [R2, 0, R2], Math.PI * smooth(k));     // Hadamard: π about (x+z)/√2
+      else if (name === 'phase') v = rotate([1, 0, 0], [0, 0, 1], Math.PI * 2.5 * k);    // steady precession about z
+      else if (name === 'measure') {                       // collapse: a quick, decisive snap to a pole
+        const to = outcome ? [0, 0, -1] : [0, 0, 1], e = 1 - Math.pow(1 - Math.min(1, k * 1.6), 3);
+        const m = [from[0] + (to[0] - from[0]) * e, from[1] + (to[1] - from[1]) * e, from[2] + (to[2] - from[2]) * e], l = Math.hypot(...m) || 1;
+        v = m.map(c => c / l);
+      } else if (name === 'result') v = outcome ? [0, 0, -1] : [0, 0, 1];
+      else if (name === 'reset') v = outcome ? rotate([0, 0, -1], [1, 0, 0], Math.PI * smooth(k)) : [0, 0, 1];   // X gate
+      const labels = { ready: '|ψ⟩ = |0⟩', H: 'H gate → |+⟩', phase: `Phase · φ = ${Math.round(((Math.atan2(v[1], v[0]) * 180 / Math.PI) + 360) % 360)}°`, measure: 'Measure', result: `Measured |${outcome}⟩`, reset: outcome ? 'X gate → |0⟩' : 'Ready' };
+      return { name, k, label: labels[name] };
+    };
     let spinning = false, raf = 0, t0 = performance.now();
     // The geometry comes from a small Rust module compiled to WebAssembly (rust/bloch), fetched the first time
     // the card comes near. Until it arrives, or if it can't (an older browser, or the page opened from disk),
@@ -433,13 +469,39 @@
       const p = rust ? rust(turn) : blochPaths(mesh, turn, 100, 80, 50);
       front.setAttribute('d', p.front);
       back.setAttribute('d', p.back);
-      const th = 2.7 + t * Math.PI / 4.5; // one lap every 9s
-      const ex = ORB.rx * Math.cos(th), ey = ORB.ry * Math.sin(th);
-      const x = (ORB.cx + ex * ORB.c - ey * ORB.s).toFixed(1), y = (ORB.cy + ex * ORB.s + ey * ORB.c).toFixed(1);
-      // the upper half of the orbit is the far side: the qubit dims while the sphere is in front of it
-      const behind = ey < 0 && Math.hypot(x - 100, y - 80) < 52;
-      [qubit, halo].forEach(c => { c.setAttribute('cx', x); c.setAttribute('cy', y); });
-      qubit.style.opacity = behind ? 0.4 : 1;
+      // the wireframe's camera, applied to Bloch coordinates (Bloch z is the sphere's vertical)
+      const ca = Math.cos(turn), sa = Math.sin(turn), ct = Math.cos(0.42), st = Math.sin(0.42);
+      const proj = (bx, by, bz, len = 1) => {
+        const x = bx * len, y = bz * len, z = by * len, x1 = x * ca + z * sa, z1 = -x * sa + z * ca;
+        return [100 + 50 * x1, 80 - 50 * (y * ct - z1 * st), y * st + z1 * ct];
+      };
+      // axes turn with the sphere: a line to the surface and an arrowhead just beyond it
+      const arrow = (g, dir) => {
+        const [x1, y1] = proj(...dir, 1), [x2, y2] = proj(...dir, 1.16), dx = x2 - x1, dy = y2 - y1, l = Math.hypot(dx, dy) || 1, nx = -dy / l * 4.4, ny = dx / l * 4.4;
+        const [line, head] = g.children;
+        line.setAttribute('d', `M100 80L${x1.toFixed(1)} ${y1.toFixed(1)}`);
+        head.setAttribute('d', `M${x2.toFixed(1)} ${y2.toFixed(1)}L${(x1 + nx).toFixed(1)} ${(y1 + ny).toFixed(1)}L${(x1 - nx).toFixed(1)} ${(y1 - ny).toFixed(1)}z`);
+      };
+      arrow(axes.x, [1, 0, 0]); arrow(axes.y, [0, 1, 0]); arrow(axes.z, [0, 0, 1]);
+      // the state
+      const story = spinning ? stateAt(now) : (v = rotate([1, 0, 0], [0, 0, 1], 0.9), { name: 'phase', k: 0, label: '|+⟩ = H|0⟩, then a phase' });
+      const [qx, qy, qd] = proj(...v);
+      vec.setAttribute('x2', qx.toFixed(1)); vec.setAttribute('y2', qy.toFixed(1));
+      [qubit, halo].forEach(c => { c.setAttribute('cx', qx.toFixed(1)); c.setAttribute('cy', qy.toFixed(1)); });
+      const behind = qd < 0;                                  // dim it while it passes behind the sphere
+      qubit.style.opacity = behind ? 0.45 : 1; vec.style.opacity = behind ? 0.45 : 1;
+      // a glowing trail of where the state has been (re-projected, so it turns with the sphere)
+      if (story.name === 'H' || story.name === 'phase' || story.name === 'reset') { hist.push(v.slice()); if (hist.length > 150) hist.shift(); }
+      trail.setAttribute('d', hist.map((p, i) => { const [x, y] = proj(...p); return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }).join(''));
+      // collapse: the pole it lands on flashes
+      if (story.name === 'measure' || story.name === 'result') {
+        const [fx, fy] = proj(0, 0, outcome ? -1 : 1), f = story.name === 'measure' ? story.k : 1 + story.k;
+        flash.setAttribute('cx', fx.toFixed(1)); flash.setAttribute('cy', fy.toFixed(1));
+        flash.setAttribute('r', (5 + 16 * Math.min(1, f / 1.4)).toFixed(1)); flash.style.opacity = Math.max(0, 1 - f / 1.4).toFixed(2);
+      } else flash.style.opacity = 0;
+      if (gate.textContent !== story.label) gate.textContent = story.label;
+      const p0 = Math.round((1 + v[2]) / 2 * 100), pt = `P(|0⟩) ${p0}%`;
+      if (prob.textContent !== pt) prob.textContent = pt;
       if (spinning) raf = requestAnimationFrame(drawBloch);
     };
     drawBloch(t0);
@@ -530,6 +592,95 @@
     if (!st) return;
     tlFill.style.transform = 'scaleY(' + st.p.toFixed(4) + ')';
     tlNodes.forEach((n, i) => n.classList.toggle('is-past', st.past[i]));
+  }
+
+  /* ---------- Beyond the Code: stories, poems, books, photos and blog posts ---------- */
+  // Everything here comes from data/life.json: add an entry there and it appears on the page. Blog posts
+  // also arrive on their own from the blog's RSS feed through /api/blog, once BLOG_FEED_URL is set on Vercel.
+  const bxGrid = $('#bxGrid');
+  if (bxGrid) {
+    const MAX_ITEMS = { stories: 3, poems: 3, books: 4, photos: 6, blog: 3 };
+    const EMPTY = { stories: 'First stories coming soon.', poems: 'First poems coming soon.', books: 'Reading list coming soon.', photos: 'First photographs coming soon.', blog: 'First posts coming soon.' };
+    const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text) n.textContent = text; return n; };
+    const when = d => { const t = new Date(d); return d && !isNaN(t) ? t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''; };
+    const safeUrl = u => { try { const x = new URL(u, location.href); return /^https?:$/.test(x.protocol) ? x.href : ''; } catch (e) { return ''; } };
+    const newest = list => list.slice().sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
+    // Share with the phone's own share sheet when there is one; otherwise copy the link.
+    const share = (title, url) => {
+      const link = safeUrl(url) || location.href.split('#')[0] + '#beyond';
+      if (navigator.share) navigator.share({ title, url: link }).catch(() => {});
+      else copyText(link);
+    };
+    const shareBtn = (title, url) => {
+      const b = el('button', 'bx-share');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Share “' + title + '”');
+      b.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+      b.addEventListener('click', () => share(title, url));
+      return b;
+    };
+    const writing = item => {                       // a story, poem or blog post
+      const li = el('li', 'bx-item');
+      const head = el('div', 'bx-item-head');
+      const url = safeUrl(item.url);
+      const title = url ? el('a', 'bx-title', item.title) : el('span', 'bx-title', item.title);
+      if (url) { title.href = url; title.target = '_blank'; title.rel = 'noopener'; }
+      head.append(title, shareBtn(item.title, item.url));
+      li.append(head);
+      const meta = [when(item.date), item.lang].filter(Boolean).join(' · ');
+      if (meta) li.append(el('span', 'bx-meta', meta));
+      const text = item.excerpt || (Array.isArray(item.lines) ? item.lines.slice(0, 2).join(' / ') : '');
+      if (text) li.append(el('p', 'bx-excerpt', text));
+      return li;
+    };
+    const book = item => {
+      const li = el('li', 'bx-item bx-book');
+      const head = el('div', 'bx-item-head');
+      head.append(el('span', 'bx-title', item.title));
+      if (item.status) head.append(el('span', 'bx-status' + (/read$/i.test(item.status) && !/reading/i.test(item.status) ? ' done' : ''), item.status));
+      li.append(head);
+      if (item.author) li.append(el('span', 'bx-meta', item.author));
+      if (item.note) li.append(el('p', 'bx-excerpt', item.note));
+      return li;
+    };
+    const photo = item => {
+      const src = safeUrl(item.src);
+      if (!src) return null;
+      const a = el('a', 'bx-photo');
+      a.href = src; a.target = '_blank'; a.rel = 'noopener';
+      const img = el('img');
+      img.src = safeUrl(item.thumb) || src; img.alt = item.alt || item.caption || ''; img.loading = 'lazy'; img.decoding = 'async';
+      a.append(img);
+      if (item.caption) a.title = item.caption;
+      return a;
+    };
+    const fill = (kind, items) => {
+      const card = $(`.bx-card[data-kind="${kind}"]`, bxGrid);
+      if (!card) return;
+      const list = $('[data-list]', card), count = $('[data-count]', card);
+      const shown = newest(items.filter(x => x && (x.title || x.src))).slice(0, MAX_ITEMS[kind]);
+      if (count) count.textContent = items.length;
+      list.replaceChildren();
+      if (!shown.length) { list.append(el(kind === 'photos' ? 'p' : 'li', 'bx-empty', EMPTY[kind])); return; }
+      shown.forEach(item => { const n = kind === 'books' ? book(item) : kind === 'photos' ? photo(item) : writing(item); if (n) list.append(n); });
+    };
+    const load = () => Promise.all([
+      fetch('data/life.json', { cache: 'no-cache' }).then(r => (r.ok ? r.json() : {})).catch(() => ({})),
+      fetch('/api/blog', { headers: { Accept: 'application/json' } }).then(r => (r.ok ? r.json() : null)).catch(() => null)
+    ]).then(([life, feed]) => {
+      ['stories', 'poems', 'books', 'photos'].forEach(k => fill(k, Array.isArray(life[k]) ? life[k] : []));
+      // blog: feed posts first, then any added by hand; the same link is never listed twice
+      const seen = new Set();
+      const posts = [...((feed && feed.posts) || []), ...(Array.isArray(life.blog) ? life.blog : [])].filter(p => { const k = p.url || p.title; if (seen.has(k)) return false; seen.add(k); return true; });
+      fill('blog', posts);
+      const live = $('[data-live]', bxGrid);
+      if (live) live.hidden = !(feed && feed.configured && feed.posts && feed.posts.length);
+    });
+    // load once the section is near, not with the first paint
+    if (hasIO) {
+      const bxIo = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { bxIo.disconnect(); load(); } }, { rootMargin: '700px 0px' });
+      bxIo.observe(bxGrid);
+    } else load();
   }
 
   /* ---------- contact form ---------- */
@@ -625,20 +776,22 @@
     who: { t: 'Razib Miah is a passionate full-stack engineer in Dhaka who also works in AI/ML and quantum machine learning (QML). He builds fast web products end to end, trains ML models, and is exploring how quantum computing can improve machine learning.', a: [['Read about him', 'about']] },
     skills: { t: 'Languages: TypeScript, Python, Go, C# and Rust. Web: React, Next.js and Node.js with PostgreSQL. Backend in Python: FastAPI, Django, Flask, Pydantic, SQLAlchemy and Celery. AI/ML: Python, PyTorch, TensorFlow, scikit-learn and Hugging Face. Quantum: Qiskit and PennyLane for quantum circuits and hybrid quantum-classical models.', a: [['See all skills', 'skills']] },
     quantum: { t: 'Razib loves quantum computing. He is exploring quantum machine learning: quantum circuits, variational algorithms and hybrid quantum-classical models. The About section shows a Bell-state circuit, the "hello world" of entanglement.', a: [['Show me', 'about'], ['Quantum skills', 'skills']] },
-    projects: { t: 'Featured work includes DLAS, a Bangla voice-first legal aid platform; FieldShift 360, a crop-rotation tool using NASA Earth observations; KormoPath, a Bangla-first set of 12 tools for study, work, income, household life, health, farming and safety; and Kotha, a bilingual shop support agent.', a: [['Browse projects', 'projects']] },
+    projects: { t: 'Featured work includes DLAS, a Bangla voice-first legal aid platform; FieldShift 360, a crop-rotation tool using NASA Earth observations; KormoPath, a Bangla-first set of 12 tools for study, work, income, household life, health, farming and safety; Kotha, a bilingual shop support agent; and ShasthoGrid, a clinical decision-support platform that checks antibiotics against WHO AWaRe guidance and matches critical patients to ICU beds and compatible blood.', a: [['Browse projects', 'projects']] },
     experience: { t: 'He is learning full-stack development (since 2025), learning AI/ML and building projects (since 2026), and exploring quantum computing and quantum machine learning (since 2026). He is an Executive Member of the Research Wing at the DIU AR/VR & Game Development Lab and was an Executive Member of Daffodil AI Club (Jan – Oct 2026). He is studying for a B.Sc. in Computer Science and Engineering at Daffodil International University (DIU), Jan 2025 – Dec 2028.', a: [['See the timeline', 'experience'], ['See education', 'education']] },
-    wins: { t: '2nd Runner-up at the Legal-Tech Hackathon 2026 (UNDP Bangladesh, Top 10 of 194 teams) with Team Law Debuggers, and a prize winner at Agent X, the NetCom Learning × Microsoft AI prompting competition (30th of the Top 50 among 50,000+ participants).', a: [['See achievements', 'achievements']] },
+    wins: { t: 'Top 20 finalist at the YUNet AIgnite Buildathon 2026 (Ostad presents, 425 participants), pitching KormoPath at the Grand Finale; 2nd Runner-up at the Legal-Tech Hackathon 2026 (UNDP Bangladesh, Top 10 of 194 teams) with Team Law Debuggers, and a prize winner at Agent X, the NetCom Learning × Microsoft AI prompting competition (30th of the Top 50 among 50,000+ participants).', a: [['See achievements', 'achievements']] },
     research: { t: "Razib's research interests are quantum machine learning (variational circuits, quantum kernels and hybrid quantum-classical models), applied AI for Bangladesh such as the DLAS voice agent, and AR/VR, where he is an Executive Member of the Research Wing at DIU's AR/VR & Game Development Lab. He's open to research collaborations.", a: [['See his research', 'research'], ['Contact him', 'contact']] },
     hire: { t: "He's open to full-time roles and freelance projects. Email " + EMAIL + ' or use the contact form. He usually replies within a day.', a: [['Open contact form', 'contact'], ['Copy email', 'copy']] },
+    beyond: { t: 'Outside code, Razib writes stories and poetry, reads, and takes photographs. The Beyond the Code section collects them, with his blog posts appearing there automatically. Its Creative lab holds his experiments in code and motion, including Heartbeat, a 3D heart drawn by thousands of glowing particles, and The Infinite Science Universe: ten interactive simulations covering physics, chemistry, maths, geometry, biology, quantum, astronomy, computer science, Earth’s climate and engineering, built on the real formulas.', a: [['Show me', 'beyond']] },
     where: { t: "He's based in Dhaka, Bangladesh (UTC+6) and works remotely with teams in other time zones.", a: [['Contact him', 'contact']] },
     fallback: { t: 'I only know what is on this page. Try one of the topics below, or email Razib at ' + EMAIL + '.', a: [['Copy email', 'copy']] }
   };
   const ROUTES = [
     ['hire', /hire|hiring|contact|email|mail|reach|available|availab|freelance|job|rate|price|cost|\bcv\b|resume|résumé/],
-    ['wins', /achiev|award|\bwin|\bwon|hackathon|certif|icpc|prize|runner|undp|debugger|agent ?x|netcom|prompt/],
+    ['wins', /achiev|award|\bwin|\bwon|hackathon|buildathon|aignite|yunet|ostad|finalist|certif|icpc|prize|runner|undp|debugger|agent ?x|netcom|prompt/],
+    ['beyond', /hobb|poem|poet|story|stories|book|reading|photo|blog|heart|beyond|free time|outside (of )?(work|code)|science universe|simulation|mandelbrot|double.?slit|orbital/],
     ['research', /research|paper|publication|journal|thesis|collaborat|research wing|\blab\b/],
     ['experience', /experience|career|learning|journey|company|history|worked|years|education|degree|university|study|studied|club|ar ?\/?vr|research wing/],
-    ['projects', /project|built|build|portfolio|\bapp|github|open.?source|dlas|legal.?aid|fieldshift|kormopath|kotha/],
+    ['projects', /project|built|build|portfolio|\bapp|github|open.?source|dlas|legal.?aid|fieldshift|kormopath|kotha|shastho|icu|antibiotic|health/],
     ['quantum', /quantum|qml|qubit|qiskit|pennylane|circuit|entangle|superposition/],
     ['skills', /skill|stack|tech|language|framework|tool|react|golang|\bgo\b|c#|c sharp|csharp|\.net|rust|typescript|python|fastapi|django|flask|backend|node|postgres|aws|docker|\bai\b|\bml\b|machine learning|pytorch|tensorflow|llm/],
     ['where', /where|location|based|time ?zone|dhaka|bangladesh|remote/],

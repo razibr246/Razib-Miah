@@ -9,6 +9,9 @@
     },
     "api/voices.js": {
       "maxDuration": 15
+    },
+    "api/blog.js": {
+      "maxDuration": 15
     }
   }
 }
