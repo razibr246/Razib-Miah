@@ -62,7 +62,7 @@
   // so their labels stay readable (the same idea as Apple's adaptive glass).
   const floating = glass.filter(g => g.closest('.nav, .dp-bar, .dp-float'));
   const OWN = '.nav, .dp-bar, .dp-float';
-  const BUSY = 'img, video, .ach-photo, .thumb, .dp-hero, .q-visual, .code';
+  const BUSY = 'img, video, canvas, .ach-photo, .thumb, .dp-hero, .q-visual, .code';   // canvas: the dark Creative lab stages
   const overBusy = g => {
     const r = g.getBoundingClientRect();
     if (!r.width) return false;

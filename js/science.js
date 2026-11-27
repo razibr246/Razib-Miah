@@ -840,13 +840,21 @@
     h1.classList.add('sci-title-in');
   }
   if (!reduce.matches && 'IntersectionObserver' in window) {
-    const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+    // Watch the whole world section, not each part: the stage starts clipped to a thin strip, and
+    // browsers measure visibility after the clip, so a stage taller than the free screen space
+    // never looked "visible enough" to open and stayed stuck as a strip. The section is never clipped.
+    const rv = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      $$('.sci-rv', e.target).forEach(el => el.classList.add('in'));
+      rv.unobserve(e.target);
+    }), { rootMargin: '0px 0px -12% 0px' });
     $$('.sci-world').forEach(world => {
       ['.sci-head', '.sci-stage', '.sci-controls', '.sci-out', '.sci-explain'].forEach((sel, k) => {
         const el = $(sel, world); if (!el) return;
         el.style.setProperty('--d', (k === 1 ? 60 : k * 110) + 'ms');
-        el.classList.add('sci-rv'); rv.observe(el);
+        el.classList.add('sci-rv');
       });
+      rv.observe(world);
     });
   }
   const navLinks = $$('.sci-nav a');
