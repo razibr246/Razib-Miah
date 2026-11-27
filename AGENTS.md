@@ -66,7 +66,7 @@ There is no linter, formatter or front-end test suite.
 
 ## Images
 
-Photos are `.webp`. Large photos have smaller copies (`-480`, `-720`, `-800`, or `-sm` thumbnails) for phones and gallery strips. The main page picks them with `srcset`, and the detail pages use the `-sm` files directly as thumbnails. The hero portrait has separate light and dark versions (`razib-portrait-light.webp` / `razib-portrait.webp`). Gallery buttons carry `data-full` / `data-cap` (optionally `data-cap-link` and `data-cap-link-text`). Make the small copies with `cwebp`, e.g. `cwebp -q 84 -resize 480 0 in.webp -o in-480.webp`. Skill logos in `assets/tech/` are SVGs from Devicon / Simple Icons.
+Photos are `.webp`. Large photos have smaller copies (`-480`, `-720`, `-800`, or `-sm` thumbnails) for phones and gallery strips. The main page picks them with `srcset`, and the detail pages use the `-sm` files directly as thumbnails. Images live in `assets/images/` by topic (`profile/`, `projects/`, `achievements/<event>/`, `creations/`, `logos/`), named for what they show with a size suffix (`-2x` retina, `-800`/`-720`/`-480`, `-sm`). The hero portrait has light and dark versions (`profile/portrait-light.webp` / `profile/portrait.webp`). Gallery buttons carry `data-full` / `data-cap` (optionally `data-cap-link` and `data-cap-link-text`). Make the small copies with `cwebp`, e.g. `cwebp -q 84 -resize 480 0 in.webp -o in-480.webp`. Skill logos in `assets/tech/` are SVGs from Devicon / Simple Icons.
 
 ## Conventions
 

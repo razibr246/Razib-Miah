@@ -30,18 +30,18 @@ razib-portfolio/
 │   └── *.test.js                 tests: node --test api/gemini-provider.test.js api/blog.test.js api/assistant-retrieval.test.js
 ├── rust/bloch/                   Rust source for the Quantum ML card's turning sphere (see below)
 └── assets/
-    ├── razib-portrait.webp       hero photo (920 × 920)
-    ├── *-480/-720/-800.webp      smaller copies of the big photos; phones load these instead
-    ├── razib-avatar.webp         small photo in the chat window
-    ├── diu-logo.webp             Education section logo
-    ├── project-*.webp            project screenshots (DLAS, FieldShift 360, KormoPath, ShasthoGrid)
-    ├── aignite-*.webp            YUNet AIgnite Buildathon photos
-    ├── hackathon-*.webp          Legal-Tech Hackathon photos (*-sm = small thumbnails)
-    ├── agentx-*.webp             Agent X photos (*-sm = small thumbnails)
-    ├── creation-*.webp           Creative lab card pictures
+    ├── favicon.svg               browser tab icon
+    ├── images/                   every photo, in .webp; size suffixes: -2x (retina), -800/-720/-480 (phones), -sm (thumbnails)
+    │   ├── profile/              portrait.webp (dark theme), portrait-light.webp (light theme), avatar.webp (chat)
+    │   ├── projects/             dlas, fieldshift, kormopath, shasthogrid screenshots
+    │   ├── achievements/
+    │   │   ├── aignite/          YUNet AIgnite Buildathon photos
+    │   │   ├── legal-tech/       Legal-Tech Hackathon photos
+    │   │   └── agent-x/          Agent X photos
+    │   ├── creations/            Creative lab card pictures (heartbeat, science)
+    │   └── logos/                diu, daffodil-ai-club, arvr-lab
     ├── tech/*.svg                tool logos in the Skills strip (from Devicon and Simple Icons)
-    ├── wasm/bloch.wasm           the Rust sphere, compiled to WebAssembly
-    └── favicon.svg               browser tab icon
+    └── wasm/bloch.wasm           the Rust sphere, compiled to WebAssembly
 ```
 
 ## Open it on your computer
@@ -86,7 +86,7 @@ All of these are in `index.html`:
 2. **Projects:** the five featured cards link to the DLAS, FieldShift 360, KormoPath, Kotha and ShasthoGrid repositories. The KormoPath card uses a screenshot of its live homepage and describes the 12-tool platform. The “Show More Projects” row contains seven clearly labeled portfolio concepts with illustrative data and no external links. Update project details and links in `index.html` when the projects change.
 3. **Achievements and experience:** all real now (Legal-Tech Hackathon, Agent X, your learning journey and clubs).
 4. **Numbers:** the About stats come from your real wins (2 national prizes, Top 10 of 194 teams, 30th in Agent X). Update them when you win more.
-5. **Photo:** replace `assets/razib-portrait-light.webp` (light theme) and `assets/razib-portrait.webp` (dark theme) with any square photo. Keep the same file names, and make a 480px copy of each for phones, e.g. `cwebp -q 84 -resize 480 0 razib-portrait-light.webp -o razib-portrait-light-480.webp`.
+5. **Photo:** replace `assets/images/profile/portrait-light.webp` (light theme) and `assets/images/profile/portrait.webp` (dark theme) with any square photo. Keep the same file names, and make a 480px copy of each for phones, e.g. `cwebp -q 84 -resize 480 0 portrait-light.webp -o portrait-light-480.webp`.
 
 ## Add another featured achievement
 
@@ -129,7 +129,7 @@ Everything in the "Things I love" cards comes from `data/life.json`. Add an entr
 Each experiment gets a card in the "Beyond the Code" section and a page of its own:
 
 1. Copy `creations/heartbeat.html` to `creations/your-piece.html`, and change its title, text and the code it runs.
-2. Save a preview picture of it as `assets/creation-your-piece.webp` (1440 × 900) plus a 720px copy `-720.webp`.
+2. Save a preview picture of it as `assets/images/creations/your-piece.webp` (1440 × 900) plus a 720px copy `your-piece-720.webp`.
 3. In `index.html`, copy the Heartbeat card (`<a class="bx-work" ...>`), point its `href` and images at the new files, and put it before the "Next experiment" card (remove that card once the grid feels full).
 
 ## Change the colors
